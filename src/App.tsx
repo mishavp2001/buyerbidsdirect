@@ -29,7 +29,7 @@ function App() {
       {({ signOut, user }) => (
 
         <main>
-          <h1>For sale:</h1>
+          <h1>Hey {user?.username} For sale:</h1>
           <button onClick={createTodo}>+ new</button>
           <ul>
             {todos.map((todo) => (
