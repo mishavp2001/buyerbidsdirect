@@ -2,8 +2,12 @@ import { useEffect, useState } from "react";
 import type { Schema } from "../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Authenticator } from '@aws-amplify/ui-react'
+import MapWithItems from './components/MapWithItems';
+
 
 import '@aws-amplify/ui-react/styles.css'
+import 'leaflet/dist/leaflet.css';
+
 const client = generateClient<Schema>();
 
 function App() {
@@ -30,14 +34,18 @@ function App() {
 
         <main>
           <h1>Hey {user?.signInDetails?.loginId}'</h1>
-          <button onClick={createTodo}>+ new</button>
+         
           <h1>For sale:</h1>
           <ul>
             {todos.map((todo) => (
               <li key={todo.id} onClick={() => deleteTodo(todo.id)}>{todo.content}</li>
             ))}
           </ul>
+          <div>
+          <MapWithItems />
           <button onClick={signOut}>Sign out</button>
+          <button onClick={createTodo}>+ new</button>
+          </div>
         </main>
 
       )}
