@@ -1,6 +1,6 @@
-// src/MapWithItems.tsx
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import ListItems from './ListItems';
 
 // Type definition for an item
 interface Item {
@@ -28,17 +28,17 @@ const MapWithItems: React.FC = () => {
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const userPosition: [number, number] = [position.coords.latitude, position.coords.longitude];
+        (geoPosition) => {
+          const userPosition: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
           setPosition(userPosition);
 
           // Update item positions to be near the user's position
           const updatedItems = initialItemsForSale.map((item) => ({
             ...item,
             position: [
-              userPosition[0] + getRandomOffset(), 
+              userPosition[0] + getRandomOffset(),
               userPosition[1] + getRandomOffset()
-            ]
+            ] as [number, number]
           }));
           setItemsForSale(updatedItems);
         },
@@ -84,13 +84,7 @@ const MapWithItems: React.FC = () => {
           ))}
         </MapContainer>
       ) : (
-        <ul>
-          {itemsForSale.map(item => (
-            <li key={item.id}>
-              <strong>{item.name}</strong>: {item.description}
-            </li>
-          ))}
-        </ul>
+        <ListItems />
       )}
     </div>
   );
