@@ -23,7 +23,7 @@ const initialHouses: House[] = [
 type Order = 'asc' | 'desc';
 
 const ListItems: React.FC = () => {
-  const [houses, setHouses] = useState<House[]>(initialHouses);
+  const [houses] = useState<House[]>(initialHouses);
   const [order, setOrder] = useState<Order>('asc');
   const [orderBy, setOrderBy] = useState<keyof House>('price');
 
