@@ -69,7 +69,7 @@ const MapWithItems: React.FC = () => {
         {showMap ? 'Show List' : 'Show Map'}
       </button>
       {showMap ? (
-        <MapContainer center={position} zoom={13} style={{ height: '100vh', width: '100%' }}>
+        <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'

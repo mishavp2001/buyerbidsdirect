@@ -1,55 +1,31 @@
-import { useEffect, useState } from "react";
-import type { Schema } from "../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
+
 import { Authenticator } from '@aws-amplify/ui-react'
-import MapWithItems from './components/MapWithItems';
+import HomePage from './pages/homePage';
+import LoginPage from './pages/loginPage';
+import { Route, Routes } from 'react-router-dom';
+import MakeOffer from './pages/makeOfferPage';
+import ListProperty from './pages/listProperty';
+import Profile from './pages/Profile';
+import NavigationBar from './components/NavigationBar'
 
-
-import '@aws-amplify/ui-react/styles.css'
-import 'leaflet/dist/leaflet.css';
-
-const client = generateClient<Schema>();
+import RequireAuth from './components/Auth/RequireAuth';
 
 function App() {
-  const [todos, setTodos] = useState<Array<Schema["Todo"]["type"]>>([]);
-
-  useEffect(() => {
-    client.models.Todo.observeQuery().subscribe({
-      next: (data) => setTodos([...data.items]),
-    });
-  }, []);
-
-  function createTodo() {
-    client.models.Todo.create({ content: window.prompt("Todo content") });
-  }
-
-  function deleteTodo(id: string) {
-    client.models.Todo.delete({ id })
-  }
 
   return (
 
-    <Authenticator>
-      {({ signOut, user }) => (
+    <Authenticator.Provider>
+      <NavigationBar/>
+      <Routes>
+        <Route index path='/' element = {<HomePage/>} />
+        <Route path='/offers/:offerId' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
+        <Route path='/offers' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
+        <Route path='/sales' element = {<RequireAuth><ListProperty/></RequireAuth>} />
+        <Route path='/profile' element =  {<RequireAuth><Profile/></RequireAuth>} />
+        <Route path='/login' element = {<LoginPage/>} />
 
-        <main>
-          <h1>Hey {user?.signInDetails?.loginId}'</h1>
-         
-          <h1>For sale:</h1>
-          <ul>
-            {todos.map((todo) => (
-              <li key={todo.id} onClick={() => deleteTodo(todo.id)}>{todo.content}</li>
-            ))}
-          </ul>
-          <div>
-          <MapWithItems />
-          <button onClick={signOut}>Sign out</button>
-          <button onClick={createTodo}>+ new</button>
-          </div>
-        </main>
-
-      )}
-    </Authenticator>
+      </Routes>
+    </Authenticator.Provider>
   );
 }
 

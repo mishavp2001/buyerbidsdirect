@@ -1,5 +1,7 @@
 // src/components/HouseTable.tsx
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Paper
 } from '@mui/material';
@@ -99,6 +101,9 @@ const ListItems: React.FC = () => {
                 Lot (sqft)
               </TableSortLabel>
             </TableCell>
+            <TableCell align="right">
+                Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -109,6 +114,11 @@ const ListItems: React.FC = () => {
               <TableCell>{house.location}</TableCell>
               <TableCell align="right">{house.size.toLocaleString()}</TableCell>
               <TableCell align="right">{house.lot.toLocaleString()}</TableCell>
+              <TableCell align="right">
+              <Link to={`/offers/${house.id}`}>
+                  Offer
+                 </Link>
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>
