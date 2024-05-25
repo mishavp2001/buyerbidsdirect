@@ -3,46 +3,31 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ListItems from './ListItems';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import { Link } from 'react-router-dom';
+import { getGeoLocation } from '../utils/getGeoLocation';
 import 'leaflet/dist/leaflet.css';
 
 const client = generateClient<Schema>();
 
-// Type definition for an item
-interface Item {
-  id: number;
-  name: string;
-  position: [number, number];
-  description: string;
-}
-
-
-// Initial sample data for items for sale
-const initialItemsForSale: Omit<Item, 'position'>[] = [
-  { id: 1, name: 'Item 1', description: 'Description for item 1' },
-  { id: 2, name: 'Item 2', description: 'Description for item 2' },
-  { id: 3, name: 'Item 3', description: 'Description for item 3' },
-];
-
-const getRandomOffset = () => (Math.random() - 0.5) * 0.02; // Generates a random offset within a small range
 
 const MapWithItems: React.FC = () => {
+  const [itemsForSale, setItemsForSale] = useState<any[]>([]);
   const [position, setPosition] = useState<[number, number] | null>(null);
-  const [itemsForSale, setItemsForSale] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
-  const [showMap, setShowMap] = useState<boolean>(true); // State to toggle map view
-
-  const [properties, setProperties] = useState<Array<Schema["Property"]["type"]>>([]);
+  const [showMap, setShowMap] = useState<boolean>(false); // State to toggle map view
+  const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
 
   useEffect(() => {
-    client.models.Property.observeQuery().subscribe({
-      next: (data) => setProperties([...data.items]),
+    const subscription = client.models.Property.observeQuery().subscribe({
+      next: (data) => setProperties(data.items),
+      error: (err) => setError(err.message),
     });
+
+    // Cleanup the subscription on unmount
+    return () => subscription.unsubscribe();
   }, []);
-  
-  function createProperty() {
-    client.models.Property.create({address: {'street': '92 second street'}, propertyType: 'house', price: 400000});
-  }
-  
+
+
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -50,25 +35,37 @@ const MapWithItems: React.FC = () => {
         (geoPosition) => {
           const userPosition: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
           setPosition(userPosition);
-
-          // Update item positions to be near the user's position
-          const updatedItems = initialItemsForSale.map((item) => ({
-            ...item,
-            position: [
-              userPosition[0] + getRandomOffset(),
-              userPosition[1] + getRandomOffset()
-            ] as [number, number]
-          }));
-          setItemsForSale(updatedItems);
-        },
-        (error) => {
-          setError(error.message);
-        }
-      );
+        })
     } else {
       setError('Geolocation is not supported by this browser.');
     }
-  }, []);
+    const updateItems = async () => {
+      const updatedItems = await Promise.all(
+        properties.map(async (item) => {
+          if (item?.address) {
+            try {
+              const geoPosition = await getGeoLocation(item.address);
+              return {
+                ...item,
+                position: [geoPosition.latitude, geoPosition.longitude],
+              };
+            } catch (geoError) {
+              console.error(`Failed to fetch geolocation for address: ${item.address}`, geoError);
+              return { ...item, position: null };
+            }
+          } else {
+            return { ...item, position: null };
+          }
+        })
+      );
+      setItemsForSale(updatedItems);
+    };
+
+    updateItems();
+  }, [properties]);
+
+
+
 
   const toggleView = () => {
     setShowMap(!showMap);
@@ -78,24 +75,16 @@ const MapWithItems: React.FC = () => {
     return <div>Error: {error}</div>;
   }
 
-  if (!position) {
+  if (!properties) {
     return <div>Loading...</div>;
   }
-
+  console.dir(itemsForSale);
 
   return (
     <div className='list-items'>
       <button onClick={toggleView}>
         {showMap ? 'Show List' : 'Show Map'}
       </button>
-      <button onClick={createProperty}>
-          Add house for sale
-      </button>
-      {properties.map(prop => 
-        <li
-          key={prop.id}>
-          {prop?.address?.street} {prop.propertyType} {prop.price}
-        </li>)}
       {showMap ? (
         <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
           <TileLayer
@@ -103,16 +92,23 @@ const MapWithItems: React.FC = () => {
             attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           />
           {itemsForSale.map(item => (
-            <Marker key={item.id} position={item.position}>
+            item?.position && <Marker key={item.id} position={item?.position}>
               <Popup>
-                <strong>{item.name}</strong><br />
-                {item.description}
+                <strong>Price: {item?.price}</strong><br />
+                <strong>Square Footage: {item.squareFootage}</strong><br />
+                <p>{item?.description}</p>
+                <p>{item?.photos}</p>
+                <p>
+                  <Link to={`/offers/${item.id}/${item?.address}`}>
+                    Make Offer
+                  </Link>
+                </p>
               </Popup>
             </Marker>
           ))}
         </MapContainer>
       ) : (
-        <ListItems />
+        <ListItems properties={properties} />
       )}
     </div>
   );

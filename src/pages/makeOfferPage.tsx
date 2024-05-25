@@ -10,7 +10,7 @@ interface Offer {
 const MakeOffer: React.FC = () => {
   const [offer, setOffer] = useState<Offer>({ price: 0, conditions: '' });
   const [errors, setErrors] = useState<{ price?: string, conditions?: string }>({});
-  const { offerId } = useParams();
+  const { offerId, address } = useParams();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -37,7 +37,7 @@ const MakeOffer: React.FC = () => {
     <Container component="main" maxWidth="sm">
       {offerId ?  
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Make an Offer for property id: {offerId} </Typography>
+        <Typography component="h1" variant="h5">Make an Offer for property:  <h3>{address}</h3> </Typography>
         <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
           <TextField
             variant="outlined"
@@ -70,7 +70,7 @@ const MakeOffer: React.FC = () => {
             variant="contained"
             color="primary"
           >
-            Submit Offer
+            Send Offer
           </Button>
         </Box>
       </Paper>

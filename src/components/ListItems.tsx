@@ -1,54 +1,47 @@
-// src/components/HouseTable.tsx
+// src/PropertyTable.tsx
 import React, { useState } from 'react';
+import {
+  Table, TableBody, TableCell, TableContainer,
+  TableHead, TableRow, TableSortLabel, Paper
+} from '@mui/material';
 import { Link } from 'react-router-dom';
 
-import {
-  Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TableSortLabel, Paper
-} from '@mui/material';
-
-interface House {
-  id: number;
-  type: string;
+interface Property {
+  id: string;
+  address: string;  // Now address is a single string
   price: number;
-  location: string;
-  size: number;
-  lot: number;
+  bedrooms: number;
+  bathrooms: number;
+  squareFootage: number;
 }
 
-const initialHouses: House[] = [
-  { id: 1, type: 'Apartment', price: 250000, location: 'New York', size: 850, lot: 0 },
-  { id: 2, type: 'House', price: 450000, location: 'Los Angeles', size: 1300, lot: 1500 },
-  { id: 3, type: 'Condo', price: 300000, location: 'Chicago', size: 950, lot: 0 },
-  { id: 4, type: 'Villa', price: 750000, location: 'Miami', size: 2000, lot: 2500 },
-];
+interface PropertyTableProps {
+  properties: Property[];
+}
 
-type Order = 'asc' | 'desc';
+type SortColumn = 'address' | 'price' | 'bedrooms' | 'bathrooms' | 'squareFootage';
 
-const ListItems: React.FC = () => {
-  const [houses] = useState<House[]>(initialHouses);
-  const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof House>('price');
+const PropertyTable: React.FC<any> = ({ properties }) => {
+  const [sortConfig, setSortConfig] = useState<{ key: SortColumn; direction: 'asc' | 'desc' } | null>(null);
 
-  const handleRequestSort = (property: keyof House) => {
-    const isAsc = orderBy === property && order === 'asc';
-    setOrder(isAsc ? 'desc' : 'asc');
-    setOrderBy(property);
-  };
+  const sortedProperties = [...properties].sort((a, b) => {
+    if (!sortConfig) return 0;
 
-  const sortHouses = (houses: House[], comparator: (a: House, b: House) => number) => {
-    const stabilizedHouses = houses.map((el, index) => [el, index] as [House, number]);
-    stabilizedHouses.sort((a, b) => {
-      const order = comparator(a[0], b[0]);
-      if (order !== 0) return order;
-      return a[1] - b[1];
-    });
-    return stabilizedHouses.map(el => el[0]);
-  };
+    const { key, direction } = sortConfig;
+    let aValue: string | number = a[key];
+    let bValue: string | number = b[key];
 
-  const getComparator = (order: Order, orderBy: keyof House) => {
-    return order === 'desc'
-      ? (a: House, b: House) => (b[orderBy] < a[orderBy] ? -1 : 1)
-      : (a: House, b: House) => (a[orderBy] < b[orderBy] ? -1 : 1);
+    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+  const requestSort = (key: SortColumn) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+    setSortConfig({ key, direction });
   };
 
   return (
@@ -58,67 +51,67 @@ const ListItems: React.FC = () => {
           <TableRow>
             <TableCell>
               <TableSortLabel
-                active={orderBy === 'type'}
-                direction={orderBy === 'type' ? order : 'asc'}
-                onClick={() => handleRequestSort('type')}
+                active={sortConfig?.key === 'address'}
+                direction={sortConfig?.direction || 'asc'}
+                onClick={() => requestSort('address')}
               >
-                Type
+                Address
               </TableSortLabel>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <TableSortLabel
-                active={orderBy === 'price'}
-                direction={orderBy === 'price' ? order : 'asc'}
-                onClick={() => handleRequestSort('price')}
+                active={sortConfig?.key === 'price'}
+                direction={sortConfig?.direction || 'asc'}
+                onClick={() => requestSort('price')}
               >
                 Price
               </TableSortLabel>
             </TableCell>
             <TableCell>
               <TableSortLabel
-                active={orderBy === 'location'}
-                direction={orderBy === 'location' ? order : 'asc'}
-                onClick={() => handleRequestSort('location')}
+                active={sortConfig?.key === 'bedrooms'}
+                direction={sortConfig?.direction || 'asc'}
+                onClick={() => requestSort('bedrooms')}
               >
-                Location
+                Bedrooms
               </TableSortLabel>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <TableSortLabel
-                active={orderBy === 'size'}
-                direction={orderBy === 'size' ? order : 'asc'}
-                onClick={() => handleRequestSort('size')}
+                active={sortConfig?.key === 'bathrooms'}
+                direction={sortConfig?.direction || 'asc'}
+                onClick={() => requestSort('bathrooms')}
               >
-                Size (sqft)
+                Bathrooms
               </TableSortLabel>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
               <TableSortLabel
-                active={orderBy === 'lot'}
-                direction={orderBy === 'lot' ? order : 'asc'}
-                onClick={() => handleRequestSort('lot')}
+                active={sortConfig?.key === 'squareFootage'}
+                direction={sortConfig?.direction || 'asc'}
+                onClick={() => requestSort('squareFootage')}
               >
-                Lot (sqft)
+                Square Footage
               </TableSortLabel>
             </TableCell>
-            <TableCell align="right">
+            <TableCell>
+              <TableSortLabel>
                 Actions
+              </TableSortLabel>
             </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {sortHouses(houses, getComparator(order, orderBy)).map((house) => (
-            <TableRow key={house.id}>
-              <TableCell>{house.type}</TableCell>
-              <TableCell align="right">${house.price.toLocaleString()}</TableCell>
-              <TableCell>{house.location}</TableCell>
-              <TableCell align="right">{house.size.toLocaleString()}</TableCell>
-              <TableCell align="right">{house.lot.toLocaleString()}</TableCell>
-              <TableCell align="right">
-              <Link to={`/offers/${house.id}`}>
-                  Offer
-                 </Link>
-              </TableCell>
+          {sortedProperties.map((property) => (
+            <TableRow key={property.id}>
+              <TableCell>{property.address}</TableCell>
+              <TableCell>{property.price}</TableCell>
+              <TableCell>{property.bedrooms}</TableCell>
+              <TableCell>{property.bathrooms}</TableCell>
+              <TableCell>{property.squareFootage}</TableCell>
+              <TableCell><Link to={`/offers/${property.id}/${property?.address}`}>
+                  Make Offer
+              </Link></TableCell>
             </TableRow>
           ))}
         </TableBody>
@@ -127,4 +120,4 @@ const ListItems: React.FC = () => {
   );
 };
 
-export default ListItems;
+export default PropertyTable;

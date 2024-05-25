@@ -9,22 +9,7 @@ specifies that any user authenticated via an API key can "create", "read",
 
 
 const schema = a.schema({
-  Address: a
-    .customType({
-    street: a.string(),
-    city: a.string(),
-    state: a.string(),
-    zipCode: a.string(),
-    }),
-
-  PropertyHistory: a
-.customType({
-  propertyID: a.id(),
-  date: a.date(),
-  event: a.string(),
-  price: a.float(),
-}),
-
+ 
   Todo: a
     .model({
       content: a.string(),
@@ -33,7 +18,7 @@ const schema = a.schema({
   
   Property: a
   .model({
-    address: a.ref('Address'), // Using the Address model
+    address:a.string(), // Using the Address model
     price: a.float(),
     bedrooms: a.integer(),
     bathrooms: a.float(),
@@ -42,7 +27,7 @@ const schema = a.schema({
     yearBuilt: a.integer(),
     propertyType: a.string(),
     listingStatus: a.string(),
-    listingAgent: a.string(),
+    listingOwner: a.string(),
     description: a.string(),
     photos: a.string().array(),
     virtualTour: a.string(),
