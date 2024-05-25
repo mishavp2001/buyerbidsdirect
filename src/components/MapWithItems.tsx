@@ -1,6 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import ListItems from './ListItems';
+import type { Schema } from "../../amplify/data/resource";
+import { generateClient } from "aws-amplify/data";
+import 'leaflet/dist/leaflet.css';
+
+const client = generateClient<Schema>();
 
 // Type definition for an item
 interface Item {
@@ -9,6 +14,7 @@ interface Item {
   position: [number, number];
   description: string;
 }
+
 
 // Initial sample data for items for sale
 const initialItemsForSale: Omit<Item, 'position'>[] = [
@@ -24,6 +30,19 @@ const MapWithItems: React.FC = () => {
   const [itemsForSale, setItemsForSale] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState<boolean>(true); // State to toggle map view
+
+  const [properties, setProperties] = useState<Array<Schema["Property"]["type"]>>([]);
+
+  useEffect(() => {
+    client.models.Property.observeQuery().subscribe({
+      next: (data) => setProperties([...data.items]),
+    });
+  }, []);
+  
+  function createProperty() {
+    client.models.Property.create({address: {'street': '92 second street'}, propertyType: 'house', price: 400000});
+  }
+  
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -63,11 +82,20 @@ const MapWithItems: React.FC = () => {
     return <div>Loading...</div>;
   }
 
+
   return (
-    <div>
+    <div className='list-items'>
       <button onClick={toggleView}>
         {showMap ? 'Show List' : 'Show Map'}
       </button>
+      <button onClick={createProperty}>
+          Add house for sale
+      </button>
+      {properties.map(prop => 
+        <li
+          key={prop.id}>
+          {prop?.address?.street} {prop.propertyType} {prop.price}
+        </li>)}
       {showMap ? (
         <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
           <TileLayer

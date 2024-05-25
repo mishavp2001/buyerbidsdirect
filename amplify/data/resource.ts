@@ -6,12 +6,55 @@ adding a new "isDone" field as a boolean. The authorization rule below
 specifies that any user authenticated via an API key can "create", "read",
 "update", and "delete" any "Todo" records.
 =========================================================================*/
+
+
 const schema = a.schema({
+  Address: a
+    .customType({
+    street: a.string(),
+    city: a.string(),
+    state: a.string(),
+    zipCode: a.string(),
+    }),
+
+  PropertyHistory: a
+.customType({
+  propertyID: a.id(),
+  date: a.date(),
+  event: a.string(),
+  price: a.float(),
+}),
+
   Todo: a
     .model({
       content: a.string(),
     })
     .authorization(allow => [allow.owner()]),
+  
+  Property: a
+  .model({
+    address: a.ref('Address'), // Using the Address model
+    price: a.float(),
+    bedrooms: a.integer(),
+    bathrooms: a.float(),
+    squareFootage: a.integer(),
+    lotSize: a.float(),
+    yearBuilt: a.integer(),
+    propertyType: a.string(),
+    listingStatus: a.string(),
+    listingAgent: a.string(),
+    description: a.string(),
+    photos: a.string().array(),
+    virtualTour: a.string(),
+    propertyTax: a.float(),
+    hoaFees: a.float(),
+    mlsNumber: a.string(),
+    zestimate: a.float(),
+    neighborhood: a.string(),
+    amenities: a.string().array(),
+  })
+  .authorization((allow) => [allow.owner()])
+  
 });
 
 export type Schema = ClientSchema<typeof schema>;

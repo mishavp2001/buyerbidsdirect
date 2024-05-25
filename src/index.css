@@ -1,18 +1,41 @@
 body {
   margin: 0;
-  background: linear-gradient(180deg, rgb(117, 81, 194), rgb(255, 255, 255));
+  background: linear-gradient(180deg, rgb(38, 88, 128), rgb(255, 255, 255));
   display: flex;
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   height: 100vh;
   width: 100vw;
+  padding: 1em;
   justify-content: center;
   align-items: center;
+}
+
+@media screen and (max-width: 768px) {
+  body {
+      font-size: 0.75rem; /* Example: Decrease font size for smaller screens */
+  }
+
+  main {
+      padding: 1rem; /* Example: Adjust padding for smaller screens */
+  }
+
+  header .MuiTypography-root {
+    font-size: 0.65rem; /* Example: Decrease font size for smaller screens */
+  }
+
+  .list-items {
+    width: 100%; /* Set parent container width to 100% */
+    height: 400px; /* Set a fixed height for the parent container, adjust as needed */
+    position: relative; /* Ensure proper positioning of the map container */
+  }
+
 }
 
 main {
   display: flex;
   flex-direction: column;
   align-items: stretch;
+  margin: 6em;
 }
 
 button {
