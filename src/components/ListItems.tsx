@@ -6,19 +6,6 @@ import {
 } from '@mui/material';
 import { Link } from 'react-router-dom';
 
-interface Property {
-  id: string;
-  address: string;  // Now address is a single string
-  price: number;
-  bedrooms: number;
-  bathrooms: number;
-  squareFootage: number;
-}
-
-interface PropertyTableProps {
-  properties: Property[];
-}
-
 type SortColumn = 'address' | 'price' | 'bedrooms' | 'bathrooms' | 'squareFootage';
 
 const PropertyTable: React.FC<any> = ({ properties }) => {

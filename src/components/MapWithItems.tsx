@@ -47,14 +47,14 @@ const MapWithItems: React.FC = () => {
               const geoPosition = await getGeoLocation(item.address);
               return {
                 ...item,
-                position: [geoPosition.latitude, geoPosition.longitude],
+                position: [geoPosition?.latitude || position?.[0], geoPosition?.longitude || position?.[1]],
               };
             } catch (geoError) {
               console.error(`Failed to fetch geolocation for address: ${item.address}`, geoError);
-              return { ...item, position: null };
+              return { ...item, position: position };
             }
           } else {
-            return { ...item, position: null };
+            return { ...item, position: position };
           }
         })
       );
@@ -78,7 +78,6 @@ const MapWithItems: React.FC = () => {
   if (!properties) {
     return <div>Loading...</div>;
   }
-  console.dir(itemsForSale);
 
   return (
     <div className='list-items'>
@@ -86,13 +85,13 @@ const MapWithItems: React.FC = () => {
         {showMap ? 'Show List' : 'Show Map'}
       </button>
       {showMap ? (
-        <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
+        <MapContainer center={position ?? [0, 0]} zoom={13} style={{ height: '50vh', width: '100%' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           />
           {itemsForSale.map(item => (
-            item?.position && <Marker key={item.id} position={item?.position}>
+            item?.position && <Marker key={item.id} position={item?.position ?? [0, 0]}>
               <Popup>
                 <strong>Price: {item?.price}</strong><br />
                 <strong>Square Footage: {item.squareFootage}</strong><br />
