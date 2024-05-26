@@ -5,6 +5,12 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
+import { icon } from "leaflet"
+
+const ICON = icon({
+  iconUrl: "/marker.png",
+  iconSize: [32, 32],
+})
 
 const client = generateClient<Schema>();
 
@@ -70,7 +76,7 @@ const MapWithItems: React.FC = () => {
           />
           {
           itemsForSale.map(item => (
-            item?.position && <Marker key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude] }>
+            item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude] }>
                <p>{item?.position}</p>
               <Popup>
                 <strong>Price: {item?.price}</strong><br />
