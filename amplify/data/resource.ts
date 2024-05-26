@@ -50,7 +50,12 @@ const schema = a.schema({
       neighborhood: a.string(),
       amenities: a.string().array(),
     })
-    .authorization((allow) => [allow.owner()])
+    .authorization(
+      (allow) => 
+        [
+          allow.authenticated().to(['read']),
+          allow.owner()
+      ])
 
 });
 
