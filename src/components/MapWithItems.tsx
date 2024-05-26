@@ -4,7 +4,6 @@ import ListItems from './ListItems';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
-import { getGeoLocation } from '../utils/getGeoLocation';
 import 'leaflet/dist/leaflet.css';
 
 const client = generateClient<Schema>();
