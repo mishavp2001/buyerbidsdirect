@@ -2,7 +2,7 @@
 import React from 'react';
 import { Container, Paper } from '@mui/material';
 import PropertyCreateForm from '../../ui-components/PropertyCreateForm';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
  
 const SellProperty: React.FC = () => {
   const navigate = useNavigate();

@@ -54,9 +54,9 @@ const schema = a.schema({
       (allow) => 
         [
           allow.authenticated().to(['read']),
+          allow.guest().to(['read']),
           allow.owner()
       ])
-
 });
 
 export type Schema = ClientSchema<typeof schema>;
