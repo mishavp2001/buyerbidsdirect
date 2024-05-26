@@ -10,12 +10,14 @@ import {
   Icon,
   ScrollView,
   Text,
+  TextAreaField,
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createProperty } from "./graphql/mutations";
+import { getGeoLocation } from '../src/utils/getGeoLocation';
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -185,6 +187,7 @@ export default function PropertyCreateForm(props) {
   } = props;
   const initialValues = {
     address: "",
+    position: "",
     price: "",
     bedrooms: "",
     bathrooms: "",
@@ -205,6 +208,7 @@ export default function PropertyCreateForm(props) {
     amenities: [],
   };
   const [address, setAddress] = React.useState(initialValues.address);
+  const [position, setPosition] = React.useState(initialValues.position);
   const [price, setPrice] = React.useState(initialValues.price);
   const [bedrooms, setBedrooms] = React.useState(initialValues.bedrooms);
   const [bathrooms, setBathrooms] = React.useState(initialValues.bathrooms);
@@ -242,6 +246,7 @@ export default function PropertyCreateForm(props) {
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     setAddress(initialValues.address);
+    setPosition(initialValues.position);
     setPrice(initialValues.price);
     setBedrooms(initialValues.bedrooms);
     setBathrooms(initialValues.bathrooms);
@@ -270,6 +275,7 @@ export default function PropertyCreateForm(props) {
   const amenitiesRef = React.createRef();
   const validations = {
     address: [],
+    position: [{ type: "JSON" }],
     price: [],
     bedrooms: [],
     bathrooms: [],
@@ -316,6 +322,7 @@ export default function PropertyCreateForm(props) {
         event.preventDefault();
         let modelFields = {
           address,
+          position,
           price,
           bedrooms,
           bathrooms,
@@ -397,6 +404,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address: value,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -424,11 +432,30 @@ export default function PropertyCreateForm(props) {
           }
           setAddress(value);
         }}
-        onBlur={() => runValidationTasks("address", address)}
+        onBlur={
+          async () => {
+            runValidationTasks("address", address);
+            try {
+              const geoPosition = await getGeoLocation(address);
+              setPosition(JSON.stringify(geoPosition));
+            } catch (err) {
+              setPosition(null);
+            }
+          }
+        }
         errorMessage={errors.address?.errorMessage}
         hasError={errors.address?.hasError}
         {...getOverrideProps(overrides, "address")}
       ></TextField>
+      <TextAreaField
+        label="Position"
+        isRequired={false}
+        isReadOnly={true}
+        value={position}
+        errorMessage={errors.position?.errorMessage}
+        hasError={errors.position?.hasError}
+        {...getOverrideProps(overrides, "position")}
+      ></TextAreaField>
       <TextField
         label="Price"
         isRequired={false}
@@ -443,6 +470,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price: value,
               bedrooms,
               bathrooms,
@@ -489,6 +517,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms: value,
               bathrooms,
@@ -535,6 +564,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms: value,
@@ -581,6 +611,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -627,6 +658,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -673,6 +705,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -715,6 +748,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -757,6 +791,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -799,6 +834,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -841,6 +877,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -879,6 +916,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -946,6 +984,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -992,6 +1031,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1038,6 +1078,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1080,6 +1121,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1126,6 +1168,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1168,6 +1211,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1206,6 +1250,7 @@ export default function PropertyCreateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,

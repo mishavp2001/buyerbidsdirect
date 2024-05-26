@@ -20,6 +20,7 @@ export const getProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -40,6 +41,24 @@ export const getTodo = /* GraphQL */ `
       id
       owner
       updatedAt
+      __typename
+    }
+  }
+`;
+export const getUserProfile = /* GraphQL */ `
+  query GetUserProfile($id: ID!) {
+    getUserProfile(id: $id) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
       __typename
     }
   }
@@ -67,6 +86,7 @@ export const listProperties = /* GraphQL */ `
         neighborhood
         owner
         photos
+        position
         price
         propertyTax
         propertyType
@@ -95,6 +115,32 @@ export const listTodos = /* GraphQL */ `
         id
         owner
         updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listUserProfiles = /* GraphQL */ `
+  query ListUserProfiles(
+    $filter: ModelUserProfileFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listUserProfiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        chargePerHour
+        createdAt
+        email
+        id
+        loanApprovalLetter
+        owner
+        password
+        phone
+        sellerFinancingOptions
+        updatedAt
+        userType
         __typename
       }
       nextToken

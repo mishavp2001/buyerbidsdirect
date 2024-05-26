@@ -23,6 +23,7 @@ export const onCreateProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -50,6 +51,27 @@ export const onCreateTodo = /* GraphQL */ `
     }
   }
 `;
+export const onCreateUserProfile = /* GraphQL */ `
+  subscription OnCreateUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onCreateUserProfile(filter: $filter, owner: $owner) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
+      __typename
+    }
+  }
+`;
 export const onDeleteProperty = /* GraphQL */ `
   subscription OnDeleteProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -71,6 +93,7 @@ export const onDeleteProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -98,6 +121,27 @@ export const onDeleteTodo = /* GraphQL */ `
     }
   }
 `;
+export const onDeleteUserProfile = /* GraphQL */ `
+  subscription OnDeleteUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onDeleteUserProfile(filter: $filter, owner: $owner) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
+      __typename
+    }
+  }
+`;
 export const onUpdateProperty = /* GraphQL */ `
   subscription OnUpdateProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -119,6 +163,7 @@ export const onUpdateProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -142,6 +187,27 @@ export const onUpdateTodo = /* GraphQL */ `
       id
       owner
       updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdateUserProfile = /* GraphQL */ `
+  subscription OnUpdateUserProfile(
+    $filter: ModelSubscriptionUserProfileFilterInput
+    $owner: String
+  ) {
+    onUpdateUserProfile(filter: $filter, owner: $owner) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
       __typename
     }
   }

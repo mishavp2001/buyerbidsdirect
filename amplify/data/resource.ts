@@ -9,37 +9,49 @@ specifies that any user authenticated via an API key can "create", "read",
 
 
 const schema = a.schema({
- 
+
   Todo: a
     .model({
       content: a.string(),
     })
     .authorization(allow => [allow.owner()]),
-  
+
+  UserProfile: a
+    .model({
+      email: a.string(),
+      phone: a.string(),
+      password: a.string(),
+      loanApprovalLetter: a.string(),  // Assuming a.file() represents file upload
+      sellerFinancingOptions: a.string(),
+      chargePerHour: a.float(),
+      userType: a.enum(['buyer', 'seller', 'attorney', 'agent', 'notary']),  // Using enum for user type
+    })
+    .authorization(allow => [allow.owner()]),
   Property: a
-  .model({
-    address:a.string(), // Using the Address model
-    price: a.float(),
-    bedrooms: a.integer(),
-    bathrooms: a.float(),
-    squareFootage: a.integer(),
-    lotSize: a.float(),
-    yearBuilt: a.integer(),
-    propertyType: a.string(),
-    listingStatus: a.string(),
-    listingOwner: a.string(),
-    description: a.string(),
-    photos: a.string().array(),
-    virtualTour: a.string(),
-    propertyTax: a.float(),
-    hoaFees: a.float(),
-    mlsNumber: a.string(),
-    zestimate: a.float(),
-    neighborhood: a.string(),
-    amenities: a.string().array(),
-  })
-  .authorization((allow) => [allow.owner()])
-  
+    .model({
+      address: a.string(), // Using the Address model
+      position: a.json(),
+      price: a.float(),
+      bedrooms: a.integer(),
+      bathrooms: a.float(),
+      squareFootage: a.integer(),
+      lotSize: a.float(),
+      yearBuilt: a.integer(),
+      propertyType: a.string(),
+      listingStatus: a.string(),
+      listingOwner: a.string(),
+      description: a.string(),
+      photos: a.string().array(),
+      virtualTour: a.string(),
+      propertyTax: a.float(),
+      hoaFees: a.float(),
+      mlsNumber: a.string(),
+      zestimate: a.float(),
+      neighborhood: a.string(),
+      amenities: a.string().array(),
+    })
+    .authorization((allow) => [allow.owner()])
+
 });
 
 export type Schema = ClientSchema<typeof schema>;
@@ -48,7 +60,7 @@ export const data = defineData({
   schema,
   authorizationModes: {
     defaultAuthorizationMode: 'userPool',
-        // API Key is used for a.allow.public() rules
+    // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
       expiresInDays: 30,
     },
@@ -60,7 +72,7 @@ Go to your frontend source code. From your client-side code, generate a
 Data client to make CRUDL requests to your table. (THIS SNIPPET WILL ONLY
 WORK IN THE FRONTEND CODE FILE.)
 
-Using JavaScript or Next.js React Server Components, Middleware, Server 
+Using JavaScript or Next.js React Server Components, Middleware, Server
 Actions or Pages Router? Review how to generate Data clients for those use
 cases: https://docs.amplify.aws/gen2/build-a-backend/data/connect-to-API/
 =========================================================================*/

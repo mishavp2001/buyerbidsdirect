@@ -39,29 +39,8 @@ const MapWithItems: React.FC = () => {
     } else {
       setError('Geolocation is not supported by this browser.');
     }
-    const updateItems = async () => {
-      const updatedItems = await Promise.all(
-        properties.map(async (item) => {
-          if (item?.address) {
-            try {
-              const geoPosition = await getGeoLocation(item.address);
-              return {
-                ...item,
-                position: [geoPosition?.latitude || position?.[0], geoPosition?.longitude || position?.[1]],
-              };
-            } catch (geoError) {
-              console.error(`Failed to fetch geolocation for address: ${item.address}`, geoError);
-              return { ...item, position: position };
-            }
-          } else {
-            return { ...item, position: position };
-          }
-        })
-      );
-      setItemsForSale(updatedItems);
-    };
+    setItemsForSale(properties);
 
-    updateItems();
   }, [properties]);
 
 
@@ -84,14 +63,16 @@ const MapWithItems: React.FC = () => {
       <button onClick={toggleView}>
         {showMap ? 'Show List' : 'Show Map'}
       </button>
-      {showMap ? (
-        <MapContainer center={position ?? [0, 0]} zoom={13} style={{ height: '50vh', width: '100%' }}>
+      {showMap && position ? (
+        <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
           <TileLayer
             url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
             attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           />
-          {itemsForSale.map(item => (
-            item?.position && <Marker key={item.id} position={item?.position ?? [0, 0]}>
+          {
+          itemsForSale.map(item => (
+            item?.position && <Marker key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude] }>
+               <p>{item?.position}</p>
               <Popup>
                 <strong>Price: {item?.price}</strong><br />
                 <strong>Square Footage: {item.squareFootage}</strong><br />

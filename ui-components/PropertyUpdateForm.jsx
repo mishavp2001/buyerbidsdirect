@@ -10,6 +10,7 @@ import {
   Icon,
   ScrollView,
   Text,
+  TextAreaField,
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
@@ -187,6 +188,7 @@ export default function PropertyUpdateForm(props) {
   } = props;
   const initialValues = {
     address: "",
+    position: "",
     price: "",
     bedrooms: "",
     bathrooms: "",
@@ -207,6 +209,7 @@ export default function PropertyUpdateForm(props) {
     amenities: [],
   };
   const [address, setAddress] = React.useState(initialValues.address);
+  const [position, setPosition] = React.useState(initialValues.position);
   const [price, setPrice] = React.useState(initialValues.price);
   const [bedrooms, setBedrooms] = React.useState(initialValues.bedrooms);
   const [bathrooms, setBathrooms] = React.useState(initialValues.bathrooms);
@@ -247,6 +250,11 @@ export default function PropertyUpdateForm(props) {
       ? { ...initialValues, ...propertyRecord }
       : initialValues;
     setAddress(cleanValues.address);
+    setPosition(
+      typeof cleanValues.position === "string" || cleanValues.position === null
+        ? cleanValues.position
+        : JSON.stringify(cleanValues.position)
+    );
     setPrice(cleanValues.price);
     setBedrooms(cleanValues.bedrooms);
     setBathrooms(cleanValues.bathrooms);
@@ -291,6 +299,7 @@ export default function PropertyUpdateForm(props) {
   const amenitiesRef = React.createRef();
   const validations = {
     address: [],
+    position: [{ type: "JSON" }],
     price: [],
     bedrooms: [],
     bathrooms: [],
@@ -330,13 +339,14 @@ export default function PropertyUpdateForm(props) {
   return (
     <Grid
       as="form"
-      rowGap="5px"
+      rowGap="15px"
       columnGap="15px"
-      padding="900px 20px 20px"
+      padding="20px"
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
           address: address ?? null,
+          position: position ?? null,
           price: price ?? null,
           bedrooms: bedrooms ?? null,
           bathrooms: bathrooms ?? null,
@@ -416,6 +426,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address: value,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -448,6 +459,49 @@ export default function PropertyUpdateForm(props) {
         hasError={errors.address?.hasError}
         {...getOverrideProps(overrides, "address")}
       ></TextField>
+      <TextAreaField
+        label="Position"
+        isRequired={false}
+        isReadOnly={false}
+        value={position}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              address,
+              position: value,
+              price,
+              bedrooms,
+              bathrooms,
+              squareFootage,
+              lotSize,
+              yearBuilt,
+              propertyType,
+              listingStatus,
+              listingOwner,
+              description,
+              photos,
+              virtualTour,
+              propertyTax,
+              hoaFees,
+              mlsNumber,
+              zestimate,
+              neighborhood,
+              amenities,
+            };
+            const result = onChange(modelFields);
+            value = result?.position ?? value;
+          }
+          if (errors.position?.hasError) {
+            runValidationTasks("position", value);
+          }
+          setPosition(value);
+        }}
+        onBlur={() => runValidationTasks("position", position)}
+        errorMessage={errors.position?.errorMessage}
+        hasError={errors.position?.hasError}
+        {...getOverrideProps(overrides, "position")}
+      ></TextAreaField>
       <TextField
         label="Price"
         isRequired={false}
@@ -462,6 +516,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price: value,
               bedrooms,
               bathrooms,
@@ -508,6 +563,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms: value,
               bathrooms,
@@ -554,6 +610,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms: value,
@@ -600,6 +657,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -646,6 +704,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -692,6 +751,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -734,6 +794,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -776,6 +837,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -818,6 +880,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -860,6 +923,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -898,6 +962,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -965,6 +1030,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1011,6 +1077,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1057,6 +1124,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1099,6 +1167,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1145,6 +1214,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1187,6 +1257,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,
@@ -1225,6 +1296,7 @@ export default function PropertyUpdateForm(props) {
           if (onChange) {
             const modelFields = {
               address,
+              position,
               price,
               bedrooms,
               bathrooms,

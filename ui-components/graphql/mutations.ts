@@ -23,6 +23,7 @@ export const createProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -50,6 +51,27 @@ export const createTodo = /* GraphQL */ `
     }
   }
 `;
+export const createUserProfile = /* GraphQL */ `
+  mutation CreateUserProfile(
+    $condition: ModelUserProfileConditionInput
+    $input: CreateUserProfileInput!
+  ) {
+    createUserProfile(condition: $condition, input: $input) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
+      __typename
+    }
+  }
+`;
 export const deleteProperty = /* GraphQL */ `
   mutation DeleteProperty(
     $condition: ModelPropertyConditionInput
@@ -71,6 +93,7 @@ export const deleteProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -98,6 +121,27 @@ export const deleteTodo = /* GraphQL */ `
     }
   }
 `;
+export const deleteUserProfile = /* GraphQL */ `
+  mutation DeleteUserProfile(
+    $condition: ModelUserProfileConditionInput
+    $input: DeleteUserProfileInput!
+  ) {
+    deleteUserProfile(condition: $condition, input: $input) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
+      __typename
+    }
+  }
+`;
 export const updateProperty = /* GraphQL */ `
   mutation UpdateProperty(
     $condition: ModelPropertyConditionInput
@@ -119,6 +163,7 @@ export const updateProperty = /* GraphQL */ `
       neighborhood
       owner
       photos
+      position
       price
       propertyTax
       propertyType
@@ -142,6 +187,27 @@ export const updateTodo = /* GraphQL */ `
       id
       owner
       updatedAt
+      __typename
+    }
+  }
+`;
+export const updateUserProfile = /* GraphQL */ `
+  mutation UpdateUserProfile(
+    $condition: ModelUserProfileConditionInput
+    $input: UpdateUserProfileInput!
+  ) {
+    updateUserProfile(condition: $condition, input: $input) {
+      chargePerHour
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      owner
+      password
+      phone
+      sellerFinancingOptions
+      updatedAt
+      userType
       __typename
     }
   }

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { GridProps, TextFieldProps } from "@aws-amplify/ui-react";
+import { GridProps, TextAreaFieldProps, TextFieldProps } from "@aws-amplify/ui-react";
 export declare type EscapeHatchProps = {
     [elementHierarchy: string]: Record<string, unknown>;
 } | null;
@@ -17,6 +17,7 @@ export declare type ValidationResponse = {
 export declare type ValidationFunction<T> = (value: T, validationResponse: ValidationResponse) => ValidationResponse | Promise<ValidationResponse>;
 export declare type PropertyCreateFormInputValues = {
     address?: string;
+    position?: string;
     price?: number;
     bedrooms?: number;
     bathrooms?: number;
@@ -38,6 +39,7 @@ export declare type PropertyCreateFormInputValues = {
 };
 export declare type PropertyCreateFormValidationValues = {
     address?: ValidationFunction<string>;
+    position?: ValidationFunction<string>;
     price?: ValidationFunction<number>;
     bedrooms?: ValidationFunction<number>;
     bathrooms?: ValidationFunction<number>;
@@ -61,6 +63,7 @@ export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes
 export declare type PropertyCreateFormOverridesProps = {
     PropertyCreateFormGrid?: PrimitiveOverrideProps<GridProps>;
     address?: PrimitiveOverrideProps<TextFieldProps>;
+    position?: PrimitiveOverrideProps<TextAreaFieldProps>;
     price?: PrimitiveOverrideProps<TextFieldProps>;
     bedrooms?: PrimitiveOverrideProps<TextFieldProps>;
     bathrooms?: PrimitiveOverrideProps<TextFieldProps>;
