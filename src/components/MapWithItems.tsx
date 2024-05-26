@@ -9,7 +9,6 @@ import { icon } from "leaflet"
 
 const ICON = icon({
   iconUrl: "/marker.png",
-  iconSize: [32, 32],
 })
 
 const client = generateClient<Schema>();
