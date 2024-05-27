@@ -53,7 +53,7 @@ const schema = a.schema({
     .authorization(
       (allow) => 
         [
-          allow.authenticated().to(['read']),
+          allow.authenticated('identityPool').to(['read']),
           allow.guest().to(['read']),
           allow.owner()
       ])

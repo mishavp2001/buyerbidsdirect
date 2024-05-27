@@ -22,7 +22,9 @@ const MapWithItems: React.FC = () => {
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
 
   useEffect(() => {
-    const subscription = client.models.Property.observeQuery().subscribe({
+    const subscription = client.models.Property.observeQuery(
+      {authMode: "identityPool"}
+    ).subscribe({
       next: (data) => setProperties(data.items),
       error: (err) => setError(err.message),
     });
