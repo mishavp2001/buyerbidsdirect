@@ -42,21 +42,15 @@ const MakeOffer: React.FC = () => {
       next: (data) => setOffers(data.items),
       error: (err) => setError(err.message),
     });
-  
-    // Cleanup the subscription on unmount
-    return () => subscription.unsubscribe();
-  }, [offerId]);
-  
-
-
-  useEffect(() => {
     if (offerId === 'null' || typeof (offerId) === 'string') {
       setOpen(true);
     } else {
       setOpen(false);
     }
-
+    // Cleanup the subscription on unmount
+    return () => subscription.unsubscribe();
   }, [offerId]);
+  
 
 
 
@@ -89,7 +83,7 @@ const MakeOffer: React.FC = () => {
         </Paper>
       </Paper>
       <Modal open={open} onClose={() => { navigate("/offers", { replace: true }); }}>
-        <ModalDialog >
+        <ModalDialog minWidth='90%'>
           <DialogTitle> {offerId ? `Offer for:" ${address || ""} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}

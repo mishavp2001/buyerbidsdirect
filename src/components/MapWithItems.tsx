@@ -84,8 +84,9 @@ const MapWithItems: React.FC = () => {
                 <p>{item?.position}</p>
                 <Popup className="prop-popup">
                   <div style={{
-                    height: "350px",
-                    marginTop: "30px"
+                    width: "90%",
+                    marginTop: "30px",
+                    overflow: 'scroll'
                   }}>
                     <p>{item?.description}</p>
                     <strong>Price: </strong>
@@ -94,13 +95,12 @@ const MapWithItems: React.FC = () => {
                     <strong>Square Footage: </strong>
                     <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} /> 
     
-
                     {item.photos.map((img: string) => {
                       return <StorageImage alt='test' width='100%' path={img} />;
                     })}
                     <p>
                       {user?.username === item.owner ? (
-                        <Link to={`/sell/${item.id}`}>
+                        <Link to={`/sales/${item.id}`}>
                           Edit
                         </Link>
                       ) : (

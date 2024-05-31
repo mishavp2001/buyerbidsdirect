@@ -21,7 +21,7 @@ function App() {
         <Route path='/offers/:offerId/:address/:propertyId/:ownerId' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
         <Route path='/offers/:offerId/:address' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
         <Route path='/offers/:offerId' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
-        <Route path='/sell/:propertyId' element = {<RequireAuth><SellProperty/></RequireAuth>} />
+        <Route path='/sales/:propertyId' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/offers' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
         <Route path='/sales' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />

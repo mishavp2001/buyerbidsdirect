@@ -39,7 +39,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
       renderCell: (params: GridRenderCellParams) => {
         if (user?.username === params.row.owner) {
           return (
-            <Link component={RouterLink} to={`/sell/${params.row.id}`}>
+            <Link component={RouterLink} to={`/sales/${params.row.id}`}>
               Edit
             </Link>
           );
