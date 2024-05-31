@@ -1,7 +1,6 @@
 // src/components/Makeproperty.tsx
 import React , {useEffect, useState} from 'react';
-import { Container,Typography, Box, Paper, Link } from '@mui/material';
-
+import { Container,Typography, Paper, Link } from '@mui/material';
 import PropertyCreateForm from '../../ui-components/PropertyCreateForm';
 import PropertyUpdateForm from '../../ui-components/PropertyUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
