@@ -4,6 +4,10 @@ import OfferUpdateForm from "../../ui-components/OfferUpdateForm"
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Box, Paper, Link } from '@mui/material';
+import Modal from '@mui/joy/Modal';
+import ModalDialog from '@mui/joy/ModalDialog';
+import DialogTitle from '@mui/joy/DialogTitle';
+import DialogContent from '@mui/joy/DialogContent';
 import { Link as RouterLink } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
@@ -16,77 +20,100 @@ const client = generateClient<Schema>();
 
 const MakeOffer: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuthenticator((context) => [context.user]);
+
   const [error, setError] = useState<string | null>(null);
   const [offers, setOffers] = useState<Array<any>>([]); // Adjust the type according to your schema
+  const [open, setOpen] = React.useState<boolean>(false);
 
+  const { offerId, address, propertyId, ownerId } = useParams();
   useEffect(() => {
-    const subscription = client.models.Offer.observeQuery(
-      { authMode: "userPool" }
-    ).subscribe({
+    const filter = {
+      and: [
+        { buyer: { contains: user.userId } },
+        ...(typeof offerId === 'string' ? [{ id: { contains: offerId } }] : [])
+      ]
+    };
+  
+    const subscription = client.models.Offer.observeQuery({
+      filter,
+      authMode: "userPool"
+    }).subscribe({
       next: (data) => setOffers(data.items),
       error: (err) => setError(err.message),
     });
-
+  
     // Cleanup the subscription on unmount
     return () => subscription.unsubscribe();
-  }, []);
+  }, [offerId]);
+  
 
 
-  const { offerId, address, propertyId, ownerId } = useParams();
-  const { user } = useAuthenticator((context) => [context.user]);
+  useEffect(() => {
+    if (offerId === 'null' || typeof (offerId) === 'string') {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+
+  }, [offerId]);
+
+
 
   const columns: GridColDef[] = [
-    { field: 'propertyAddress', headerName: 'Address', width: 200 },
-    { field: 'phone', headerName: 'Phone', width: 200 },
-    { field: 'email', headerName: 'Email', width: 200 },
-    { field: 'offerAmmount', headerName: 'Price', width: 150, type: 'number' },
-    { field: 'conditions', headerName: 'Conditions', width: 120, type: 'string' },
-    { field: 'offerType', headerName: 'Type', width: 120, type: 'string' },
-    { field: 'appointment', headerName: 'Apointment', width: 150, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
+    { field: 'propertyAddress', headerName: 'Address', width: 300 },
+    { field: 'phone', headerName: 'Phone', width: 150 },
+    { field: 'email', headerName: 'Email', width: 150 },
+    { field: 'offerAmmount', headerName: 'Price', width: 110, type: 'number' },
+    { field: 'conditions', headerName: 'Conditions', width: 110, type: 'string' },
+    { field: 'offerType', headerName: 'Type', width: 100, type: 'string' },
+    { field: 'appointment', headerName: 'Apointment', width: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
-      renderCell: (params: GridRenderCellParams) => <Link component={RouterLink} to={`/offers/${params.row.id}`}>
+      width: 60,
+      renderCell: (params: GridRenderCellParams) => <Link component={RouterLink} to={`/offers/${params.row.id}/${params.row.propertyAddress}`}>
         Edit
       </Link>,
     },
   ];
   return (
-    <Container component="main" maxWidth="sm">
-
+    <Container component="main">
       <Paper elevation={3} sx={{ padding: 3 }}>
-        {error && <p>{error}</p>}
-        <p>{user.userId} - {ownerId}</p>
-        <Typography component="h1" variant="h6">Offer for: <span> {address} <br />from {user.signInDetails?.loginId}</span></Typography>
-        {offerId === 'null' ?
-          <OfferCreateForm
-            overrides={
-              {
-                buyer: { value: user?.userId },
-                propertyId: { value: propertyId },
-                seller: { value: ownerId }
-              }
-            }
-            onSuccess={() => { navigate("/offers", { replace: true }); }}
-          />
-          :
-          <OfferUpdateForm id={offerId} />
-        }
-      </Paper>
-
-      <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Submited Offers:</Typography>
-
+        <Typography component="h1" variant="h5">Offers:</Typography>
         <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
-          <Box sx={{ height: '100%', width: '100%' }}>
-            <DataGrid
-              rows={offers}
-              columns={columns}
-            />
-          </Box>
+          <DataGrid
+            rows={offers}
+            columns={columns}
+          />
         </Paper>
       </Paper>
+      <Modal open={open} onClose={() => { navigate("/offers", { replace: true }); }}>
+        <ModalDialog >
+          <DialogTitle> {offerId ? `Offer for:" ${address || ""} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
+          <DialogContent>
+            {error && <p>{error}</p>}
+            <p>{user.userId} - {ownerId}</p>
+
+            {offerId === 'null' ?
+              <OfferCreateForm
+                overrides={
+                  {
+                    buyer: { value: user?.userId },
+                    propertyId: { value: propertyId },
+                    seller: { value: ownerId }
+                  }
+                }
+                onSuccess={() => { navigate("/offers", { replace: true }); }}
+              />
+              :
+              <OfferUpdateForm id={offerId} onSuccess={() => { navigate("/offers", { replace: true }); }} />
+            }
+          </DialogContent>
+        </ModalDialog>
+      </Modal>
+
+
     </Container>
   );
 };

@@ -92,7 +92,7 @@ const MapWithItems: React.FC = () => {
                         Edit
                       </Link>
                     ) : (
-                      <Link to={`/offers/null/${item?.address}/${item.id}`}>
+                      <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
                         Make Offer
                       </Link>
                     )}

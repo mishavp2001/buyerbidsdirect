@@ -1,11 +1,11 @@
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 import '@aws-amplify/ui-react/styles.css';
 
-export const DefaultStorageImageExample = () => {
-  return <StorageImage alt="dog" path="picture-submissions/IMG_5805.JPG" />;
+export const ImageShow = (alt:string, path:string) => {
+  return <StorageImage alt={alt} path={path} />;
 };
 
-const DefaultStorageManagerExample = () => {
+const StorageLoad = () => {
   return (
     <StorageManager
       acceptedFileTypes={['image/*']}
@@ -16,4 +16,4 @@ const DefaultStorageManagerExample = () => {
   );
 };
 
-export default DefaultStorageManagerExample;
+export default StorageLoad;

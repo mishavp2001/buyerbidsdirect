@@ -18,6 +18,7 @@ import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createProperty } from "./graphql/mutations";
 import { getGeoLocation } from '../src/utils/getGeoLocation';
+
 const client = generateClient();
 function ArrayField({
   items = [],
