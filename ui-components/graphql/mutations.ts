@@ -2,6 +2,30 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const createOffer = /* GraphQL */ `
+  mutation CreateOffer(
+    $condition: ModelOfferConditionInput
+    $input: CreateOfferInput!
+  ) {
+    createOffer(condition: $condition, input: $input) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const createProperty = /* GraphQL */ `
   mutation CreateProperty(
     $condition: ModelPropertyConditionInput
@@ -22,6 +46,7 @@ export const createProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
@@ -72,6 +97,30 @@ export const createUserProfile = /* GraphQL */ `
     }
   }
 `;
+export const deleteOffer = /* GraphQL */ `
+  mutation DeleteOffer(
+    $condition: ModelOfferConditionInput
+    $input: DeleteOfferInput!
+  ) {
+    deleteOffer(condition: $condition, input: $input) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const deleteProperty = /* GraphQL */ `
   mutation DeleteProperty(
     $condition: ModelPropertyConditionInput
@@ -92,6 +141,7 @@ export const deleteProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
@@ -142,6 +192,30 @@ export const deleteUserProfile = /* GraphQL */ `
     }
   }
 `;
+export const updateOffer = /* GraphQL */ `
+  mutation UpdateOffer(
+    $condition: ModelOfferConditionInput
+    $input: UpdateOfferInput!
+  ) {
+    updateOffer(condition: $condition, input: $input) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const updateProperty = /* GraphQL */ `
   mutation UpdateProperty(
     $condition: ModelPropertyConditionInput
@@ -162,6 +236,7 @@ export const updateProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price

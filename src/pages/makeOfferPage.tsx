@@ -1,111 +1,92 @@
-import React, { useState } from 'react';
-import { Box, Button, TextField, Typography, Container, Paper } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import OfferCreateForm from "../../ui-components/OfferCreateForm";
+import OfferUpdateForm from "../../ui-components/OfferUpdateForm"
+import { Container, Typography } from '@mui/material';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { Box, Paper, Link } from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+import { useAuthenticator } from '@aws-amplify/ui-react';
+import React, { useState, useEffect } from 'react';
+import type { Schema } from "../../amplify/data/resource";
+import { generateClient } from "aws-amplify/data";
 
-interface Offer {
-  price: number;
-  conditions: string;
-}
+
+const client = generateClient<Schema>();
+
 
 const MakeOffer: React.FC = () => {
-  const [offer, setOffer] = useState<Offer>({ price: 0, conditions: '' });
-  const [errors, setErrors] = useState<{ price?: string, conditions?: string }>({});
-  const { offerId, address } = useParams();
+  const navigate = useNavigate();
+  const [error, setError] = useState<string | null>(null);
+  const [offers, setOffers] = useState<Array<any>>([]); // Adjust the type according to your schema
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setOffer(prev => ({ ...prev, [name]: value }));
-  };
+  useEffect(() => {
+    const subscription = client.models.Offer.observeQuery(
+      { authMode: "userPool" }
+    ).subscribe({
+      next: (data) => setOffers(data.items),
+      error: (err) => setError(err.message),
+    });
 
-  const validate = (): boolean => {
-    const newErrors: { price?: string, conditions?: string } = {};
-    if (offer.price <= 0) newErrors.price = 'Price must be greater than 0';
-    if (!offer.conditions) newErrors.conditions = 'Conditions are required';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
+    // Cleanup the subscription on unmount
+    return () => subscription.unsubscribe();
+  }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (validate()) {
-      console.log('Offer submitted:', offer);
-      // Submit the offer data to the server or handle it accordingly
-    }
-  };
 
+  const { offerId, address, propertyId, ownerId } = useParams();
+  const { user } = useAuthenticator((context) => [context.user]);
+
+  const columns: GridColDef[] = [
+    { field: 'propertyAddress', headerName: 'Address', width: 200 },
+    { field: 'phone', headerName: 'Phone', width: 200 },
+    { field: 'email', headerName: 'Email', width: 200 },
+    { field: 'offerAmmount', headerName: 'Price', width: 150, type: 'number' },
+    { field: 'conditions', headerName: 'Conditions', width: 120, type: 'string' },
+    { field: 'offerType', headerName: 'Type', width: 120, type: 'string' },
+    { field: 'appointment', headerName: 'Apointment', width: 150, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => <Link component={RouterLink} to={`/offers/${params.row.id}`}>
+        Edit
+      </Link>,
+    },
+  ];
   return (
     <Container component="main" maxWidth="sm">
-      {offerId ?  
+
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Make an Offer for property:  <h3>{address}</h3> </Typography>
-        <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-          <TextField
-            variant="outlined"
-            fullWidth
-            id="price"
-            label="Offer Price"
-            name="price"
-            type="number"
-            value={offer.price}
-            onChange={handleChange}
-            error={Boolean(errors.price)}
-            helperText={errors.price}
-            sx={{ mb: 2 }}
+        {error && <p>{error}</p>}
+        <p>{user.userId} - {ownerId}</p>
+        <Typography component="h1" variant="h6">Offer for: <span> {address} <br />from {user.signInDetails?.loginId}</span></Typography>
+        {offerId === 'null' ?
+          <OfferCreateForm
+            overrides={
+              {
+                buyer: { value: user?.userId },
+                propertyId: { value: propertyId },
+                seller: { value: ownerId }
+              }
+            }
+            onSuccess={() => { navigate("/offers", { replace: true }); }}
           />
-          <TextField
-            variant="outlined"
-            fullWidth
-            id="conditions"
-            label="Conditions"
-            name="conditions"
-            value={offer.conditions}
-            onChange={handleChange}
-            error={Boolean(errors.conditions)}
-            helperText={errors.conditions}
-            sx={{ mb: 2 }}
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-          >
-            Send Offer
-          </Button>
-        </Box>
+          :
+          <OfferUpdateForm id={offerId} />
+        }
       </Paper>
-       :
-       <Paper elevation={3} sx={{ padding: 3 }}>
-       <Typography component="h1" variant="h5">ALl your offers:</Typography>
-       <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
-         <TextField
-           variant="outlined"
-           fullWidth
-           id="price"
-           label="Offer Price"
-           name="price"
-           type="number"
-           value={offer.price}
-           onChange={handleChange}
-           error={Boolean(errors.price)}
-           helperText={errors.price}
-           sx={{ mb: 2 }}
-         />
-         <TextField
-           variant="outlined"
-           fullWidth
-           id="conditions"
-           label="Conditions"
-           name="conditions"
-           value={offer.conditions}
-           onChange={handleChange}
-           error={Boolean(errors.conditions)}
-           helperText={errors.conditions}
-           sx={{ mb: 2 }}
-         />
-       </Box>
-     </Paper>   
-      } 
+
+      <Paper elevation={3} sx={{ padding: 3 }}>
+        <Typography component="h1" variant="h5">Submited Offers:</Typography>
+
+        <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+          <Box sx={{ height: '100%', width: '100%' }}>
+            <DataGrid
+              rows={offers}
+              columns={columns}
+            />
+          </Box>
+        </Paper>
+      </Paper>
     </Container>
   );
 };

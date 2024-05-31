@@ -27,20 +27,40 @@ const schema = a.schema({
       userType: a.enum(['buyer', 'seller', 'attorney', 'agent', 'notary']),  // Using enum for user type
     })
     .authorization(allow => [allow.owner()]),
+   Offer: a
+    .model({
+      offerAmmount: a.integer(),
+      propertyAddress: a.string(),
+      propertyId: a.string(),
+      email: a.string(),
+      phone: a.string(),
+      loanApprovalLetter: a.string(), 
+      offerType: a.enum(['cash', 'financing', 'sellerfinancing', 'leaseToPurchise']), 
+      conditions: a.string().array(),
+      appointment: a.date(),
+      seller: a.string(),
+      buyer: a.string()
+    })
+    .authorization(allow => [
+      allow.ownerDefinedIn("seller").to(['read']),
+      allow.ownerDefinedIn("buyer").to(['create', 'read', 'delete', 'update']),
+    ]),
+    
   Property: a
     .model({
-      address: a.string(), // Using the Address model
-      position: a.json(),
-      price: a.float(),
-      bedrooms: a.integer(),
-      bathrooms: a.float(),
-      squareFootage: a.integer(),
-      lotSize: a.float(),
-      yearBuilt: a.integer(),
-      propertyType: a.string(),
-      listingStatus: a.string(),
-      listingOwner: a.string(),
-      description: a.string(),
+      address: a.string().required(), // Using the Address model
+      position: a.json().required(),
+      price: a.float().required(),
+      bedrooms: a.integer().required(),
+      bathrooms: a.float().required(),
+      squareFootage: a.integer().required(),
+      lotSize: a.float().required(),
+      yearBuilt: a.integer().required(),
+      propertyType: a.string().required(),
+      listingStatus: a.string().required(),
+      listingOwner: a.string().required(),
+      ownerContact: a.string().required(),
+      description: a.string().required(),
       photos: a.string().array(),
       virtualTour: a.string(),
       propertyTax: a.float(),

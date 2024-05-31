@@ -28,6 +28,7 @@ export declare type PropertyUpdateFormInputValues = {
     propertyType?: string;
     listingStatus?: string;
     listingOwner?: string;
+    ownerContact?: string;
     description?: string;
     photos?: string[];
     virtualTour?: string;
@@ -50,6 +51,7 @@ export declare type PropertyUpdateFormValidationValues = {
     propertyType?: ValidationFunction<string>;
     listingStatus?: ValidationFunction<string>;
     listingOwner?: ValidationFunction<string>;
+    ownerContact?: ValidationFunction<string>;
     description?: ValidationFunction<string>;
     photos?: ValidationFunction<string>;
     virtualTour?: ValidationFunction<string>;
@@ -74,6 +76,7 @@ export declare type PropertyUpdateFormOverridesProps = {
     propertyType?: PrimitiveOverrideProps<TextFieldProps>;
     listingStatus?: PrimitiveOverrideProps<TextFieldProps>;
     listingOwner?: PrimitiveOverrideProps<TextFieldProps>;
+    ownerContact?: PrimitiveOverrideProps<TextFieldProps>;
     description?: PrimitiveOverrideProps<TextFieldProps>;
     photos?: PrimitiveOverrideProps<TextFieldProps>;
     virtualTour?: PrimitiveOverrideProps<TextFieldProps>;

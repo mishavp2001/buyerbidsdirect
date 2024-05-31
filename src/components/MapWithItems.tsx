@@ -6,6 +6,7 @@ import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { icon } from "leaflet"
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 const ICON = icon({
   iconUrl: "/marker.png",
@@ -20,10 +21,11 @@ const MapWithItems: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState<boolean>(false); // State to toggle map view
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
+  const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
     const subscription = client.models.Property.observeQuery(
-      {authMode: "identityPool"}
+      { authMode: "identityPool" }
     ).subscribe({
       next: (data) => setProperties(data.items),
       error: (err) => setError(err.message),
@@ -76,22 +78,28 @@ const MapWithItems: React.FC = () => {
             attribution='&copy; <a href="https://www.carto.com/attributions">CARTO</a>'
           />
           {
-          itemsForSale.map(item => (
-            item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude] }>
-               <p>{item?.position}</p>
-              <Popup>
-                <strong>Price: {item?.price}</strong><br />
-                <strong>Square Footage: {item.squareFootage}</strong><br />
-                <p>{item?.description}</p>
-                <p>{item?.photos}</p>
-                <p>
-                  <Link to={`/offers/${item.id}/${item?.address}`}>
-                    Make Offer
-                  </Link>
-                </p>
-              </Popup>
-            </Marker>
-          ))}
+            itemsForSale.map(item => (
+              item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+                <p>{item?.position}</p>
+                <Popup>
+                  <strong>Price: {item?.price}</strong><br />
+                  <strong>Square Footage: {item.squareFootage}</strong><br />
+                  <p>{item?.description}</p>
+                  <p>{item?.photos}</p>
+                  <p>
+                    {user?.username === item.owner ? (
+                      <Link to={`/sell/${item.id}`}>
+                        Edit
+                      </Link>
+                    ) : (
+                      <Link to={`/offers/null/${item?.address}/${item.id}`}>
+                        Make Offer
+                      </Link>
+                    )}
+                  </p>
+                </Popup>
+              </Marker>
+            ))}
         </MapContainer>
       ) : (
         <ListItems properties={properties} />

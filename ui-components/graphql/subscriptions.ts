@@ -2,6 +2,31 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const onCreateOffer = /* GraphQL */ `
+  subscription OnCreateOffer(
+    $buyer: String
+    $filter: ModelSubscriptionOfferFilterInput
+    $seller: String
+  ) {
+    onCreateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onCreateProperty = /* GraphQL */ `
   subscription OnCreateProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -22,6 +47,7 @@ export const onCreateProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
@@ -72,6 +98,31 @@ export const onCreateUserProfile = /* GraphQL */ `
     }
   }
 `;
+export const onDeleteOffer = /* GraphQL */ `
+  subscription OnDeleteOffer(
+    $buyer: String
+    $filter: ModelSubscriptionOfferFilterInput
+    $seller: String
+  ) {
+    onDeleteOffer(buyer: $buyer, filter: $filter, seller: $seller) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onDeleteProperty = /* GraphQL */ `
   subscription OnDeleteProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -92,6 +143,7 @@ export const onDeleteProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
@@ -142,6 +194,31 @@ export const onDeleteUserProfile = /* GraphQL */ `
     }
   }
 `;
+export const onUpdateOffer = /* GraphQL */ `
+  subscription OnUpdateOffer(
+    $buyer: String
+    $filter: ModelSubscriptionOfferFilterInput
+    $seller: String
+  ) {
+    onUpdateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const onUpdateProperty = /* GraphQL */ `
   subscription OnUpdateProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -162,6 +239,7 @@ export const onUpdateProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
