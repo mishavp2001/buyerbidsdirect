@@ -3,7 +3,7 @@ import OfferCreateForm from "../../ui-components/OfferCreateForm";
 import OfferUpdateForm from "../../ui-components/OfferUpdateForm"
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Box, Paper, Link } from '@mui/material';
+import {Paper, Link } from '@mui/material';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import DialogTitle from '@mui/joy/DialogTitle';

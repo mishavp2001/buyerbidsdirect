@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { icon } from "leaflet"
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import { StorageImage } from '@aws-amplify/ui-react-storage';
+import { NumericFormat } from 'react-number-format';
 
 const ICON = icon({
   iconUrl: "/marker.png",
@@ -53,7 +55,6 @@ const MapWithItems: React.FC = () => {
 
 
 
-
   const toggleView = () => {
     setShowMap(!showMap);
   };
@@ -81,22 +82,34 @@ const MapWithItems: React.FC = () => {
             itemsForSale.map(item => (
               item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
                 <p>{item?.position}</p>
-                <Popup>
-                  <strong>Price: {item?.price}</strong><br />
-                  <strong>Square Footage: {item.squareFootage}</strong><br />
-                  <p>{item?.description}</p>
-                  <p>{item?.photos}</p>
-                  <p>
-                    {user?.username === item.owner ? (
-                      <Link to={`/sell/${item.id}`}>
-                        Edit
-                      </Link>
-                    ) : (
-                      <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
-                        Make Offer
-                      </Link>
-                    )}
-                  </p>
+                <Popup className="prop-popup">
+                  <div style={{
+                    height: "350px",
+                    marginTop: "30px"
+                  }}>
+                    <p>{item?.description}</p>
+                    <strong>Price: </strong>
+                      <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                    <br />
+                    <strong>Square Footage: </strong>
+                    <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} /> 
+    
+
+                    {item.photos.map((img: string) => {
+                      return <StorageImage alt='test' width='100%' path={img} />;
+                    })}
+                    <p>
+                      {user?.username === item.owner ? (
+                        <Link to={`/sell/${item.id}`}>
+                          Edit
+                        </Link>
+                      ) : (
+                        <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
+                          Make Offer
+                        </Link>
+                      )}
+                    </p>
+                  </div>
                 </Popup>
               </Marker>
             ))}

@@ -1,4 +1,4 @@
-/* eslint-disable */
+StorageImage/* eslint-disable */
 "use client";
 import * as React from "react";
 import {
@@ -18,6 +18,25 @@ import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getProperty } from "./graphql/queries";
 import { updateProperty } from "./graphql/mutations";
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import '@aws-amplify/ui-react/styles.css';
+
+const processFile = async ({ file }) => {
+  const fileExtension = file.name.split('.').pop();
+
+  return file
+    .arrayBuffer()
+    .then((filebuffer) => window.crypto.subtle.digest('SHA-1', filebuffer))
+    .then((hashBuffer) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
+      return { file, key: `${hashHex}.${fileExtension}` };
+    });
+};
+
+
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -1019,71 +1038,23 @@ export default function PropertyUpdateForm(props) {
         hasError={errors.description?.hasError}
         {...getOverrideProps(overrides, "description")}
       ></TextField>
-      <ArrayField
-        onChange={async (items) => {
-          let values = items;
-          if (onChange) {
-            const modelFields = {
-              address,
-              position,
-              price,
-              bedrooms,
-              bathrooms,
-              squareFootage,
-              lotSize,
-              yearBuilt,
-              propertyType,
-              listingStatus,
-              listingOwner,
-              ownerContact,
-              description,
-              photos: values,
-              virtualTour,
-              propertyTax,
-              hoaFees,
-              mlsNumber,
-              zestimate,
-              neighborhood,
-              amenities,
-            };
-            const result = onChange(modelFields);
-            values = result?.photos ?? values;
-          }
-          setPhotos(values);
-          setCurrentPhotosValue("");
-        }}
-        currentFieldValue={currentPhotosValue}
-        label={"Photos"}
-        items={photos}
-        hasError={errors?.photos?.hasError}
-        runValidationTasks={async () =>
-          await runValidationTasks("photos", currentPhotosValue)
-        }
-        errorMessage={errors?.photos?.errorMessage}
-        setFieldValue={setCurrentPhotosValue}
-        inputFieldRef={photosRef}
-        defaultFieldValue={""}
-      >
-        <TextField
-          label="Photos"
-          isRequired={false}
-          isReadOnly={false}
-          value={currentPhotosValue}
-          onChange={(e) => {
-            let { value } = e.target;
-            if (errors.photos?.hasError) {
-              runValidationTasks("photos", value);
-            }
-            setCurrentPhotosValue(value);
-          }}
-          onBlur={() => runValidationTasks("photos", currentPhotosValue)}
-          errorMessage={errors.photos?.errorMessage}
-          hasError={errors.photos?.hasError}
-          ref={photosRef}
-          labelHidden={true}
-          {...getOverrideProps(overrides, "photos")}
-        ></TextField>
-      </ArrayField>
+{photos.map(img => {
+ return <StorageImage width='100%' alt={img} path={img} />;
+})}
+
+<StorageManager
+  path="picture-submissions/"
+  maxFileCount={10}
+  acceptedFileTypes={['image/*']}
+  processFile={processFile}
+  onUploadSuccess={({key}) => {
+    // assuming you have an attribute called 'images' on your data model that is an array of strings
+    setPhotos(prevImages => [...prevImages, key])
+  }}
+  onFileRemove={({key}) => {
+    setPhotos(prevImages => prevImages.filter(img => img !== key))
+  }}
+/>
       <TextField
         label="Virtual tour"
         isRequired={false}
