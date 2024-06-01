@@ -40,18 +40,21 @@ const MapWithItems: React.FC = () => {
 
 
   useEffect(() => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (geoPosition) => {
-          const userPosition: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
-          setPosition(userPosition);
-        })
-    } else {
-      setError('Geolocation is not supported by this browser.');
+    if (showMap) {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (geoPosition) => {
+            const userPosition: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
+            setPosition(userPosition);
+          })
+      } else {
+        setError('Geolocation is not supported by this browser.');
+      }
     }
+
     setItemsForSale(properties);
 
-  }, [properties]);
+  }, [showMap, properties]);
 
 
 
@@ -90,11 +93,11 @@ const MapWithItems: React.FC = () => {
                   }}>
                     <p>{item?.description}</p>
                     <strong>Price: </strong>
-                      <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                    <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                     <br />
                     <strong>Square Footage: </strong>
-                    <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} /> 
-    
+                    <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} />
+
                     {item.photos.map((img: string) => {
                       return <StorageImage alt='test' width='100%' path={img} />;
                     })}
