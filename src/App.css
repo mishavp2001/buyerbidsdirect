@@ -3,7 +3,7 @@
   height: max-content;
   margin: 0 auto;
   padding: 2rem;
-  text-align: center;
+  text-align: center;  
 }
 
 .logo {
@@ -35,7 +35,6 @@
 }
 
 
-
 .card {
   padding: 2em;
 }
@@ -46,6 +45,8 @@
 
 .prop-popup .leaflet-popup-content-wrapper {
   border-radius: 0px;
+  height: 900px;
+  width: 900px;
 }
 
 .loan-calculator-container {

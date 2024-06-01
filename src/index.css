@@ -35,6 +35,22 @@ main {
   flex-direction: column;
   align-items: stretch;
   margin: 6em;
+
+     /*..leaflet-container {
+    overflow: visible !important;
+
+      leaflet-pane .leaflet-popup {
+      bottom: 0vh !important;
+    }
+  }
+
+  .leaflet-popup-content {
+    overflow: scroll!important;
+    padding: 2em;
+
+  }*/
+  
+
 }
 
 button {

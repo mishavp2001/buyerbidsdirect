@@ -72,7 +72,7 @@ const MapWithItems: React.FC = () => {
 
   return (
     <div className='list-items'>
-      <button onClick={toggleView}>
+      <button style={{'zIndex': 9000}} onClick={toggleView}>
         {showMap ? 'Show List' : 'Show Map'}
       </button>
       {showMap && position ? (
@@ -85,22 +85,18 @@ const MapWithItems: React.FC = () => {
             itemsForSale.map(item => (
               item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
                 <p>{item?.position}</p>
-                <Popup className="prop-popup">
+                <Popup maxWidth={600} keepInView>
                   <div style={{
-                    width: "90%",
-                    marginTop: "30px",
-                    overflow: 'scroll'
+                    marginTop: "30px"
                   }}>
+                    <h1>
+                      <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                    </h1>
+                    <h2>
+                      <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} />
+                    </h2>
                     <p>{item?.description}</p>
-                    <strong>Price: </strong>
-                    <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                    <br />
-                    <strong>Square Footage: </strong>
-                    <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} />
-
-                    {item.photos.map((img: string) => {
-                      return <StorageImage alt='test' width='100%' path={img} />;
-                    })}
+                    <StorageImage key={item?.photos?.[0]} alt={item.description} style={{ float: 'left'}} path={item?.photos?.[0]} />
                     <p>
                       {user?.username === item.owner ? (
                         <Link to={`/sales/${item.id}`}>
