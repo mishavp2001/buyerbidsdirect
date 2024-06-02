@@ -9,6 +9,7 @@ import { icon } from "leaflet"
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
+import Carousel from 'react-material-ui-carousel';
 
 const ICON = icon({
   iconUrl: "/marker.png",
@@ -72,7 +73,7 @@ const MapWithItems: React.FC = () => {
 
   return (
     <div className='list-items'>
-      <button style={{'zIndex': 9000}} onClick={toggleView}>
+      <button style={{ 'zIndex': 9000 }} onClick={toggleView}>
         {showMap ? 'Show List' : 'Show Map'}
       </button>
       {showMap && position ? (
@@ -89,14 +90,20 @@ const MapWithItems: React.FC = () => {
                   <div style={{
                     marginTop: "30px"
                   }}>
+                    <Carousel height={200}>
+                      {item?.photos.length && item?.photos?.map(
+                        (image: string, i: number) => {
+                          return <StorageImage key={image} alt={image} style={{ float: 'left' }} path={image} />
+                        })
+                      }
+                    </Carousel>
+
                     <h1>
-                      <NumericFormat value={item?.price.toFixed(2)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                      <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                     </h1>
-                    <h2>
-                      <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={'sqft'} />
-                    </h2>
-                    <p>{item?.description}</p>
-                    <StorageImage key={item?.photos?.[0]} alt={item.description} style={{ float: 'left'}} path={item?.photos?.[0]} />
+
+                    <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+                      - {item?.description}</p>
                     <p>
                       {user?.username === item.owner ? (
                         <Link to={`/sales/${item.id}`}>
