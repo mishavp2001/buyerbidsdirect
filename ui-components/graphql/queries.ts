@@ -2,6 +2,27 @@
 /* eslint-disable */
 // this is an auto generated file. This will be overwritten
 
+export const getOffer = /* GraphQL */ `
+  query GetOffer($id: ID!) {
+    getOffer(id: $id) {
+      appointment
+      buyer
+      conditions
+      createdAt
+      email
+      id
+      loanApprovalLetter
+      offerAmmount
+      offerType
+      phone
+      propertyAddress
+      propertyId
+      seller
+      updatedAt
+      __typename
+    }
+  }
+`;
 export const getProperty = /* GraphQL */ `
   query GetProperty($id: ID!) {
     getProperty(id: $id) {
@@ -19,6 +40,7 @@ export const getProperty = /* GraphQL */ `
       mlsNumber
       neighborhood
       owner
+      ownerContact
       photos
       position
       price
@@ -63,6 +85,35 @@ export const getUserProfile = /* GraphQL */ `
     }
   }
 `;
+export const listOffers = /* GraphQL */ `
+  query ListOffers(
+    $filter: ModelOfferFilterInput
+    $limit: Int
+    $nextToken: String
+  ) {
+    listOffers(filter: $filter, limit: $limit, nextToken: $nextToken) {
+      items {
+        appointment
+        buyer
+        conditions
+        createdAt
+        email
+        id
+        loanApprovalLetter
+        offerAmmount
+        offerType
+        phone
+        propertyAddress
+        propertyId
+        seller
+        updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
 export const listProperties = /* GraphQL */ `
   query ListProperties(
     $filter: ModelPropertyFilterInput
@@ -85,6 +136,7 @@ export const listProperties = /* GraphQL */ `
         mlsNumber
         neighborhood
         owner
+        ownerContact
         photos
         position
         price

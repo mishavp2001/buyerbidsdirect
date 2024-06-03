@@ -1,109 +1,69 @@
-// src/PropertyTable.tsx
-import React, { useState } from 'react';
-import {
-  Table, TableBody, TableCell, TableContainer,
-  TableHead, TableRow, TableSortLabel, Paper
-} from '@mui/material';
-import { Link } from 'react-router-dom';
+import React from 'react';
+import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import { Box, Paper, Link } from '@mui/material';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
-type SortColumn = 'address' | 'price' | 'bedrooms' | 'bathrooms' | 'squareFootage';
+interface Property {
+  id: number;
+  address: string;
+  price: number;
+  bedrooms: number;
+  bathrooms: number;
+  squareFootage: number;
+  listingOwner: string;
+  owner: string;
+  ownerContact: string
+}
 
-const PropertyTable: React.FC<any> = ({ properties }) => {
-  const [sortConfig, setSortConfig] = useState<{ key: SortColumn; direction: 'asc' | 'desc' } | null>(null);
+interface PropertyTableProps {
+  properties: Property[];
+}
 
-  const sortedProperties = [...properties].sort((a, b) => {
-    if (!sortConfig) return 0;
 
-    const { key, direction } = sortConfig;
-    let aValue: string | number = a[key];
-    let bValue: string | number = b[key];
+const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
+  const { user } = useAuthenticator((context) => [context.user]);
+  const navigate = useNavigate();
 
-    if (aValue < bValue) return direction === 'asc' ? -1 : 1;
-    if (aValue > bValue) return direction === 'asc' ? 1 : -1;
-    return 0;
-  });
-
-  const requestSort = (key: SortColumn) => {
-    let direction: 'asc' | 'desc' = 'asc';
-    if (sortConfig && sortConfig.key === key && sortConfig.direction === 'asc') {
-      direction = 'desc';
-    }
-    setSortConfig({ key, direction });
-  };
-
+  const columns: GridColDef[] = [
+    { field: 'address', headerName: 'Address', width: 200 },
+    { field: 'listingOwner', headerName: 'Owner', width: 200 },
+    { field: 'ownerContact', headerName: 'Contact', width: 200 },
+    { field: 'price', headerName: 'Price', width: 150, type: 'number' },
+    { field: 'bedrooms', headerName: 'Bedrooms', width: 120, type: 'number' },
+    { field: 'bathrooms', headerName: 'Bathrooms', width: 120, type: 'number' },
+    { field: 'squareFootage', headerName: 'Square Footage', width: 150, type: 'number' },
+    {
+      field: 'action',
+      headerName: 'Action',
+      width: 150,
+      renderCell: (params: GridRenderCellParams) => {
+        if (user?.username === params.row.owner) {
+          return (
+            <Link component={RouterLink} to={`/sales/${params.row.id}`}>
+              Edit
+            </Link>
+          );
+        }
+        return (
+          <Link component={RouterLink} to={`/offers/null/${params.row.address}/${params.row.id}/${params.row.owner}`}>
+            Make Offer
+          </Link>
+        );
+      },
+    },
+  ];
   return (
-    <TableContainer component={Paper}>
-      <Table>
-        <TableHead>
-          <TableRow>
-            <TableCell>
-              <TableSortLabel
-                active={sortConfig?.key === 'address'}
-                direction={sortConfig?.direction || 'asc'}
-                onClick={() => requestSort('address')}
-              >
-                Address
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={sortConfig?.key === 'price'}
-                direction={sortConfig?.direction || 'asc'}
-                onClick={() => requestSort('price')}
-              >
-                Price
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={sortConfig?.key === 'bedrooms'}
-                direction={sortConfig?.direction || 'asc'}
-                onClick={() => requestSort('bedrooms')}
-              >
-                Bedrooms
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={sortConfig?.key === 'bathrooms'}
-                direction={sortConfig?.direction || 'asc'}
-                onClick={() => requestSort('bathrooms')}
-              >
-                Bathrooms
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active={sortConfig?.key === 'squareFootage'}
-                direction={sortConfig?.direction || 'asc'}
-                onClick={() => requestSort('squareFootage')}
-              >
-                Square Footage
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel>
-                Actions
-              </TableSortLabel>
-            </TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {sortedProperties.map((property) => (
-            <TableRow key={property.id}>
-              <TableCell>{property.address}</TableCell>
-              <TableCell>{property.price}</TableCell>
-              <TableCell>{property.bedrooms}</TableCell>
-              <TableCell>{property.bathrooms}</TableCell>
-              <TableCell>{property.squareFootage}</TableCell>
-              <TableCell><Link to={`/offers/${property.id}/${property?.address}`}>
-                  Make Offer
-              </Link></TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+      <Box sx={{ height: '100%', width: '100%' }}>
+        <DataGrid
+          onCellClick={(params)=>{ if (params.field !== 'action') {navigate(`/property/${params.id}`, { replace: true });}}}
+          rows={properties}
+          columns={columns}
+          autoPageSize
+        />
+      </Box>
+    </Paper>
   );
 };
 

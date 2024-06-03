@@ -18,6 +18,25 @@ import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createProperty } from "./graphql/mutations";
 import { getGeoLocation } from '../src/utils/getGeoLocation';
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import '@aws-amplify/ui-react/styles.css';
+
+
+const processFile = async ({ file }) => {
+  const fileExtension = file.name.split('.').pop();
+
+  return file
+    .arrayBuffer()
+    .then((filebuffer) => window.crypto.subtle.digest('SHA-1', filebuffer))
+    .then((hashBuffer) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
+      return { file, key: `${hashHex}.${fileExtension}` };
+    });
+};
+
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -81,6 +100,7 @@ function ArrayField({
             return (
               <Badge
                 key={index}
+                path={getBadgeText ? getBadgeText(value) : value.toString()}
                 style={{
                   cursor: "pointer",
                   alignItems: "center",
@@ -115,7 +135,7 @@ function ArrayField({
                     event.stopPropagation();
                     removeItem(index);
                   }}
-                />
+              />
               </Badge>
             );
           })}
@@ -197,6 +217,7 @@ export default function PropertyCreateForm(props) {
     propertyType: "",
     listingStatus: "",
     listingOwner: "",
+    ownerContact: "",
     description: "",
     photos: [],
     virtualTour: "",
@@ -225,6 +246,9 @@ export default function PropertyCreateForm(props) {
   );
   const [listingOwner, setListingOwner] = React.useState(
     initialValues.listingOwner
+  );
+  const [ownerContact, setOwnerContact] = React.useState(
+    initialValues.ownerContact
   );
   const [description, setDescription] = React.useState(
     initialValues.description
@@ -256,6 +280,7 @@ export default function PropertyCreateForm(props) {
     setPropertyType(initialValues.propertyType);
     setListingStatus(initialValues.listingStatus);
     setListingOwner(initialValues.listingOwner);
+    setOwnerContact(initialValues.ownerContact);
     setDescription(initialValues.description);
     setPhotos(initialValues.photos);
     setCurrentPhotosValue("");
@@ -274,18 +299,19 @@ export default function PropertyCreateForm(props) {
   const [currentAmenitiesValue, setCurrentAmenitiesValue] = React.useState("");
   const amenitiesRef = React.createRef();
   const validations = {
-    address: [],
-    position: [{ type: "JSON" }],
-    price: [],
-    bedrooms: [],
-    bathrooms: [],
-    squareFootage: [],
-    lotSize: [],
-    yearBuilt: [],
-    propertyType: [],
-    listingStatus: [],
-    listingOwner: [],
-    description: [],
+    address: [{ type: "Required" }],
+    position: [{ type: "Required" }, { type: "JSON" }],
+    price: [{ type: "Required" }],
+    bedrooms: [{ type: "Required" }],
+    bathrooms: [{ type: "Required" }],
+    squareFootage: [{ type: "Required" }],
+    lotSize: [{ type: "Required" }],
+    yearBuilt: [{ type: "Required" }],
+    propertyType: [{ type: "Required" }],
+    listingStatus: [{ type: "Required" }],
+    listingOwner: [{ type: "Required" }],
+    ownerContact: [{ type: "Required" }],
+    description: [{ type: "Required" }],
     photos: [],
     virtualTour: [],
     propertyTax: [],
@@ -332,6 +358,7 @@ export default function PropertyCreateForm(props) {
           propertyType,
           listingStatus,
           listingOwner,
+          ownerContact,
           description,
           photos,
           virtualTour,
@@ -396,7 +423,7 @@ export default function PropertyCreateForm(props) {
     >
       <TextField
         label="Address"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={address}
         onChange={(e) => {
@@ -414,6 +441,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -449,7 +477,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextAreaField
         label="Position"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={true}
         value={position}
         errorMessage={errors.position?.errorMessage}
@@ -458,7 +486,7 @@ export default function PropertyCreateForm(props) {
       ></TextAreaField>
       <TextField
         label="Price"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -480,6 +508,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -505,7 +534,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Bedrooms"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -527,6 +556,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -552,7 +582,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Bathrooms"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -574,6 +604,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -599,7 +630,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Square footage"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -621,6 +652,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -646,7 +678,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Lot size"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -668,6 +700,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -693,7 +726,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Year built"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -715,6 +748,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -740,7 +774,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Property type"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={propertyType}
         onChange={(e) => {
@@ -758,6 +792,7 @@ export default function PropertyCreateForm(props) {
               propertyType: value,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -783,7 +818,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Listing status"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={listingStatus}
         onChange={(e) => {
@@ -801,6 +836,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus: value,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -826,7 +862,7 @@ export default function PropertyCreateForm(props) {
       ></TextField>
       <TextField
         label="Listing owner"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={listingOwner}
         onChange={(e) => {
@@ -844,6 +880,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner: value,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -868,8 +905,52 @@ export default function PropertyCreateForm(props) {
         {...getOverrideProps(overrides, "listingOwner")}
       ></TextField>
       <TextField
+        label="Owner contact"
+        isRequired={true}
+        isReadOnly={false}
+        value={ownerContact}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              address,
+              position,
+              price,
+              bedrooms,
+              bathrooms,
+              squareFootage,
+              lotSize,
+              yearBuilt,
+              propertyType,
+              listingStatus,
+              listingOwner,
+              ownerContact: value,
+              description,
+              photos,
+              virtualTour,
+              propertyTax,
+              hoaFees,
+              mlsNumber,
+              zestimate,
+              neighborhood,
+              amenities,
+            };
+            const result = onChange(modelFields);
+            value = result?.ownerContact ?? value;
+          }
+          if (errors.ownerContact?.hasError) {
+            runValidationTasks("ownerContact", value);
+          }
+          setOwnerContact(value);
+        }}
+        onBlur={() => runValidationTasks("ownerContact", ownerContact)}
+        errorMessage={errors.ownerContact?.errorMessage}
+        hasError={errors.ownerContact?.hasError}
+        {...getOverrideProps(overrides, "ownerContact")}
+      ></TextField>
+      <TextField
         label="Description"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={description}
         onChange={(e) => {
@@ -887,6 +968,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description: value,
               photos,
               virtualTour,
@@ -910,70 +992,26 @@ export default function PropertyCreateForm(props) {
         hasError={errors.description?.hasError}
         {...getOverrideProps(overrides, "description")}
       ></TextField>
-      <ArrayField
-        onChange={async (items) => {
-          let values = items;
-          if (onChange) {
-            const modelFields = {
-              address,
-              position,
-              price,
-              bedrooms,
-              bathrooms,
-              squareFootage,
-              lotSize,
-              yearBuilt,
-              propertyType,
-              listingStatus,
-              listingOwner,
-              description,
-              photos: values,
-              virtualTour,
-              propertyTax,
-              hoaFees,
-              mlsNumber,
-              zestimate,
-              neighborhood,
-              amenities,
-            };
-            const result = onChange(modelFields);
-            values = result?.photos ?? values;
-          }
-          setPhotos(values);
-          setCurrentPhotosValue("");
-        }}
-        currentFieldValue={currentPhotosValue}
-        label={"Photos"}
-        items={photos}
-        hasError={errors?.photos?.hasError}
-        runValidationTasks={async () =>
-          await runValidationTasks("photos", currentPhotosValue)
-        }
-        errorMessage={errors?.photos?.errorMessage}
-        setFieldValue={setCurrentPhotosValue}
-        inputFieldRef={photosRef}
-        defaultFieldValue={""}
-      >
-        <TextField
-          label="Photos"
-          isRequired={false}
-          isReadOnly={false}
-          value={currentPhotosValue}
-          onChange={(e) => {
-            let { value } = e.target;
-            if (errors.photos?.hasError) {
-              runValidationTasks("photos", value);
-            }
-            setCurrentPhotosValue(value);
-          }}
-          onBlur={() => runValidationTasks("photos", currentPhotosValue)}
-          errorMessage={errors.photos?.errorMessage}
-          hasError={errors.photos?.hasError}
-          ref={photosRef}
-          labelHidden={true}
-          {...getOverrideProps(overrides, "photos")}
-        ></TextField>
-      </ArrayField>
+
+{photos.map(img => {
+ return <StorageImage width='100%' alt={img} path={img} />;
+})}
+
+<StorageManager
+  path="picture-submissions/"
+  maxFileCount={10}
+  acceptedFileTypes={['image/*']}
+  processFile={processFile}
+  onUploadSuccess={({key}) => {
+    // assuming you have an attribute called 'images' on your data model that is an array of strings
+    setPhotos(prevImages => [...prevImages, key])
+  }}
+  onFileRemove={({key}) => {
+    setPhotos(prevImages => prevImages.filter(img => img !== key))
+  }}
+/>
+
+
       <TextField
         label="Virtual tour"
         isRequired={false}
@@ -994,6 +1032,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour: value,
@@ -1041,6 +1080,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -1088,6 +1128,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -1131,6 +1172,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -1178,6 +1220,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -1221,6 +1264,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
@@ -1260,6 +1304,7 @@ export default function PropertyCreateForm(props) {
               propertyType,
               listingStatus,
               listingOwner,
+              ownerContact,
               description,
               photos,
               virtualTour,
