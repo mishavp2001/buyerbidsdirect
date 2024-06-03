@@ -1,7 +1,7 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams, GridRowParams, MuiEvent } from '@mui/x-data-grid';
 import { Box, Paper, Link } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 interface Property {
@@ -23,6 +23,7 @@ interface PropertyTableProps {
 
 const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const { user } = useAuthenticator((context) => [context.user]);
+  const navigate = useNavigate();
 
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', width: 200 },
@@ -56,6 +57,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
       <Box sx={{ height: '100%', width: '100%' }}>
         <DataGrid
+          onCellClick={(params)=>{ if (params.field !== 'action') {navigate(`/property/${params.id}`, { replace: true });}}}
           rows={properties}
           columns={columns}
           autoPageSize

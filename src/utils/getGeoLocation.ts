@@ -28,3 +28,17 @@ export async function getGeoLocation(address: string): Promise<Geolocation | nul
     return null;
   }
 }
+
+export const geocodeZipCode = async (zipCode: string): Promise<Geolocation | null> => {
+  const apiKey = 'AIzaSyC1m92_wrOPapYEQu2JYP919wNartB3kDA'; // Replace with your OpenCage API key
+  const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${zipCode}&key=${apiKey}`);
+
+  const data = await response.json();
+
+  const location = data.results[0].geometry.location;
+  return {
+    latitude: location.lat,
+    longitude: location.lng,
+  };
+};
+
