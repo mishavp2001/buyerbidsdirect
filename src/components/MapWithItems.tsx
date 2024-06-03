@@ -25,8 +25,8 @@ flushSync(() => {
   root.render(<div className='marker-span'></div>);
 });
 
-const addMArker: any = (text:string) => {
-  div.getElementsByClassName('marker-span')[0].innerHTML = "$" + ((parseFloat(text)/1000).toFixed(0)).toString() + 'K';
+const addMArker: any = (text: string) => {
+  div.getElementsByClassName('marker-span')[0].innerHTML = "$" + ((parseFloat(text) / 1000).toFixed(0)).toString() + 'K';
   return div.innerHTML;
 }
 
@@ -69,7 +69,7 @@ const MapWithItems: React.FC = () => {
   }, []);
 
   const handleSavePosition = async () => {
-    if(zipCode) {
+    if (zipCode) {
       const geoPosition = await geocodeZipCode(zipCode);
       if (geoPosition) {
         setUserPosition(geoPosition);
@@ -80,7 +80,7 @@ const MapWithItems: React.FC = () => {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (geoPosition) => {
-            const userPosition = { latitude: geoPosition.coords.latitude, longitude: geoPosition.coords.longitude};
+            const userPosition = { latitude: geoPosition.coords.latitude, longitude: geoPosition.coords.longitude };
             setUserPosition(userPosition);
           })
       } else {
@@ -121,75 +121,77 @@ const MapWithItems: React.FC = () => {
   }
 
   return (
-    <div className='list-items'>
-      <button style={{ 'zIndex': 9000 }} onClick={toggleView}>
-        {showMap ? 'Show List' : 'Show Map'}
-      </button>
-      {showMap && <>
+    <div className='list-items' style={{'width': '95vw' }}>
+      <div style={{ margin: '1em', position: 'relative', 'width': 'fit-content' }}>
         <TextField
           label="State, County, City, Zip Code..."
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
-          sx={{ margin: '0em 1em 1em 1em', backgroundColor: 'white', width: '20em'}} />
-        <Button variant="contained" onClick={handleSavePosition}>
-          <img src={Search} style={{width: '3em'}}/>
+          sx={{ backgroundColor: 'white', width: '90vw', borderRadius: '1em' }}
+        />
+        <Button variant="contained" onClick={handleSavePosition} style={{ width: '4em', height: '4em', top: '0em', right: '0em', position: 'absolute', zIndex: 900 }}>
+          <img src={Search} style={{ width: '3em' }} />
         </Button>
-      </>
+      </div>
+
+      {
+        showMap && position ? (
+          <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
+            <ReactMarker cords={userPosition} />
+            {
+              itemsForSale.map(item => (
+                item?.position &&
+                <Marker
+                  icon={divIcon({
+                    html: addMArker(item?.price.toFixed(0))
+                  })}
+                  key={item.id}
+                  position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+                  <p>{item?.position}</p>
+                  <Popup>
+                    <div className='popupDiv'>
+                      <Link to={`/property/${item.id}`}>
+                        <Carousel className='imgCarousel' height={200}>
+                          {item?.photos?.length && item?.photos?.map(
+                            (image: string, i: number) => {
+                              return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
+                            })
+                          }
+                        </Carousel>
+
+                        <h1>
+                          <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                        </h1>
+
+                        <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+                          - {item?.description}
+                        </p>
+                      </Link>
+                      <>
+                        {user?.username === item.owner ? (
+                          <Link to={`/sales/${item.id}`}>
+                            Edit
+                          </Link>
+                        ) : (
+                          <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
+                            Make Offer
+                          </Link>
+                        )}
+                      </>
+                    </div>
+                  </Popup>
+                </Marker>
+              ))}
+          </MapContainer>
+        ) : (
+          <ListItems properties={properties} />
+        )
       }
-      {showMap && position ? (
-        <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '100%' }}>
-          <ReactMarker cords={userPosition} />
-          {
-            itemsForSale.map(item => (
-              item?.position && 
-              <Marker 
-                icon={divIcon({
-                  html: addMArker(item?.price.toFixed(0))
-                })}
-                key={item.id} 
-                position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                <p>{item?.position}</p>
-                <Popup>
-                  <div style={{
-                    marginTop: "30px"
-                  }}>
-                    <Link to={`/property/${item.id}`}>
-                      <Carousel height={200}>
-                        {item?.photos?.length && item?.photos?.map(
-                          (image: string, i: number) => {
-                            return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
-                          })
-                        }
-                      </Carousel>
 
-                      <h1>
-                        <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                      </h1>
-
-                      <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
-                        - {item?.description}
-                      </p>
-                    </Link>
-                    <>
-                      {user?.username === item.owner ? (
-                        <Link to={`/sales/${item.id}`}>
-                          Edit
-                        </Link>
-                      ) : (
-                        <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
-                          Make Offer
-                        </Link>
-                      )}
-                    </>
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
-        </MapContainer>
-      ) : (
-        <ListItems properties={properties} />
-      )}
-    </div>
+      <button style={{ 'zIndex': 9000, marginTop: '1em' }} onClick={toggleView}>
+        {showMap ? 'Show List' : 'Show Map'}
+      </button>
+    </div >
   );
 };
 
