@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridRenderCellParams, GridRowParams, MuiEvent } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
 import { Box, Paper, Link } from '@mui/material';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
