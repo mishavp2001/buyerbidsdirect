@@ -8,7 +8,7 @@ import SellProperty from './pages/SellProperty';
 import UserProfile from './pages/Profile';
 import PropertyPage from './pages/PropertyPage';
 import NavigationBar from './components/NavigationBar'
-import LoanCalculatorChart from './components/FinanceCalculator'
+import AnalyzePage from './pages/analyzePage'
 import RequireAuth from './components/Auth/RequireAuth';
 
 function App() {
@@ -16,7 +16,6 @@ function App() {
   return (
       <Authenticator.Provider>
       <NavigationBar/>
-
       <Routes>
         <Route index path='/' element = {<HomePage/>} />
         <Route path='/offers/:offerId/:address/:propertyId/:ownerId' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
@@ -25,7 +24,7 @@ function App() {
         <Route path='/sales/:propertyId' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/offers' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
         <Route path='/property/:propertyId' element = {<RequireAuth><PropertyPage/></RequireAuth>} />
-        <Route path='/calc' element = {<LoanCalculatorChart/>} /> 
+        <Route path='/calc' element = {<AnalyzePage/>} /> 
         <Route path='/sales' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/login' element = {<LoginPage/>} />

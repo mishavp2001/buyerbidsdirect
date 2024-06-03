@@ -51,6 +51,26 @@ main {
   }*/
   
 
+  .leaflet-div-icon {
+    padding: 8px !important;
+    width: 84px !important;
+    height: 40px !important;
+    background-color: #A3000B;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+  }
+  .leaflet-div-icon::after {
+    position: absolute;
+    height: 0;
+    width: 0;
+    left: calc(40% - 6px);
+    top: 94%;
+    border: 15px solid transparent;
+    content: "";
+    border-top-color: #A3000B;
+  }
+  
 }
 
 button {

@@ -5,20 +5,30 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
-import { icon } from "leaflet"
+import { divIcon } from "leaflet"
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
 import { TextField, Button } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
+import { createRoot } from 'react-dom/client';
+import { flushSync } from 'react-dom';
 import { ReactMarker } from './ReactMaker';
+import Search from '/search.svg';
 
-const ICON = icon({
-  iconUrl: "/marker.png",
-})
 
 const client = generateClient<Schema>();
+const div = document.createElement('div');
+const root = createRoot(div);
+flushSync(() => {
+  root.render(<div className='marker-span'></div>);
+});
+
+const addMArker: any = (text:string) => {
+  div.getElementsByClassName('marker-span')[0].innerHTML = "$" + ((parseFloat(text)/1000).toFixed(0)).toString() + 'K';
+  return div.innerHTML;
+}
 
 
 const MapWithItems: React.FC = () => {
@@ -105,12 +115,12 @@ const MapWithItems: React.FC = () => {
       </button>
       {showMap && <>
         <TextField
-          label="Address or Zip"
+          label="State, County, City, Zip Code..."
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
-          sx={{ marginRight: 1 }} />
+          sx={{ margin: '0em 1em 1em 1em', backgroundColor: 'white', width: '20em'}} />
         <Button variant="contained" onClick={handleSavePosition}>
-          Search
+          <img src={Search} style={{width: '3em'}}/>
         </Button>
       </>
       }
@@ -119,9 +129,15 @@ const MapWithItems: React.FC = () => {
           <ReactMarker cords={userPosition} />
           {
             itemsForSale.map(item => (
-              item?.position && <Marker icon={ICON} key={item.id} position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+              item?.position && 
+              <Marker 
+                icon={divIcon({
+                  html: addMArker(item?.price.toFixed(0))
+                })}
+                key={item.id} 
+                position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
                 <p>{item?.position}</p>
-                <Popup keepInView>
+                <Popup>
                   <div style={{
                     marginTop: "30px"
                   }}>
