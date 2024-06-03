@@ -69,11 +69,23 @@ const MapWithItems: React.FC = () => {
   }, []);
 
   const handleSavePosition = async () => {
-    const geoPosition = await geocodeZipCode(zipCode);
-    if (geoPosition) {
-      setUserPosition(geoPosition);
+    if(zipCode) {
+      const geoPosition = await geocodeZipCode(zipCode);
+      if (geoPosition) {
+        setUserPosition(geoPosition);
+      } else {
+        alert('Invalid ZIP code. Please enter a valid ZIP code.');
+      }
     } else {
-      alert('Invalid ZIP code. Please enter a valid ZIP code.');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (geoPosition) => {
+            const userPosition = { latitude: geoPosition.coords.latitude, longitude: geoPosition.coords.longitude};
+            setUserPosition(userPosition);
+          })
+      } else {
+        setError('Geolocation is not supported by this browser.');
+      }
     }
   };
 
