@@ -111,7 +111,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                         <InputLabel>Filing Status</InputLabel>
                         <Select
                             value={filingStatus}
-                            onChange={(e) => setFilingStatus(e.target.value as string)}
+                            onChange={(e) => setFilingStatus(e.target.value as FilingStatus)}
                             label="Filing Status"
                         >
                             <MenuItem value="single">Single</MenuItem>
@@ -120,7 +120,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                     </FormControl>
                 </Box>
                 <Typography variant="h5" component="h5" gutterBottom>
-                    Standard deductions: ${filingStatus === 'single' ? standardDeductions['single'].toLocaleString() : standardDeductions['married'].toLocaleString()}
+                    Standard deductions:${filingStatus === 'single' ? standardDeductions['single'].toLocaleString() : standardDeductions['married'].toLocaleString()}
                 </Typography>
                 {estimatedTax !== null && (
                     <Box mt={2}>
