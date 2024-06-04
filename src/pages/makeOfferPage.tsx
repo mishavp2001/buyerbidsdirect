@@ -95,6 +95,7 @@ const MakeOffer: React.FC = () => {
                   {
                     buyer: { value: user?.userId },
                     propertyId: { value: propertyId },
+                    propertyAddress: { value: address },
                     seller: { value: ownerId }
                   }
                 }
