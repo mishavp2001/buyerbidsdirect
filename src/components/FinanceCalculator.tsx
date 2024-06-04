@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { PieChart } from '@mui/x-charts/PieChart';
+import { TextField, Box } from '@mui/material';
 
 
-
-interface LoanCalculatorChartProps {}
+interface LoanCalculatorChartProps { }
 
 const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
   const [propertyPrice, setPropertyPrice] = useState<number>(450000);
@@ -21,73 +21,55 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
   return (
     <div className="loan-calculator-container">
       <h2>Loan Calculator</h2>
-      <table className="input-table">
-        <tbody>
-          <tr>
-            <td>
-              <label>Property Price:</label>
-            </td>
-            <td>
-              <input
-                type="number"
-                value={propertyPrice}
-                onChange={(e) => setPropertyPrice(Number(e.target.value))}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>Buyer Down Payment:</label>
-            </td>
-            <td>
-              <input
-                type="number"
-                value={buyerDownPayment}
-                onChange={(e) => setBuyerDownPayment(Number(e.target.value))}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>Financed Interest Rate (%):</label>
-            </td>
-            <td>
-              <input
-                type="number"
-                value={interestRate}
-                onChange={(e) => setInterestRate(Number(e.target.value))}
-              />
-            </td>
-          </tr>
-          <tr>
-            <td>
-              <label>Seller Financed Loan Term (years):</label>
-            </td>
-            <td>
-              <input
-                type="number"
-                value={loanTerm}
-                onChange={(e) => setLoanTerm(Number(e.target.value))}
-              />
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <Box my={4}>
+        <Box mb={2}>
+          <TextField
+            label="Property Price:"
+            type="number"
+            value={propertyPrice}
+            onChange={(e) => setPropertyPrice(Number(e.target.value))}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            label="Buyer Down Payment:"
+            type="number"
+            value={buyerDownPayment}
+            onChange={(e) => setBuyerDownPayment(Number(e.target.value))}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            label="Financed Interest Rate (%):"
+            type="number"
+            value={interestRate}
+            onChange={(e) => setInterestRate(Number(e.target.value))}
+          />
+        </Box>
+        <Box mb={2}>
+          <TextField
+            label="Seller Financed Loan Term (years):"
+            type="number"
+            value={loanTerm}
+            onChange={(e) => setLoanTerm(Number(e.target.value))}
+          />
+        </Box>
+      </Box>
       <h3>MonthlyPayment: ${Math.round(monthlyPayment).toLocaleString()}</h3>
       <h3>Principal: ${Math.round(startingMonthlyPrincipal).toLocaleString()}</h3>
       <h3>Interest: ${(startingMonthlyInterest.toLocaleString())}</h3>
       <PieChart
         height={300}
-      series={[
-        {
-          data: [
-            { id: 0, value: startingMonthlyInterest, label: 'Interest' },
-            { id: 1, value: startingMonthlyPrincipal, label: 'Principal' },
-            { id: 2, value: monthlyPayment, label: 'MonthlyPayment' },
-          ],
-        },
-      ]}
-    />
+        series={[
+          {
+            data: [
+              { id: 0, value: startingMonthlyInterest, label: 'Interest' },
+              { id: 1, value: startingMonthlyPrincipal, label: 'Principal' },
+              { id: 2, value: monthlyPayment, label: 'MonthlyPayment' },
+            ],
+          },
+        ]}
+      />
     </div>
   );
 };

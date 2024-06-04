@@ -23,7 +23,7 @@ const CapRateCalculator: React.FC<CapRateCalculatorProps> = () => {
 
   return (
     <div className='calc-div'>
-      <h1>Investment Cap Rate Calculator</h1>
+      <h2>Investment Cap Rate Calculator</h2>
       <div>
           <TextField
             label='Investment Amount ($):'

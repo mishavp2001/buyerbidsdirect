@@ -1,6 +1,7 @@
 // TaxCalculator.tsx
 import React, { useState, useEffect } from 'react';
-import { TextField, Typography, Container, Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { TextField, Typography, Box, MenuItem, Select, FormControl, InputLabel } from '@mui/material';
+import { PieChart } from '@mui/x-charts/PieChart';
 
 interface TaxCalculatorProps { }
 
@@ -25,7 +26,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
     const [income, setIncome] = useState<number>(100000);
     const [deductions, setDeductions] = useState<number>(27700);
     const [filingStatus, setFilingStatus] = useState<FilingStatus>('married');
-    const [estimatedTax, setEstimatedTax] = useState<number | null>(null);
+    const [estimatedTax, setEstimatedTax] = useState<number>(0);
 
 
     const standardDeductions: Map = {
@@ -81,16 +82,15 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
     }, [income, deductions, filingStatus])
 
     return (
-        <Container maxWidth="sm">
+        <div className='calc-div'>
             <Box my={4}>
-                <Typography variant="h4" component="h1" gutterBottom>
+                <h2>
                     Simple Tax Estimate Calculator 2024
-                </Typography>
+                </h2>
                 <Box mb={2}>
                     <TextField
                         label="Annual Income ($)"
                         variant="outlined"
-                        fullWidth
                         type="number"
                         value={income}
                         onChange={(e) => setIncome(Number(e.target.value))}
@@ -100,14 +100,13 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                     <TextField
                         label="Additional Deductions ($). Standard deduction:"
                         variant="outlined"
-                        fullWidth
                         type="number"
                         value={deductions}
                         onChange={(e) => setDeductions(Number(e.target.value.toLocaleString()))}
                     />
                 </Box>
                 <Box mb={2}>
-                    <FormControl fullWidth variant="outlined">
+                    <FormControl variant="outlined">
                         <InputLabel>Filing Status</InputLabel>
                         <Select
                             value={filingStatus}
@@ -130,7 +129,19 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                     </Box>
                 )}
             </Box>
-        </Container>
+            <PieChart
+        height={300}
+        series={[
+          {
+            data: [
+              { id: 0, value: income, label: 'Income' },
+              { id: 1, value: deductions, label: 'Deductions' },
+              { id: 2, value: estimatedTax, label: 'Estimated Tax' },
+            ],
+          },
+        ]}
+      />
+        </div>
     );
 };
 
