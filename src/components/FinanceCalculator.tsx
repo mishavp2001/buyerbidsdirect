@@ -73,6 +73,9 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
           </tr>
         </tbody>
       </table>
+      <h3>MonthlyPayment: ${Math.round(monthlyPayment).toLocaleString()}</h3>
+      <h3>Principal: ${Math.round(startingMonthlyPrincipal).toLocaleString()}</h3>
+      <h3>Interest: ${(startingMonthlyInterest.toLocaleString())}</h3>
       <PieChart
         height={300}
       series={[

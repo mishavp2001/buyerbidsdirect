@@ -3,6 +3,8 @@ import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
 import LoanCalculator from '../components/FinanceCalculator';
+import CapRateCalculator from '../components/CapRateCalculator';
+
 import { TabPanel } from '@mui/joy';
 
 function homePage() {
@@ -14,14 +16,14 @@ function homePage() {
             >
                 <TabList>
                     <Tab>Financing</Tab>
+                    <Tab>Investment</Tab>
                     <Tab>Tax</Tab>
-                    <Tab>Profit</Tab>
                 </TabList>
                 <TabPanel value={0}>
                     <LoanCalculator />
                 </TabPanel>
                 <TabPanel value={1}>
-                    Tax
+                     <CapRateCalculator />
                 </TabPanel>
                 <TabPanel value={2}>
                     Profits

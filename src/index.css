@@ -119,3 +119,20 @@ a {
   font-weight: 800;
   text-decoration: none;
 }
+
+.loan-calculator-container, .investment-calculator-container, .calculatorDiv {
+  width: fit-content;
+}
+
+.input-table {
+  flex-direction: column;
+
+  td {
+    display: block;
+  }
+}
+
+.calc-div>div {
+
+  margin: 2em 0em;
+}

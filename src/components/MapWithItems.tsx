@@ -33,7 +33,10 @@ const addMArker: any = (text: string) => {
 
 const MapWithItems: React.FC = () => {
 
-  const [zipCode, setZipCode] = useState<string>('');
+  const [zipCode, setZipCode] = useState<string | null>(() => {
+    const savedZip = localStorage.getItem('zipCode');
+    return savedZip ? JSON.parse(savedZip) : '';
+  });
   const [itemsForSale, setItemsForSale] = useState<any[]>([]);
   const [position, setPosition] = useState<[number, number] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -70,8 +73,10 @@ const MapWithItems: React.FC = () => {
 
   const handleSavePosition = async () => {
     if (zipCode) {
+      localStorage.setItem('zipCode', JSON.stringify(zipCode));
       const geoPosition = await geocodeZipCode(zipCode);
       if (geoPosition) {
+        localStorage.setItem('userPosition', JSON.stringify(geoPosition));
         setUserPosition(geoPosition);
       } else {
         alert('Invalid ZIP code. Please enter a valid ZIP code.');
@@ -81,6 +86,7 @@ const MapWithItems: React.FC = () => {
         navigator.geolocation.getCurrentPosition(
           (geoPosition) => {
             const userPosition = { latitude: geoPosition.coords.latitude, longitude: geoPosition.coords.longitude };
+            localStorage.setItem('userPosition', JSON.stringify(userPosition));
             setUserPosition(userPosition);
           })
       } else {
@@ -100,11 +106,14 @@ const MapWithItems: React.FC = () => {
       } else {
         setError('Geolocation is not supported by this browser.');
       }
+    } else if (userPosition){
+      const savedPosition: [number, number] = [userPosition.latitude, userPosition.longitude];
+      setPosition(savedPosition);
     }
 
     setItemsForSale(properties);
 
-  }, [showMap, properties]);
+  }, [showMap, userPosition, properties]);
 
 
 
@@ -136,7 +145,7 @@ const MapWithItems: React.FC = () => {
 
       {
         showMap && position ? (
-          <MapContainer center={position} zoom={13} style={{ height: '50vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
+          <MapContainer center={position} zoom={13} style={{ height: '70vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
             <ReactMarker cords={userPosition} />
             {
               itemsForSale.map(item => (
