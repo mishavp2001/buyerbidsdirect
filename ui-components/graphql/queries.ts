@@ -7,6 +7,7 @@ export const getOffer = /* GraphQL */ `
     getOffer(id: $id) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
@@ -95,6 +96,7 @@ export const listOffers = /* GraphQL */ `
       items {
         appointment
         buyer
+        buyerName
         conditions
         createdAt
         email

@@ -19,6 +19,7 @@ export declare type OfferCreateFormInputValues = {
     offerAmmount?: number;
     propertyAddress?: string;
     propertyId?: string;
+    buyerName?: string;
     email?: string;
     phone?: string;
     loanApprovalLetter?: string;
@@ -32,6 +33,7 @@ export declare type OfferCreateFormValidationValues = {
     offerAmmount?: ValidationFunction<number>;
     propertyAddress?: ValidationFunction<string>;
     propertyId?: ValidationFunction<string>;
+    buyerName?: ValidationFunction<string>;
     email?: ValidationFunction<string>;
     phone?: ValidationFunction<string>;
     loanApprovalLetter?: ValidationFunction<string>;
@@ -47,14 +49,15 @@ export declare type OfferCreateFormOverridesProps = {
     offerAmmount?: PrimitiveOverrideProps<TextFieldProps>;
     propertyAddress?: PrimitiveOverrideProps<TextFieldProps>;
     propertyId?: PrimitiveOverrideProps<TextFieldProps>;
+    buyerName?: PrimitiveOverrideProps<TextFieldProps>;
     email?: PrimitiveOverrideProps<TextFieldProps>;
     phone?: PrimitiveOverrideProps<TextFieldProps>;
     loanApprovalLetter?: PrimitiveOverrideProps<TextFieldProps>;
     offerType?: PrimitiveOverrideProps<SelectFieldProps>;
     conditions?: PrimitiveOverrideProps<TextFieldProps>;
     appointment?: PrimitiveOverrideProps<TextFieldProps>;
-    sellerId?: PrimitiveOverrideProps<TextFieldProps>;
-    buyerId?: PrimitiveOverrideProps<TextFieldProps>;
+    seller?: PrimitiveOverrideProps<TextFieldProps>;
+    buyer?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type OfferCreateFormProps = React.PropsWithChildren<{
     overrides?: OfferCreateFormOverridesProps | undefined | null;

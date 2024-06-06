@@ -10,6 +10,7 @@ export const createOffer = /* GraphQL */ `
     createOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
@@ -105,6 +106,7 @@ export const deleteOffer = /* GraphQL */ `
     deleteOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
@@ -200,6 +202,7 @@ export const updateOffer = /* GraphQL */ `
     updateOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email

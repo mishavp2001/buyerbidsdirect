@@ -190,6 +190,7 @@ export default function OfferUpdateForm(props) {
     offerAmmount: "",
     propertyAddress: "",
     propertyId: "",
+    buyerName: "",
     email: "",
     phone: "",
     loanApprovalLetter: "",
@@ -206,6 +207,7 @@ export default function OfferUpdateForm(props) {
     initialValues.propertyAddress
   );
   const [propertyId, setPropertyId] = React.useState(initialValues.propertyId);
+  const [buyerName, setBuyerName] = React.useState(initialValues.buyerName);
   const [email, setEmail] = React.useState(initialValues.email);
   const [phone, setPhone] = React.useState(initialValues.phone);
   const [loanApprovalLetter, setLoanApprovalLetter] = React.useState(
@@ -226,6 +228,7 @@ export default function OfferUpdateForm(props) {
     setOfferAmmount(cleanValues.offerAmmount);
     setPropertyAddress(cleanValues.propertyAddress);
     setPropertyId(cleanValues.propertyId);
+    setBuyerName(cleanValues.buyerName);
     setEmail(cleanValues.email);
     setPhone(cleanValues.phone);
     setLoanApprovalLetter(cleanValues.loanApprovalLetter);
@@ -260,6 +263,7 @@ export default function OfferUpdateForm(props) {
     offerAmmount: [],
     propertyAddress: [],
     propertyId: [],
+    buyerName: [],
     email: [],
     phone: [],
     loanApprovalLetter: [],
@@ -298,6 +302,7 @@ export default function OfferUpdateForm(props) {
           offerAmmount: offerAmmount ?? null,
           propertyAddress: propertyAddress ?? null,
           propertyId: propertyId ?? null,
+          buyerName: buyerName ?? null,
           email: email ?? null,
           phone: phone ?? null,
           loanApprovalLetter: loanApprovalLetter ?? null,
@@ -373,6 +378,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount: value,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -407,6 +413,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress: value,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -441,6 +448,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId: value,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -464,6 +472,41 @@ export default function OfferUpdateForm(props) {
         {...getOverrideProps(overrides, "propertyId")}
       ></TextField>
       <TextField
+        label="Buyer name"
+        isRequired={false}
+        isReadOnly={false}
+        value={buyerName}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName: value,
+              email,
+              phone,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.buyerName ?? value;
+          }
+          if (errors.buyerName?.hasError) {
+            runValidationTasks("buyerName", value);
+          }
+          setBuyerName(value);
+        }}
+        onBlur={() => runValidationTasks("buyerName", buyerName)}
+        errorMessage={errors.buyerName?.errorMessage}
+        hasError={errors.buyerName?.hasError}
+        {...getOverrideProps(overrides, "buyerName")}
+      ></TextField>
+      <TextField
         label="Email"
         isRequired={false}
         isReadOnly={false}
@@ -475,6 +518,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email: value,
               phone,
               loanApprovalLetter,
@@ -509,6 +553,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone: value,
               loanApprovalLetter,
@@ -543,6 +588,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter: value,
@@ -579,6 +625,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -630,6 +677,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -692,6 +740,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -726,6 +775,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,
@@ -760,6 +810,7 @@ export default function OfferUpdateForm(props) {
               offerAmmount,
               propertyAddress,
               propertyId,
+              buyerName,
               email,
               phone,
               loanApprovalLetter,

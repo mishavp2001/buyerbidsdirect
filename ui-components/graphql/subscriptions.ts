@@ -11,6 +11,7 @@ export const onCreateOffer = /* GraphQL */ `
     onCreateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
@@ -107,6 +108,7 @@ export const onDeleteOffer = /* GraphQL */ `
     onDeleteOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
@@ -203,6 +205,7 @@ export const onUpdateOffer = /* GraphQL */ `
     onUpdateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerName
       conditions
       createdAt
       email
