@@ -93,7 +93,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                         variant="outlined"
                         type="number"
                         value={income}
-                        onChange={(e) => setIncome(Number(e.target.value))}
+                        onChange={(e) => setIncome(parseInt(e.target.value))}
                     />
                 </Box>
                 <Box mb={2}>
@@ -102,7 +102,7 @@ const TaxCalculator: React.FC<TaxCalculatorProps> = () => {
                         variant="outlined"
                         type="number"
                         value={deductions}
-                        onChange={(e) => setDeductions(Number(e.target.value.toLocaleString()))}
+                        onChange={(e) => setDeductions(parseInt(e.target.value.toLocaleString()))}
                     />
                 </Box>
                 <Box mb={2}>

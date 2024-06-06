@@ -10,7 +10,9 @@ export const createOffer = /* GraphQL */ `
     createOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -18,6 +20,8 @@ export const createOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId
@@ -106,7 +110,9 @@ export const deleteOffer = /* GraphQL */ `
     deleteOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -114,6 +120,8 @@ export const deleteOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId
@@ -202,7 +210,9 @@ export const updateOffer = /* GraphQL */ `
     updateOffer(condition: $condition, input: $input) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -210,6 +220,8 @@ export const updateOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId

@@ -7,7 +7,9 @@ export const getOffer = /* GraphQL */ `
     getOffer(id: $id) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -15,6 +17,8 @@ export const getOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId
@@ -96,7 +100,9 @@ export const listOffers = /* GraphQL */ `
       items {
         appointment
         buyer
+        buyerEmail
         buyerName
+        buyerPhone
         conditions
         createdAt
         email
@@ -104,6 +110,8 @@ export const listOffers = /* GraphQL */ `
         loanApprovalLetter
         offerAmmount
         offerType
+        ownerEmail
+        ownerName
         phone
         propertyAddress
         propertyId

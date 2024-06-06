@@ -189,6 +189,10 @@ export default function OfferCreateForm(props) {
     propertyAddress: "",
     propertyId: "",
     buyerName: "",
+    buyerEmail: "",
+    buyerPhone: "",
+    ownerEmail: "",
+    ownerName: "",
     email: "",
     phone: "",
     loanApprovalLetter: "",
@@ -207,6 +211,10 @@ export default function OfferCreateForm(props) {
   );
   const [propertyId, setPropertyId] = React.useState(initialValues.propertyId);
   const [buyerName, setBuyerName] = React.useState(initialValues.buyerName);
+  const [buyerEmail, setBuyerEmail] = React.useState(initialValues.buyerEmail);
+  const [buyerPhone, setBuyerPhone] = React.useState(initialValues.buyerPhone);
+  const [ownerEmail, setOwnerEmail] = React.useState(initialValues.ownerEmail);
+  const [ownerName, setOwnerName] = React.useState(initialValues.ownerName);
   const [email, setEmail] = React.useState(initialValues.email);
   const [phone, setPhone] = React.useState(initialValues.phone);
   const [loanApprovalLetter, setLoanApprovalLetter] = React.useState(
@@ -225,6 +233,10 @@ export default function OfferCreateForm(props) {
     setPropertyAddress(initialValues.propertyAddress);
     setPropertyId(initialValues.propertyId);
     setBuyerName(initialValues.buyerName);
+    setBuyerEmail(initialValues.buyerEmail);
+    setBuyerPhone(initialValues.buyerPhone);
+    setOwnerEmail(initialValues.ownerEmail);
+    setOwnerName(initialValues.ownerName);
     setEmail(initialValues.email);
     setPhone(initialValues.phone);
     setLoanApprovalLetter(initialValues.loanApprovalLetter);
@@ -244,6 +256,10 @@ export default function OfferCreateForm(props) {
     propertyAddress: [],
     propertyId: [],
     buyerName: [],
+    buyerEmail: [],
+    buyerPhone: [],
+    ownerEmail: [],
+    ownerName: [],
     email: [],
     phone: [],
     loanApprovalLetter: [],
@@ -283,6 +299,10 @@ export default function OfferCreateForm(props) {
           propertyAddress,
           propertyId,
           buyerName,
+          buyerEmail,
+          buyerPhone,
+          ownerEmail,
+          ownerName,
           email,
           phone,
           loanApprovalLetter,
@@ -361,6 +381,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -396,6 +420,10 @@ export default function OfferCreateForm(props) {
               propertyAddress: value,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -431,6 +459,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId: value,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -466,6 +498,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName: value,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -489,6 +525,162 @@ export default function OfferCreateForm(props) {
         {...getOverrideProps(overrides, "buyerName")}
       ></TextField>
       <TextField
+        label="Buyer email"
+        isRequired={false}
+        isReadOnly={false}
+        value={buyerEmail}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail: value,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
+              email,
+              phone,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.buyerEmail ?? value;
+          }
+          if (errors.buyerEmail?.hasError) {
+            runValidationTasks("buyerEmail", value);
+          }
+          setBuyerEmail(value);
+        }}
+        onBlur={() => runValidationTasks("buyerEmail", buyerEmail)}
+        errorMessage={errors.buyerEmail?.errorMessage}
+        hasError={errors.buyerEmail?.hasError}
+        {...getOverrideProps(overrides, "buyerEmail")}
+      ></TextField>
+      <TextField
+        label="Buyer phone"
+        isRequired={false}
+        isReadOnly={false}
+        value={buyerPhone}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone: value,
+              ownerEmail,
+              ownerName,
+              email,
+              phone,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.buyerPhone ?? value;
+          }
+          if (errors.buyerPhone?.hasError) {
+            runValidationTasks("buyerPhone", value);
+          }
+          setBuyerPhone(value);
+        }}
+        onBlur={() => runValidationTasks("buyerPhone", buyerPhone)}
+        errorMessage={errors.buyerPhone?.errorMessage}
+        hasError={errors.buyerPhone?.hasError}
+        {...getOverrideProps(overrides, "buyerPhone")}
+      ></TextField>
+      <TextField
+        label="Owner email"
+        isRequired={false}
+        isReadOnly={false}
+        value={ownerEmail}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail: value,
+              ownerName,
+              email,
+              phone,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.ownerEmail ?? value;
+          }
+          if (errors.ownerEmail?.hasError) {
+            runValidationTasks("ownerEmail", value);
+          }
+          setOwnerEmail(value);
+        }}
+        onBlur={() => runValidationTasks("ownerEmail", ownerEmail)}
+        errorMessage={errors.ownerEmail?.errorMessage}
+        hasError={errors.ownerEmail?.hasError}
+        {...getOverrideProps(overrides, "ownerEmail")}
+      ></TextField>
+      <TextField
+        label="Owner name"
+        isRequired={false}
+        isReadOnly={false}
+        value={ownerName}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName: value,
+              email,
+              phone,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.ownerName ?? value;
+          }
+          if (errors.ownerName?.hasError) {
+            runValidationTasks("ownerName", value);
+          }
+          setOwnerName(value);
+        }}
+        onBlur={() => runValidationTasks("ownerName", ownerName)}
+        errorMessage={errors.ownerName?.errorMessage}
+        hasError={errors.ownerName?.hasError}
+        {...getOverrideProps(overrides, "ownerName")}
+      ></TextField>
+      <TextField
         label="Email"
         isRequired={false}
         isReadOnly={false}
@@ -501,6 +693,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email: value,
               phone,
               loanApprovalLetter,
@@ -536,6 +732,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone: value,
               loanApprovalLetter,
@@ -571,6 +771,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter: value,
@@ -608,6 +812,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -660,6 +868,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -723,6 +935,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -758,6 +974,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,
@@ -793,6 +1013,10 @@ export default function OfferCreateForm(props) {
               propertyAddress,
               propertyId,
               buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
               email,
               phone,
               loanApprovalLetter,

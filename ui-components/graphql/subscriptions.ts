@@ -11,7 +11,9 @@ export const onCreateOffer = /* GraphQL */ `
     onCreateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -19,6 +21,8 @@ export const onCreateOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId
@@ -108,7 +112,9 @@ export const onDeleteOffer = /* GraphQL */ `
     onDeleteOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -116,6 +122,8 @@ export const onDeleteOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId
@@ -205,7 +213,9 @@ export const onUpdateOffer = /* GraphQL */ `
     onUpdateOffer(buyer: $buyer, filter: $filter, seller: $seller) {
       appointment
       buyer
+      buyerEmail
       buyerName
+      buyerPhone
       conditions
       createdAt
       email
@@ -213,6 +223,8 @@ export const onUpdateOffer = /* GraphQL */ `
       loanApprovalLetter
       offerAmmount
       offerType
+      ownerEmail
+      ownerName
       phone
       propertyAddress
       propertyId

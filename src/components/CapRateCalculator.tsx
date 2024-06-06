@@ -29,7 +29,7 @@ const CapRateCalculator: React.FC<CapRateCalculatorProps> = () => {
             label='Investment Amount ($):'
             type="number"
             value={investmentAmount}
-            onChange={(e) => setInvestmentAmount(Number(e.target.value))}
+            onChange={(e) => setInvestmentAmount(parseInt(e.target.value))}
           />
       </div>
       <div>
@@ -37,7 +37,7 @@ const CapRateCalculator: React.FC<CapRateCalculatorProps> = () => {
             label='Monthly Cash Income ($):'
             type="number"
             value={monthlyCash}
-            onChange={(e) => setMonthlyCash(Number(e.target.value))}
+            onChange={(e) => setMonthlyCash(parseInt(e.target.value))}
           />
       </div>
       <div>
@@ -46,7 +46,7 @@ const CapRateCalculator: React.FC<CapRateCalculatorProps> = () => {
             label='Monthly Expenses ($):'
             type="number"
             value={monthlyExpense}
-            onChange={(e) => setMonthlyExpense(Number(e.target.value))}
+            onChange={(e) => setMonthlyExpense(parseInt(e.target.value))}
           />
       </div>
       {capRate !== null && (

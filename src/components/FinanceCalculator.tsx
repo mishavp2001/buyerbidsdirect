@@ -6,7 +6,7 @@ import { TextField, Box } from '@mui/material';
 interface LoanCalculatorChartProps { }
 
 const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
-  const [propertyPrice, setPropertyPrice] = useState<number>(450000);
+  const [propertyPrice, setPropertyPrice] = useState<number>(4500);
   const [buyerDownPayment, setBuyerDownPayment] = useState<number>(90000);
   const [interestRate, setInterestRate] = useState<number>(5);
   const [loanTerm, setLoanTerm] = useState<number>(30);
@@ -27,7 +27,7 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
             label="Property Price:"
             type="number"
             value={propertyPrice}
-            onChange={(e) => setPropertyPrice(Number(e.target.value))}
+            onChange={(e) => setPropertyPrice(parseInt(e.target.value))}
           />
         </Box>
         <Box mb={2}>
@@ -35,7 +35,7 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
             label="Buyer Down Payment:"
             type="number"
             value={buyerDownPayment}
-            onChange={(e) => setBuyerDownPayment(Number(e.target.value))}
+            onChange={(e) => setBuyerDownPayment(parseInt(e.target.value))}
           />
         </Box>
         <Box mb={2}>
@@ -43,7 +43,7 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
             label="Financed Interest Rate (%):"
             type="number"
             value={interestRate}
-            onChange={(e) => setInterestRate(Number(e.target.value))}
+            onChange={(e) => setInterestRate(parseInt(e.target.value))}
           />
         </Box>
         <Box mb={2}>
@@ -51,7 +51,7 @@ const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
             label="Seller Financed Loan Term (years):"
             type="number"
             value={loanTerm}
-            onChange={(e) => setLoanTerm(Number(e.target.value))}
+            onChange={(e) => setLoanTerm(parseInt(e.target.value))}
           />
         </Box>
       </Box>
