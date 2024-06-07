@@ -186,8 +186,10 @@ export default function OfferCreateForm(props) {
   } = props;
   const initialValues = {
     offerAmmount: "",
-    propertyAddress: "",
-    propertyId: "",
+    propertyAddress: overrides?.propertyAddress?.value,
+    propertyId: overrides?.propertyId?.value,
+    seller: overrides?.seller?.value,
+    buyer: overrides?.buyer?.value,
     buyerName: "",
     buyerEmail: "",
     buyerPhone: "",
@@ -196,9 +198,7 @@ export default function OfferCreateForm(props) {
     loanApprovalLetter: "",
     offerType: "",
     conditions: [],
-    appointment: "",
-    seller: "",
-    buyer: "",
+    appointment: ""
   };
   const [offerAmmount, setOfferAmmount] = React.useState(
     initialValues.offerAmmount
