@@ -16,6 +16,7 @@ import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { ReactMarker } from './ReactMaker';
 import Search from '/search.svg';
+import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
 
 
 const client = generateClient<Schema>();
@@ -30,15 +31,15 @@ const addMArker: any = (text: string) => {
   return div.innerHTML;
 }
 
-
 const MapWithItems: React.FC = () => {
 
   const [zipCode, setZipCode] = useState<string | null>(() => {
     const savedZip = localStorage.getItem('zipCode');
     return savedZip ? JSON.parse(savedZip) : '';
   });
-  const [itemsForSale, setItemsForSale] = useState<any[]>([]);
   const [position, setPosition] = useState<[number, number] | null>(null);
+  //const [number, setNumber] = useState<number>(0);
+
   const [error, setError] = useState<string | null>(null);
   const [showMap, setShowMap] = useState<boolean>(() => {
     const savedPreference = localStorage.getItem('showMap');
@@ -63,13 +64,15 @@ const MapWithItems: React.FC = () => {
     const subscription = client.models.Property.observeQuery(
       { authMode: "identityPool" }
     ).subscribe({
-      next: (data) => setProperties(data.items),
+      next: (data) => {
+        position && setProperties(filterPropertiesWithinRadius(data?.items, position, 15))
+      },
       error: (err) => setError(err.message),
     });
 
     // Cleanup the subscription on unmount
     return () => subscription.unsubscribe();
-  }, []);
+  }, [position]);
 
   const handleSavePosition = async () => {
     if (zipCode) {
@@ -96,7 +99,7 @@ const MapWithItems: React.FC = () => {
   };
 
   useEffect(() => {
-    if (showMap && !userPosition) {
+    if (!userPosition) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (geoPosition) => {
@@ -106,21 +109,17 @@ const MapWithItems: React.FC = () => {
       } else {
         setError('Geolocation is not supported by this browser.');
       }
-    } else if (userPosition){
+    } else {
       const savedPosition: [number, number] = [userPosition.latitude, userPosition.longitude];
       setPosition(savedPosition);
     }
-
-    setItemsForSale(properties);
-
-  }, [showMap, userPosition, properties]);
-
+  }, [userPosition]);
 
 
   const toggleView = () => {
     setShowMap(!showMap);
   };
-
+  
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -148,7 +147,7 @@ const MapWithItems: React.FC = () => {
           <MapContainer center={position} zoom={13} style={{ height: '70vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
             <ReactMarker cords={userPosition} />
             {
-              itemsForSale.map(item => (
+              properties.map(item => (
                 item?.position &&
                 <Marker
                   icon={divIcon({
