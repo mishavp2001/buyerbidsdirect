@@ -24,8 +24,6 @@ export declare type OfferCreateFormInputValues = {
     buyerPhone?: string;
     ownerEmail?: string;
     ownerName?: string;
-    email?: string;
-    phone?: string;
     loanApprovalLetter?: string;
     offerType?: string;
     conditions?: string[];
@@ -42,8 +40,6 @@ export declare type OfferCreateFormValidationValues = {
     buyerPhone?: ValidationFunction<string>;
     ownerEmail?: ValidationFunction<string>;
     ownerName?: ValidationFunction<string>;
-    email?: ValidationFunction<string>;
-    phone?: ValidationFunction<string>;
     loanApprovalLetter?: ValidationFunction<string>;
     offerType?: ValidationFunction<string>;
     conditions?: ValidationFunction<string>;
@@ -62,8 +58,6 @@ export declare type OfferCreateFormOverridesProps = {
     buyerPhone?: PrimitiveOverrideProps<TextFieldProps>;
     ownerEmail?: PrimitiveOverrideProps<TextFieldProps>;
     ownerName?: PrimitiveOverrideProps<TextFieldProps>;
-    email?: PrimitiveOverrideProps<TextFieldProps>;
-    phone?: PrimitiveOverrideProps<TextFieldProps>;
     loanApprovalLetter?: PrimitiveOverrideProps<TextFieldProps>;
     offerType?: PrimitiveOverrideProps<SelectFieldProps>;
     conditions?: PrimitiveOverrideProps<TextFieldProps>;

@@ -12,14 +12,12 @@ export const getOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
-      email
       id
       loanApprovalLetter
       offerAmmount
       offerType
       ownerEmail
       ownerName
-      phone
       propertyAddress
       propertyId
       seller
@@ -105,14 +103,12 @@ export const listOffers = /* GraphQL */ `
         buyerPhone
         conditions
         createdAt
-        email
         id
         loanApprovalLetter
         offerAmmount
         offerType
         ownerEmail
         ownerName
-        phone
         propertyAddress
         propertyId
         seller

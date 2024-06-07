@@ -37,8 +37,6 @@ const schema = a.schema({
       buyerPhone: a.string(),
       ownerEmail: a.string(),
       ownerName: a.string(),
-      email: a.string(),
-      phone: a.string(),
       loanApprovalLetter: a.string(), 
       offerType: a.enum(['cash', 'financing', 'sellerfinancing', 'leaseToPurchise']), 
       conditions: a.string().array(),

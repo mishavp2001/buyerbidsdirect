@@ -56,9 +56,9 @@ const MakeOffer: React.FC = () => {
 
   const columns: GridColDef[] = [
     { field: 'propertyAddress', headerName: 'Address', width: 300 },
-    { field: 'phone', headerName: 'Phone', width: 150 },
-    { field: 'email', headerName: 'Email', width: 150 },
-    { field: 'offerAmmount', headerName: 'Price', width: 110, type: 'number' },
+    { field: 'buyerPhone', headerName: 'Buyer Phone', width: 150 },
+    { field: 'buyerEmail', headerName: 'Buyer Email', width: 150 },
+    { field: 'offerAmmount', headerName: 'Offer Ammount', width: 110, type: 'number' },
     { field: 'conditions', headerName: 'Conditions', width: 110, type: 'string' },
     { field: 'offerType', headerName: 'Type', width: 100, type: 'string' },
     { field: 'appointment', headerName: 'Apointment', width: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
@@ -96,6 +96,7 @@ const MakeOffer: React.FC = () => {
                     buyer: { value: user?.userId },
                     propertyId: { value: propertyId },
                     propertyAddress: { value: address },
+                    
                     seller: { value: ownerId }
                   }
                 }

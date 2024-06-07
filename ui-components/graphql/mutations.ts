@@ -15,14 +15,12 @@ export const createOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
-      email
       id
       loanApprovalLetter
       offerAmmount
       offerType
       ownerEmail
       ownerName
-      phone
       propertyAddress
       propertyId
       seller
@@ -115,14 +113,12 @@ export const deleteOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
-      email
       id
       loanApprovalLetter
       offerAmmount
       offerType
       ownerEmail
       ownerName
-      phone
       propertyAddress
       propertyId
       seller
@@ -215,14 +211,12 @@ export const updateOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
-      email
       id
       loanApprovalLetter
       offerAmmount
       offerType
       ownerEmail
       ownerName
-      phone
       propertyAddress
       propertyId
       seller
