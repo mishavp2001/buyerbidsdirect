@@ -26,12 +26,12 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', width: 200, flex: 1, headerClassName: 'header-grid'},
-    { field: 'price', headerName: 'Price', width: 150, flex: 1, type: 'number', headerClassName: 'header-grid' },
-    { field: 'bedrooms', headerName: 'Bedrooms', width: 120, flex: 1,type: 'number', headerClassName: 'header-grid' },
-    { field: 'bathrooms', headerName: 'Bathrooms', width: 120,flex: 1, type: 'number', headerClassName: 'header-grid' },
-    { field: 'squareFootage', headerName: 'Square Footage', width: 150,flex: 1, type: 'number', headerClassName: 'header-grid' },
-    { field: 'ownerContact', headerName: 'Contact', width: 200, flex: 1, headerClassName: 'header-grid',
+    { field: 'address', headerName: 'Address', minWidth: 250, flex: 1, headerClassName: 'header-grid'},
+    { field: 'price', headerName: 'Price', width: 150, type: 'number', headerClassName: 'header-grid' },
+    { field: 'bedrooms', headerName: 'Bedrooms', width: 120,type: 'number', headerClassName: 'header-grid' },
+    { field: 'bathrooms', headerName: 'Bathrooms', width: 120, type: 'number', headerClassName: 'header-grid' },
+    { field: 'squareFootage', headerName: 'Square Footage', width: 150, type: 'number', headerClassName: 'header-grid' },
+    { field: 'ownerContact', headerName: 'Contact', minWidth: 150, headerClassName: 'header-grid',
       renderCell: (params: GridRenderCellParams) => {
         return (
             <>{params.row.ownerContact}</>
@@ -42,7 +42,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
       field: 'action',
       headerName: 'Action',
       headerClassName: 'header-grid',
-      flex: 1,
+      minWidth: 150,
       renderCell: (params: GridRenderCellParams) => {
         if (user?.username === params.row.owner) {
           return (
