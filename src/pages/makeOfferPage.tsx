@@ -6,6 +6,7 @@ import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import {Paper, Link } from '@mui/material';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
+import ModalClose from '@mui/joy/ModalClose';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import { Link as RouterLink } from 'react-router-dom';
@@ -84,6 +85,7 @@ const MakeOffer: React.FC = () => {
       </Paper>
       <Modal open={open} onClose={() => { navigate("/offers", { replace: true }); }}>
         <ModalDialog minWidth='90%'>
+          <ModalClose />
           <DialogTitle> {offerId ? `Offer for:" ${address || ""} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}

@@ -9,6 +9,7 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
+import ModalClose from '@mui/joy/ModalClose';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
@@ -94,6 +95,7 @@ const SellProperty: React.FC = () => {
     </Paper>
     <Modal open={open} onClose={() => { navigate("/sales", { replace: true }); }}>
       <ModalDialog  minWidth='90%'>
+        <ModalClose />
         <DialogTitle> Sell {propertyId}</DialogTitle>
         <DialogContent>
           {error && <p>{error}</p>}
