@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background: linear-gradient(180deg, rgb(38, 88, 128), rgb(255, 255, 255));
+  background: linear-gradient(269deg, rgb(118 156 197), rgb(255, 255, 255));
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   height: 100vh;
   width: 100vw;
@@ -133,6 +133,10 @@ a {
 }
 
 .calc-div>div {
-
   margin: 2em 0em;
+}
+
+.header-grid {
+  background-color: rgb(87, 150, 177);
+  color: aliceblue;
 }

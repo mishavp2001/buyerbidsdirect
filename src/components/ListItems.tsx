@@ -26,17 +26,23 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', width: 200 },
-    { field: 'listingOwner', headerName: 'Owner', width: 200 },
-    { field: 'ownerContact', headerName: 'Contact', width: 200 },
-    { field: 'price', headerName: 'Price', width: 150, type: 'number' },
-    { field: 'bedrooms', headerName: 'Bedrooms', width: 120, type: 'number' },
-    { field: 'bathrooms', headerName: 'Bathrooms', width: 120, type: 'number' },
-    { field: 'squareFootage', headerName: 'Square Footage', width: 150, type: 'number' },
+    { field: 'address', headerName: 'Address', width: 200, flex: 1, headerClassName: 'header-grid'},
+    { field: 'price', headerName: 'Price', width: 150, flex: 1, type: 'number', headerClassName: 'header-grid' },
+    { field: 'bedrooms', headerName: 'Bedrooms', width: 120, flex: 1,type: 'number', headerClassName: 'header-grid' },
+    { field: 'bathrooms', headerName: 'Bathrooms', width: 120,flex: 1, type: 'number', headerClassName: 'header-grid' },
+    { field: 'squareFootage', headerName: 'Square Footage', width: 150,flex: 1, type: 'number', headerClassName: 'header-grid' },
+    { field: 'ownerContact', headerName: 'Contact', width: 200, flex: 1, headerClassName: 'header-grid',
+      renderCell: (params: GridRenderCellParams) => {
+        return (
+            <>{params.row.ownerContact}</>
+        )  
+      }
+    },
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
+      headerClassName: 'header-grid',
+      flex: 1,
       renderCell: (params: GridRenderCellParams) => {
         if (user?.username === params.row.owner) {
           return (
@@ -55,7 +61,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   ];
   return (
     <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
-      <Box sx={{ height: '100%', width: '100%' }}>
+      <Box sx={{ height: '100%'}}>
         <DataGrid
           onCellClick={(params)=>{ if (params.field !== 'action') {navigate(`/property/${params.id}`, { replace: true });}}}
           rows={properties}

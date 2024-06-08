@@ -6,7 +6,7 @@ import { TextField, Box } from '@mui/material';
 interface LoanCalculatorChartProps { }
 
 const LoanCalculatorChart: React.FC<LoanCalculatorChartProps> = () => {
-  const [propertyPrice, setPropertyPrice] = useState<number>(4500);
+  const [propertyPrice, setPropertyPrice] = useState<number>(450000);
   const [buyerDownPayment, setBuyerDownPayment] = useState<number>(90000);
   const [interestRate, setInterestRate] = useState<number>(5);
   const [loanTerm, setLoanTerm] = useState<number>(30);
