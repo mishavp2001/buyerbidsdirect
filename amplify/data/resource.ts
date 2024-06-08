@@ -21,7 +21,7 @@ const schema = a.schema({
       email: a.string(),
       phone: a.string(),
       password: a.string(),
-      loanApprovalLetter: a.string(),  // Assuming a.file() represents file upload
+      loanApprovalLetter: a.string(),
       sellerFinancingOptions: a.string(),
       chargePerHour: a.float(),
       userType: a.enum(['buyer', 'seller', 'attorney', 'agent', 'notary']),  // Using enum for user type

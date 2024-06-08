@@ -37,14 +37,15 @@ const MapWithItems: React.FC = () => {
     const savedZip = localStorage.getItem('zipCode');
     return savedZip ? JSON.parse(savedZip) : '';
   });
-  const [position, setPosition] = useState<[number, number] | null>(null);
+  const defaultocation:[number, number] = [38.76315823280579, -121.16611267496815];
+  const [position, setPosition] = useState<[number, number]>(defaultocation);
   //const [number, setNumber] = useState<number>(0);
 
   const [error, setError] = useState<string | null>(null);
   const [userPosition, setUserPosition] = useState<{
     latitude: number;
     longitude: number;
-  } | null>(() => {
+  } >(() => {
     const savedPosition = localStorage.getItem('userPosition');
     return savedPosition ? JSON.parse(savedPosition) : null;
   });
@@ -108,11 +109,11 @@ const MapWithItems: React.FC = () => {
   }, [userPosition]);
   
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className='list-items' style={{'width': '95vw' }}>Error: {error}</div>;
   }
 
   if (!properties) {
-    return <div>Loading...</div>;
+    return <div className='list-items' style={{'width': '95vw' }}>Loading...</div>;
   }
 
   return (
@@ -134,9 +135,7 @@ const MapWithItems: React.FC = () => {
         </Button>
       </div>
 
-      {
-        position && (
-          <div style={{ height: '40vh', width: '90vw', margin: '1em 1em 1em 1em' }}><MapContainer center={position} zoom={13} style={{ height: '40vh'}}>
+      <div style={{ height: '40vh', width: '90vw', margin: '1em 1em 1em 1em' }}><MapContainer center={position} zoom={13} style={{ height: '40vh'}}>
             <ReactMarker cords={userPosition} />
             {properties.map(item => (
               item?.position &&
@@ -179,10 +178,10 @@ const MapWithItems: React.FC = () => {
                 </Popup>
               </Marker>
             ))}
-          </MapContainer><ListItems properties={properties} /></div>
-        )
-      }
-    </div >
+          </MapContainer><ListItems properties={properties} />
+      </div>
+
+     </div >
   );
 };
 
