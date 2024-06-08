@@ -119,6 +119,11 @@ const MapWithItems: React.FC = () => {
     <div className='list-items' style={{'width': '95vw' }}>
       <div style={{ margin: '1em', position: 'relative', 'width': 'fit-content' }}>
         <TextField
+          onBlur={handleSavePosition}
+          onKeyDown={(event) => { 
+             if (event.keyCode === 13) {
+              handleSavePosition();
+          }}}
           label="State, County, City, Zip Code..."
           value={zipCode}
           onChange={(e) => setZipCode(e.target.value)}
