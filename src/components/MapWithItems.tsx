@@ -148,22 +148,21 @@ const MapWithItems: React.FC = () => {
                 <p>{item?.position}</p>
                 <Popup>
                   <div className='popupDiv'>
+                 
                       <Carousel className='imgCarousel' height={200}>
                         {item?.photos?.length && item?.photos?.map(
                           (image: string, i: number) => {
-                            return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />;
+                            return <Link to={`/property/${item.id}`}><StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} /></Link>;
                           })}
                       </Carousel>
-                      <Link to={`/property/${item.id}`}>
+                      <Link to={`/property/${item.id}`}>     
                       <h1>
                         <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                       </h1>
-
                       <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
                         - {item?.description}
                       </p>
-                    </Link>
-                    <>
+                      </Link>
                       {user?.username === item.owner ? (
                         <Link to={`/sales/${item.id}`}>
                           Edit
@@ -173,7 +172,6 @@ const MapWithItems: React.FC = () => {
                           Make Offer
                         </Link>
                       )}
-                    </>
                   </div>
                 </Popup>
               </Marker>
