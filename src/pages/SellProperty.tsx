@@ -1,6 +1,6 @@
 // src/components/Makeproperty.tsx
-import React , {useEffect, useState} from 'react';
-import { Container,Typography, Paper, Link } from '@mui/material';
+import React, { useEffect, useState } from 'react';
+import { Container, Typography, Paper, Link } from '@mui/material';
 import PropertyCreateForm from '../../ui-components/PropertyCreateForm';
 import PropertyUpdateForm from '../../ui-components/PropertyUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -40,11 +40,11 @@ const SellProperty: React.FC = () => {
       next: (data) => setProperties(data.items),
       error: (err) => setError(err.message),
     });
-  
+
     // Cleanup the subscription on unmount
     return () => subscription.unsubscribe();
   }, [propertyId]);
-  
+
 
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const SellProperty: React.FC = () => {
 
   }, [propertyId]);
 
-  
+
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', width: 200 },
     { field: 'listingOwner', headerName: 'Owner', width: 200 },
@@ -81,43 +81,41 @@ const SellProperty: React.FC = () => {
 
   return (
     <Container component="main">
-    <Paper elevation={3} sx={{ padding: 3 }}>
-      <Typography component="h1" variant="h5">My properties for sale:</Typography>
-      <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
-        <Link component={RouterLink} to={`/sales/new`}>
+      <Paper elevation={3} sx={{ padding: 3 }}>
+        <Typography component="h1" variant="h5">My properties for sale:</Typography>
+        <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+          <Link component={RouterLink} to={`/sales/new`}>
             Sell new
           </Link>
-        <DataGrid
-          rows={properties}
-          columns={columns}
-        />
+          <DataGrid
+            rows={properties}
+            columns={columns}
+          />
+        </Paper>
       </Paper>
-    </Paper>
-    <Modal open={open} onClose={() => { navigate("/sales", { replace: true }); }}>
-      <ModalDialog  minWidth='90%'>
-        <ModalClose />
-        <DialogTitle> Sell {propertyId}</DialogTitle>
-        <DialogContent>
-          {error && <p>{error}</p>}
-          <p>Hey {user.username}</p>
+      <Modal open={open} onClose={() => { navigate("/sales", { replace: true }); }}>
+        <ModalDialog minWidth='90%'>
+          <ModalClose />
+          <DialogTitle style={{ 'display': 'none' }}> {user.username} please add details for {propertyId}</DialogTitle>
+          <DialogContent>
+            {error && <p>{error}</p>}
+            {
+              propertyId !== 'new' ?
+                <>
+                  <h3>Edit your property details </h3>
+                  <PropertyUpdateForm id={propertyId} onSuccess={() => { navigate("/sales", { replace: true }); }} />
+                </>
+                :
+                <>
+                  <h3>Sell your property </h3>
+                  <PropertyCreateForm onSuccess={() => { navigate("/sales", { replace: true }); }} />
 
-          {
-          propertyId !=='new' ?
-            <>
-              <h3>Edit your property details </h3>
-              <PropertyUpdateForm id={propertyId}  onSuccess={() => { navigate("/sales", { replace: true }); }} />
-            </>
-            :
-            <>
-              <h3>Sell your property </h3>
-              <PropertyCreateForm onSuccess={() => { navigate("/sales", { replace: true }); }} />
-
-            </>
-        }
-        </DialogContent>
-      </ModalDialog>
-    </Modal>
-  </Container>
+                </>
+            }
+          </DialogContent>
+        </ModalDialog>
+      </Modal>
+    </Container>
 
   );
 };
