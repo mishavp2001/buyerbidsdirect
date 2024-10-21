@@ -10,9 +10,6 @@ const NavigationBar: React.FC = () => {
         <AppBar position="static">
             <Toolbar>
                 <Link to="/" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Home
-                </Link>
-                <Link to="/offers" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Buy
                 </Link>
                 <Link to="/sales" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
