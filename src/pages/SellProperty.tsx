@@ -1,6 +1,6 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Paper, Link } from '@mui/material';
+import { Container, Typography, Paper, Link, Button } from '@mui/material';
 import PropertyCreateForm from '../../ui-components/PropertyCreateForm';
 import PropertyUpdateForm from '../../ui-components/PropertyUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -58,17 +58,17 @@ const SellProperty: React.FC = () => {
 
 
   const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', width: 200 },
-    { field: 'listingOwner', headerName: 'Owner', width: 200 },
-    { field: 'ownerContact', headerName: 'Contact', width: 200 },
-    { field: 'price', headerName: 'Price', width: 150, type: 'number' },
-    { field: 'bedrooms', headerName: 'Bedrooms', width: 120, type: 'number' },
-    { field: 'bathrooms', headerName: 'Bathrooms', width: 120, type: 'number' },
-    { field: 'squareFootage', headerName: 'Square Footage', width: 150, type: 'number' },
+    { field: 'address', headerName: 'Address', flex: 300 },
+    { field: 'listingOwner', headerName: 'Owner', flex: 200 },
+    { field: 'ownerContact', headerName: 'Contact', flex: 200 },
+    { field: 'price', headerName: 'Price', flex: 150, type: 'number' },
+    { field: 'bedrooms', headerName: 'Bedrooms', flex: 120, type: 'number' },
+    { field: 'bathrooms', headerName: 'Bathrooms', flex: 120, type: 'number' },
+    { field: 'squareFootage', headerName: 'Square Footage', flex: 150, type: 'number' },
     {
       field: 'action',
       headerName: 'Action',
-      width: 150,
+      flex: 150,
       renderCell: (params: GridRenderCellParams) => {
         return (
           <Link component={RouterLink} to={`/sales/${params.row.id}`}>
@@ -82,17 +82,21 @@ const SellProperty: React.FC = () => {
   return (
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">My properties for sale:</Typography>
-        <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
-          <Link component={RouterLink} to={`/sales/new`}>
-            Sell new
-          </Link>
+        <Typography component="h1" variant="h5">My properties:
+        <Button variant="contained" style={{ float: 'right' }} component={RouterLink} to={`/sales/new`}>
+          Add new
+        </Button>
+  </Typography>
+
+        <Paper elevation={3} sx={{marginTop:'15px', padding:'15px 10px', height: 400, width: '100%' }}>
           <DataGrid
             rows={properties}
             columns={columns}
           />
+
         </Paper>
       </Paper>
+
       <Modal open={open} onClose={() => { navigate("/sales", { replace: true }); }}>
         <ModalDialog minWidth='90%'>
           <ModalClose />

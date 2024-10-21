@@ -56,17 +56,17 @@ const MakeOffer: React.FC = () => {
 
 
   const columns: GridColDef[] = [
-    { field: 'propertyAddress', headerName: 'Address', width: 300 },
-    { field: 'buyerPhone', headerName: 'Buyer Phone', width: 150 },
-    { field: 'buyerEmail', headerName: 'Buyer Email', width: 150 },
-    { field: 'offerAmmount', headerName: 'Offer Ammount', width: 110, type: 'number' },
-    { field: 'conditions', headerName: 'Conditions', width: 110, type: 'string' },
-    { field: 'offerType', headerName: 'Type', width: 100, type: 'string' },
-    { field: 'appointment', headerName: 'Apointment', width: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
+    { field: 'propertyAddress', headerName: 'Address', flex: 300 },
+    { field: 'buyerPhone', headerName: 'Buyer Phone', flex: 150 },
+    { field: 'buyerEmail', headerName: 'Buyer Email', flex: 150 },
+    { field: 'offerAmmount', headerName: 'Offer Ammount', flex: 110, type: 'number' },
+    { field: 'conditions', headerName: 'Conditions', flex: 110, type: 'string' },
+    { field: 'offerType', headerName: 'Type', flex: 100, type: 'string' },
+    { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
     {
       field: 'action',
       headerName: 'Action',
-      width: 60,
+      flex: 60,
       renderCell: (params: GridRenderCellParams) => <Link component={RouterLink} to={`/offers/${params.row.id}/${params.row.propertyAddress}`}>
         Edit
       </Link>,
