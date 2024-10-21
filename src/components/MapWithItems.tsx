@@ -15,9 +15,10 @@ import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
 import { ReactMarker } from './ReactMaker';
+import { FullscreenControl } from "react-leaflet-fullscreen";
 import Search from '/search.svg';
 import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
-
+import "react-leaflet-fullscreen/styles.css";
 
 const client = generateClient<Schema>();
 const div = document.createElement('div');
@@ -176,6 +177,7 @@ const MapWithItems: React.FC = () => {
                 </Popup>
               </Marker>
             ))}
+          <FullscreenControl />
           </MapContainer><ListItems properties={properties} />
       </div>
 
