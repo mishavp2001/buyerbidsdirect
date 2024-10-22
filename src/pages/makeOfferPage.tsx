@@ -3,7 +3,7 @@ import OfferCreateForm from "../../ui-components/OfferCreateForm";
 import OfferUpdateForm from "../../ui-components/OfferUpdateForm"
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import {Paper, Link } from '@mui/material';
+import { Paper, Link } from '@mui/material';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import ModalClose from '@mui/joy/ModalClose';
@@ -35,7 +35,7 @@ const MakeOffer: React.FC = () => {
         ...(typeof offerId === 'string' ? [{ id: { contains: offerId } }] : [])
       ]
     };
-  
+
     const subscription = client.models.Offer.observeQuery({
       filter,
       authMode: "userPool"
@@ -51,7 +51,7 @@ const MakeOffer: React.FC = () => {
     // Cleanup the subscription on unmount
     return () => subscription.unsubscribe();
   }, [offerId]);
-  
+
 
 
 
@@ -86,10 +86,10 @@ const MakeOffer: React.FC = () => {
       <Modal open={open} onClose={() => { navigate("/offers", { replace: true }); }}>
         <ModalDialog minWidth='90%'>
           <ModalClose />
-          <DialogTitle> {offerId ? `Offer for:" ${address || ""} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
+          <DialogTitle> {offerId ? `Offer for: ${address || "No address"} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}
-            <p>{user.userId} - {ownerId}</p>
+            <p style={{ 'display': 'none' }}>{user.userId} - {ownerId}</p>
 
             {offerId === 'null' ?
               <OfferCreateForm
@@ -97,7 +97,9 @@ const MakeOffer: React.FC = () => {
                   {
                     buyer: { value: user?.userId },
                     propertyId: { value: propertyId },
-                    propertyAddress: { value: address }, 
+                    propertyAddress: { value: address },
+                    ownerName: { value: ownerId },
+                    ownerEmail: { value: ownerId },
                     seller: { value: ownerId }
                   }
                 }
