@@ -17,5 +17,18 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script type="text/javascript">
+      (function(w, d, x, id){
+        s=d.createElement('script');
+        s.src='https://dtn7rvxwwlhud.cloudfront.net/amazon-connect-chat-interface-client.js';
+        s.async=1;
+        s.id=id;
+        d.getElementsByTagName('head')[0].appendChild(s);
+        w[x] =  w[x] || function() { (w[x].ac = w[x].ac || []).push(arguments) };
+      })(window, document, 'amazon_connect', '68cb1235-12ac-4740-b482-28a1c5ebe1fc');
+      amazon_connect('styles', { iconType: 'CHAT_VOICE', openChat: { color: '#ffffff', backgroundColor: '#123456' }, closeChat: { color: '#ffffff', backgroundColor: '#123456'} });
+      amazon_connect('snippetId', 'QVFJREFIaWFZYXRVSlpIekdkUUg5YXhZenVQMktKRXNIWTVFQWpBYVErTEdzRnpvZHdITTlTdkFjMUFJNXpTNTl6empET2R3QUFBQWJqQnNCZ2txaGtpRzl3MEJCd2FnWHpCZEFnRUFNRmdHQ1NxR1NJYjNEUUVIQVRBZUJnbGdoa2dCWlFNRUFTNHdFUVFNSGUrWFBqbDNvWmhSb2krOUFnRVFnQ3VMYzl5R2ZIUndNSFV5eUVhVmlXbm9KcGR3ZUZ0QmJGR3o2ZGFOMlpzRmlYcXNwU1EzbkxLRHpZSjU6OkRxa3Rxc2RBMUdHQitwd1d2aGlCcStSVCsxSHlJZE05MTRBRGpJQjVrcEFyNElmNzlUc0JIWFJNTUltSGdIWExqUmdQQXRvQktFdHhYV2lwSzQ2WWk2SHRQVnRRSTVrNkNnRjVtRURSYUUvUG5xTXJBOTUrbnlsMnVPUDBFa1ZHbmgyNnR5MiswRkNpT2VvaERwU0ZWWWYvRVg5cDVKND0=');
+      amazon_connect('supportedMessagingContentTypes', [ 'text/plain', 'text/markdown', 'application/vnd.amazonaws.connect.message.interactive', 'application/vnd.amazonaws.connect.message.interactive.response' ]);
+    </script>
   </body>
 </html>
