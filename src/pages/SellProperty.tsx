@@ -97,21 +97,22 @@ const SellProperty: React.FC = () => {
         </Paper>
       </Paper>
 
-      <Modal open={open} onClose={() => { navigate("/sales", { replace: true }); }}>
-        <ModalDialog minWidth='90%'>
-          <ModalClose />
-          <DialogTitle style={{ 'display': 'none' }}> {user.username} please add details for {propertyId}</DialogTitle>
+      <Modal 
+        open={open} 
+        onClose={() => { navigate("/sales", { replace: true }); }}
+      >
+        <ModalDialog minWidth='90%' >
+          <ModalClose     style={{margin: '10px'}}/>
+          <DialogTitle><h3>Edit property details </h3></DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}
             {
               propertyId !== 'new' ?
                 <>
-                  <h3>Edit your property details </h3>
                   <PropertyUpdateForm id={propertyId} onSuccess={() => { navigate("/sales", { replace: true }); }} />
                 </>
                 :
                 <>
-                  <h3>Sell your property </h3>
                   <PropertyCreateForm onSuccess={() => { navigate("/sales", { replace: true }); }} />
 
                 </>
