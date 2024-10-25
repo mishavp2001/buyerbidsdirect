@@ -4,8 +4,7 @@ import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
-import ListItemIcon from '@mui/material/ListItemIcon';
+import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
@@ -18,6 +17,7 @@ export default function AccountMenu() {
     ]);
 
     function handleLogOut() {
+        setAnchorEl(null);
         signOut();
     }
 
@@ -83,35 +83,44 @@ export default function AccountMenu() {
                 transformOrigin={{ horizontal: 'right', vertical: 'top' }}
                 anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
-                <MenuItem onClick={handleClose}>
-                    <Avatar /><Link to="/profile">{user?.signInDetails?.loginId}</Link>
+                <MenuItem onClick={handleClose} {...{ component: Link, to: "/profile" }} >
+                    <ListItemIcon>
+                        <Avatar />
+                    </ListItemIcon>
+                    <ListItemText>
+                        {user?.signInDetails?.loginId}
+                    </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleClose} {...{ component: Link, to: "/offers" }} >
                     <ListItemIcon>
                         <Icon
                             ariaLabel="Flag"
                             pathData="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"
-                            color="rebeccapurple" />                </ListItemIcon>
-                    <Link to="/offers" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                            color="rebeccapurple" />
+                    </ListItemIcon>
+                    <ListItemText>
                         Offers
-                    </Link>
-
+                    </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleClose} {...{ component: Link, to: "/sales" }} >
                     <ListItemIcon>
                         <House />
                     </ListItemIcon>
 
-                    <Link to="/sales" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                    <ListItemText>
                         Properties
-                    </Link>
+                    </ListItemText>
+
                 </MenuItem>
                 <Divider />
-                <MenuItem onClick={handleClose}>
+                <MenuItem onClick={handleLogOut}>
                     <ListItemIcon>
                         <Logout fontSize="small" />
                     </ListItemIcon>
-                    <Link to='/' onClick={handleLogOut}>Logout</Link>
+                    <ListItemText>
+                        Logout
+                    </ListItemText>
+
                 </MenuItem>
             </Menu>
         </React.Fragment>
