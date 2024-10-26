@@ -1296,37 +1296,6 @@ export default function PropertyUpdateForm(props) {
           ></TextField>
         </ArrayField>
       </div>
-      <Flex
-        className="merge-col-field"
-        justifyContent="space-between"
-        {...getOverrideProps(overrides, "CTAFlex")}
-      >
-        <Button
-          children="Reset"
-          type="reset"
-          onClick={(event) => {
-            event.preventDefault();
-            resetStateValues();
-          }}
-          isDisabled={!(idProp || propertyModelProp)}
-          {...getOverrideProps(overrides, "ResetButton")}
-        ></Button>
-        <Flex
-          gap="15px"
-          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
-        >
-          <Button
-            children="Submit"
-            type="submit"
-            variation="primary"
-            isDisabled={
-              !(idProp || propertyModelProp) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
-            {...getOverrideProps(overrides, "SubmitButton")}
-          ></Button>
-        </Flex>
-      </Flex>
       <TextField
         label="Listing owner"
         isRequired={true}
@@ -1415,6 +1384,37 @@ export default function PropertyUpdateForm(props) {
         hasError={errors.ownerContact?.hasError}
         {...getOverrideProps(overrides, "ownerContact")}
       ></TextField>
+      <Flex
+        className="merge-col-field"
+        justifyContent="space-between"
+        {...getOverrideProps(overrides, "CTAFlex")}
+      >
+        <Button
+          children="Reset"
+          type="reset"
+          onClick={(event) => {
+            event.preventDefault();
+            resetStateValues();
+          }}
+          isDisabled={!(idProp || propertyModelProp)}
+          {...getOverrideProps(overrides, "ResetButton")}
+        ></Button>
+        <Flex
+          gap="15px"
+          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
+        >
+          <Button
+            children="Submit"
+            type="submit"
+            variation="primary"
+            isDisabled={
+              !(idProp || propertyModelProp) ||
+              Object.values(errors).some((e) => e?.hasError)
+            }
+            {...getOverrideProps(overrides, "SubmitButton")}
+          ></Button>
+        </Flex>
+      </Flex>
       <TextAreaField
         label="Position"
         style={{ 'display': 'none' }}

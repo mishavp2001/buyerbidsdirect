@@ -59,12 +59,12 @@ const SellProperty: React.FC = () => {
 
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', flex: 300 },
-    { field: 'listingOwner', headerName: 'Owner', flex: 200 },
-    { field: 'ownerContact', headerName: 'Contact', flex: 200 },
+    { field: 'description', headerName: 'Description', flex: 200 },
     { field: 'price', headerName: 'Price', flex: 150, type: 'number' },
     { field: 'bedrooms', headerName: 'Bedrooms', flex: 120, type: 'number' },
     { field: 'bathrooms', headerName: 'Bathrooms', flex: 120, type: 'number' },
     { field: 'squareFootage', headerName: 'Square Footage', flex: 150, type: 'number' },
+    { field: 'amenities', headerName: 'Amenities', flex: 200 },
     {
       field: 'action',
       headerName: 'Action',

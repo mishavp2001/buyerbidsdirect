@@ -75,7 +75,7 @@ const MakeOffer: React.FC = () => {
   return (
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Offers:</Typography>
+        <Typography component="h1" variant="h5">My Buy Offers:</Typography>
         <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
           <DataGrid
             rows={offers}
@@ -99,7 +99,7 @@ const MakeOffer: React.FC = () => {
                     propertyId: { value: propertyId },
                     propertyAddress: { value: address },
                     ownerName: { value: ownerId },
-                    ownerEmail: { value: ownerId },
+                    ownerEmail: { value: address },
                     seller: { value: ownerId }
                   }
                 }
