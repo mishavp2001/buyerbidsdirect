@@ -32,7 +32,7 @@ const MakeOffer: React.FC = () => {
     const filter = {
       and: [
         { buyer: { contains: user.userId } },
-        ...(typeof offerId === 'string' ? [{ id: { contains: offerId } }] : [])
+        ...(typeof offerId === 'string' ? [{ id: { eq: offerId } }] : [])
       ]
     };
 
@@ -41,7 +41,8 @@ const MakeOffer: React.FC = () => {
       authMode: "userPool"
     }).subscribe({
       next: (data) => setOffers(data.items),
-      error: (err) => setError(err.message),
+      error: (err) =>   {    console.dir(err)
+;       setError(err.message)},
     });
     if (offerId === 'null' || typeof (offerId) === 'string') {
       setOpen(true);

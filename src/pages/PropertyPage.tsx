@@ -19,19 +19,23 @@ const PropertyPage: React.FC = () => {
   const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
-    const filter = {
-      id: { contains: propertyId }
-    };
-    const subscription = client.models.Property.observeQuery({
-      filter,
-      authMode: "identityPool"
-    }).subscribe({
-      next: (data) => setProperties(data.items),
-      error: (err) => setError(err.message),
-    });
-
-    // Cleanup the subscription on unmount
-    return () => subscription.unsubscribe();
+    async function fetchPropertie() {
+      const filter = {
+        id: { eq: propertyId }
+      };
+      const { data: items, errors } = await client.models.Property.list({
+        filter,
+        authMode: "identityPool"
+      })
+      if (!errors) {
+        console.dir(items);
+        setProperties(items);
+      } else {
+        setError(errors.toString)
+        console.dir(errors);
+      }
+    }
+    fetchPropertie();
   }, [propertyId]);
 
 
@@ -50,22 +54,22 @@ const PropertyPage: React.FC = () => {
                 <span>{property[0].description}</span>
                 <p>{property[0].bedrooms} bds | {property[0].bathrooms} ba | <NumericFormat value={property[0].squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
                   - {property[0]?.description}</p>
-                  <Carousel height={'50vh'}>
-                      {property[0]?.photos?.length && property[0]?.photos?.map(
-                        (image: string, i: number) => {
-                          return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
-                        })
-                      }
-                    </Carousel> 
-                    {user?.username === property[0]?.owner ? (
-                        <Link to={`/sales/${property?.[0].id}`}>
-                          Edit
-                        </Link>
-                      ) : (
-                        <Link to={`/offers/null/${property?.[0].address}/${property?.[0].id}/${property?.[0].owner}`}>
-                          Make Offer
-                        </Link>
-                      )}
+                <Carousel height={'50vh'}>
+                  {property[0]?.photos?.length && property[0]?.photos?.map(
+                    (image: string, i: number) => {
+                      return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
+                    })
+                  }
+                </Carousel>
+                {user?.username === property[0]?.owner ? (
+                  <Link to={`/sales/${property?.[0].id}`}>
+                    Edit
+                  </Link>
+                ) : (
+                  <Link to={`/offers/null/${property?.[0].address}/${property?.[0].id}/${property?.[0].owner}`}>
+                    Make Offer
+                  </Link>
+                )}
               </>
               :
               <span>Loading ...</span>

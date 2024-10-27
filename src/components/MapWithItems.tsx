@@ -61,7 +61,10 @@ const MapWithItems: React.FC = () => {
       next: (data) => {
         position && setProperties(filterPropertiesWithinRadius(data?.items, position, 15))
       },
-      error: (err) => setError(err.message),
+      error: (err) => {
+        setError(err.message);
+        subscription.unsubscribe();
+      }
     });
 
     // Cleanup the subscription on unmount
