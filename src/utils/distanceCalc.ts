@@ -1,5 +1,6 @@
 
   interface Property {
+    id: any;
     address: string;
     position: string | number | boolean | object | any[];
     price: number;

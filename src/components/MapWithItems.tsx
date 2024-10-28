@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
-import { MapContainer, Marker, Popup } from 'react-leaflet';
+import React, { useState, useEffect, useCallback } from 'react';
+import { MapContainer, Marker, Popup, useMap, TileLayer } from 'react-leaflet';
 import ListItems from './ListItems';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
-import { divIcon } from "leaflet"
+import { divIcon } from "leaflet";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
@@ -14,9 +14,10 @@ import { TextField, Button } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
-import { ReactMarker } from './ReactMaker';
 import { FullscreenControl } from "react-leaflet-fullscreen";
+import { ReactMaker } from './ReactMaker';
 import Search from '/search.svg';
+import _ from 'lodash';
 import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
 import "react-leaflet-fullscreen/styles.css";
 
@@ -27,164 +28,213 @@ flushSync(() => {
   root.render(<div className='marker-span'></div>);
 });
 
-const addMArker: any = (text: string) => {
-  div.getElementsByClassName('marker-span')[0].innerHTML = "$" + ((parseFloat(text) / 1000).toFixed(0)).toString() + 'K';
+const addMarker = (text: string) => {
+  div.getElementsByClassName('marker-span')[0].innerHTML = `$${(parseFloat(text) / 1000).toFixed(0)}K`;
   return div.innerHTML;
-}
+};
+
+const MapEventHandler = ({ onCenterChange, isProgrammaticMove }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean }) => {
+  const map = useMap();
+
+  useEffect(() => {
+    const onMoveEnd = () => {
+      const newCenter = map.getCenter();
+      if (!isProgrammaticMove) {
+        onCenterChange(newCenter.lat, newCenter.lng); // Only update on user-initiated move
+      }
+    };
+
+    map.on('moveend', onMoveEnd);
+
+    return () => {
+      map.off('moveend', onMoveEnd);
+    };
+  }, [map, onCenterChange, isProgrammaticMove]);
+
+  return null;
+};
 
 const MapWithItems: React.FC = () => {
+
+  // Function to handle fetching markers in parent component
+  const handleCenterChange = useCallback(
+    _.debounce((lat: number, lng: number) => {
+      console.log('New center:', lat, lng);
+      setPosition([lat, lng]);
+    }, 200), // 300ms delay
+    []
+  );
 
   const [zipCode, setZipCode] = useState<string | null>(() => {
     const savedZip = localStorage.getItem('zipCode');
     return savedZip ? JSON.parse(savedZip) : '';
   });
-  const defaultocation:[number, number] = [38.76315823280579, -121.16611267496815];
-  const [position, setPosition] = useState<[number, number]>(defaultocation);
-  //const [number, setNumber] = useState<number>(0);
 
-  const [error, setError] = useState<string | null>(null);
-  const [userPosition, setUserPosition] = useState<{
-    latitude: number;
-    longitude: number;
-  } >(() => {
-    const savedPosition = localStorage.getItem('userPosition');
-    return savedPosition ? JSON.parse(savedPosition) : null;
+  const [loading, setLoading] = useState<boolean>(true);
+
+  const defaultLocation: [number, number] = [38.76315823280579, -121.16611267496815];
+  const [position, setPosition] = useState<[number, number]>(() => {
+    const savedPosition = localStorage.getItem('searchPosition');
+    if (savedPosition) {
+      // Parse the JSON string
+      const parsedPosition = JSON.parse(savedPosition);
+      // Convert the parsed object to [latitude, longitude] array format
+      const positionArray: [number, number] = [parsedPosition.latitude, parsedPosition.longitude]; 
+      return positionArray;
+    }
+    return defaultLocation;
   });
 
+  const [error, setError] = useState<string | null>(null);
+  const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
+
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
+
   const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
-    const subscription = client.models.Property.observeQuery(
-      { authMode: "identityPool" }
-    ).subscribe({
-      next: (data) => {
-        position && setProperties(filterPropertiesWithinRadius(data?.items, position, 15))
-      },
-      error: (err) => {
-        setError(err.message);
-        subscription.unsubscribe();
-      }
-    });
+    if (isProgrammaticMove) {
+      setIsProgrammaticMove(false); // Reset after programmatic move finishes
+    }
+  }, [position, isProgrammaticMove]);
 
-    // Cleanup the subscription on unmount
-    return () => subscription.unsubscribe();
+  useEffect(() => {
+    const fetchProperties = async () => {
+      try {
+        const data = await client.models.Property.list({
+          authMode: "identityPool"
+        });
+        if (position) {
+          setLoading(false);
+          const filteredProperties = filterPropertiesWithinRadius(data?.data, position, 200); // Filter within radius
+          setProperties(filteredProperties);
+        }
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          console.error('Error message:', err.message);
+        } else {
+          console.error('Unknown error:', err);
+        }
+      }
+    };
+    
+    fetchProperties();
   }, [position]);
 
-  const handleSavePosition = async () => {
+  const handleSearchPositionChange = async () => {
     if (zipCode) {
       localStorage.setItem('zipCode', JSON.stringify(zipCode));
       const geoPosition = await geocodeZipCode(zipCode);
       if (geoPosition) {
-        localStorage.setItem('userPosition', JSON.stringify(geoPosition));
-        setUserPosition(geoPosition);
+        localStorage.setItem('searchPosition', JSON.stringify(geoPosition));
+        setIsProgrammaticMove(true); // Indicate the next move is programmatic
+        setPosition([geoPosition.latitude, geoPosition.longitude]); // Update the map center
       } else {
         alert('Invalid ZIP code. Please enter a valid ZIP code.');
       }
     } else {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (geoPosition) => {
-            const userPosition = { latitude: geoPosition.coords.latitude, longitude: geoPosition.coords.longitude };
-            localStorage.setItem('userPosition', JSON.stringify(userPosition));
-            setUserPosition(userPosition);
-          })
-      } else {
-        setError('Geolocation is not supported by this browser.');
-      }
+      alert('Enter a ZIP code.');
     }
   };
+  
 
+  //Run once on initial render
   useEffect(() => {
-    if (!userPosition) {
+    if (!position) {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (geoPosition) => {
-            const userPosition: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
-            setPosition(userPosition);
-          })
+            const position: [number, number] = [geoPosition.coords.latitude, geoPosition.coords.longitude];
+            setPosition(position);
+          });
       } else {
         setError('Geolocation is not supported by this browser.');
       }
-    } else {
-      const savedPosition: [number, number] = [userPosition.latitude, userPosition.longitude];
-      setPosition(savedPosition);
     }
-  }, [userPosition]);
-  
+  }, []);
+
   if (error) {
-    return <div className='list-items' style={{'width': '95vw' }}>Error: {error}</div>;
+    return <div className='list-items' style={{ width: '95vw' }}>Error: {error}</div>;
   }
 
-  if (!properties) {
-    return <div className='list-items' style={{'width': '95vw' }}>Loading...</div>;
+  if (loading) {
+    return <div className='list-items' style={{ width: '95vw' }}>Loading...</div>;
   }
 
   return (
-    <div className='list-items' style={{'width': '95vw' }}>
-      <div style={{ margin: '1em', position: 'relative', 'width': 'fit-content' }}>
+    <div className='list-items' style={{ width: '95vw' }}>
+      <div style={{ margin: '1em', position: 'relative', width: 'fit-content' }}>
         <TextField
-          onBlur={handleSavePosition}
-          onKeyDown={(event) => { 
-             if (event.keyCode === 13) {
-              handleSavePosition();
-          }}}
+          onBlur={handleSearchPositionChange}
+          onKeyDown={(event) => {
+            if (event.keyCode === 13) {
+              handleSearchPositionChange();
+            }
+          }}
           label="State, County, City, Zip Code..."
-          value={zipCode}
+          value={zipCode || ''}
           onChange={(e) => setZipCode(e.target.value)}
           sx={{ backgroundColor: 'white', width: '90vw', borderRadius: '1em' }}
         />
-        <Button variant="contained" onClick={handleSavePosition} style={{ width: '4em', height: '4em', top: '0em', right: '0em', position: 'absolute', zIndex: 900 }}>
+        <Button
+          variant="contained"
+          onClick={handleSearchPositionChange}
+          style={{ width: '4em', height: '4em', top: '0em', right: '0em', position: 'absolute', zIndex: 900 }}>
           <img src={Search} style={{ width: '3em' }} />
         </Button>
       </div>
 
-      <div style={{ height: '40vh', width: '90vw', margin: '1em 1em 1em 1em' }}><MapContainer center={position} zoom={13} style={{ height: '40vh'}}>
-            <ReactMarker cords={userPosition} />
-            {properties.map(item => (
-              item?.position &&
-              <Marker
-                icon={divIcon({
-                  html: addMArker(item?.price.toFixed(0))
-                })}
-                key={item.id}
-                position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                <p>{item?.position}</p>
-                <Popup>
-                  <div className='popupDiv'>
-                 
-                      <Carousel className='imgCarousel' height={200}>
-                        {item?.photos?.length && item?.photos?.map(
-                          (image: string, i: number) => {
-                            return <Link to={`/property/${item.id}`}><StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} /></Link>;
-                          })}
-                      </Carousel>
-                      <Link to={`/property/${item.id}`}>     
-                      <h1>
-                        <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                      </h1>
-                      <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
-                        - {item?.description}
-                      </p>
-                      </Link>
-                      {user?.username === item.owner ? (
-                        <Link to={`/sales/${item.id}`}>
-                          Edit
-                        </Link>
-                      ) : (
-                        <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
-                          Make Offer
-                        </Link>
-                      )}
-                  </div>
-                </Popup>
-              </Marker>
-            ))}
+      <div style={{ height: '40vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
+        <MapContainer center={position} zoom={13} style={{ height: '40vh' }}>
+          <section>
+            <TileLayer
+              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </section>
+          {properties?.map(item => (
+            item?.position &&
+            <Marker
+              icon={divIcon({
+                html: addMarker(item?.price.toFixed(0))
+              })}
+              key={item.id}
+              position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+              <Popup>
+                <div className='popupDiv'>
+                  <Carousel className='imgCarousel' height={200}>
+                    {item?.photos?.length && item?.photos?.map(
+                      (image: string, i: number) => {
+                        return <Link to={`/property/${item.id}`}><StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} /></Link>;
+                      })}
+                  </Carousel>
+                  <Link to={`/property/${item.id}`}>
+                    <h1>
+                      <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                    </h1>
+                    <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {item?.description}</p>
+                  </Link>
+                  {user?.username === item.owner ? (
+                    <Link to={`/sales/${item.id}`}>
+                      Edit
+                    </Link>
+                  ) : (
+                    <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
+                      Make Offer
+                    </Link>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          ))}
           <FullscreenControl />
-          </MapContainer><ListItems properties={properties} />
+          <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} />
+           {/* This will force the map to recenter when `position` changes */}
+          <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove}/>
+        </MapContainer>
+        <ListItems properties={properties} />
       </div>
-
-     </div >
+    </div >
   );
 };
 
