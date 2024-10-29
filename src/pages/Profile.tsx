@@ -7,7 +7,7 @@ import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 
-const processFile = async ({file}) => {
+const processFile = async ({file}:any) => {
   const fileExtension = file.name.split('.').pop();
 
   return file
@@ -105,7 +105,7 @@ const UserProfileUpdateForm: React.FC = () => {
      if(profileImageUrl) attributes.picture = profileImageUrl;
 
     try {
-      const updateResult = await updateUserAttributes({'userAttributes': attributes});
+      const updateResult = await updateUserAttributes({'userAttributes': {...attributes}});
       console.log('Attributes updated successfully:', updateResult);
       navigate("/profile/success");
       //alert('User attributes updated successfully.');
@@ -160,13 +160,13 @@ const UserProfileUpdateForm: React.FC = () => {
           <Grid item xs={12} sm={12} key='profile_picture'>
             Profile picture: 
           <StorageManager
-              path={`profile-pictures/${user.userId}/`}
+              path={({ identityId }) => `profile-pictures/${identityId}/`}
               maxFileCount={1}
               acceptedFileTypes={['image/*']}
               processFile={processFile}
               onUploadSuccess={({key}) => {
                 // assuming you have an attribute called 'images' on your data model that is an array of strings
-                setProfileImageUrl(key)
+                key && setProfileImageUrl(key)
               }}
               onFileRemove={() => {
                 setProfileImageUrl('')
