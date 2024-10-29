@@ -7,7 +7,7 @@ import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 
-const processFile = async ({ file }) => {
+const processFile = async ({file}) => {
   const fileExtension = file.name.split('.').pop();
 
   return file
