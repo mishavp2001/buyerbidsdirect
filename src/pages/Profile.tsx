@@ -4,6 +4,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { fetchUserAttributes, updateUserAttributes } from 'aws-amplify/auth';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 
 const processFile = async ({ file }) => {
@@ -68,6 +69,7 @@ const UserProfileUpdateForm: React.FC = () => {
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null); // Store the image URL
   const navigate = useNavigate();
   const { update } = useParams();
+  const { user } = useAuthenticator((context) => [context.user]);
 
   // Fetch user attributes when the component mounts
   useEffect(() => {
@@ -125,7 +127,7 @@ const UserProfileUpdateForm: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Update Profile
+        Update Profile: {user.userId}
       </Typography>
       {update === 'success' ? 
         <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
@@ -158,7 +160,7 @@ const UserProfileUpdateForm: React.FC = () => {
           <Grid item xs={12} sm={12} key='profile_picture'>
             Profile picture: 
           <StorageManager
-              path="profile-pictures/"
+              path={`profile-pictures/${user.userId}/`}
               maxFileCount={1}
               acceptedFileTypes={['image/*']}
               processFile={processFile}
