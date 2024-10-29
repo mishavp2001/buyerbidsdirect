@@ -1,8 +1,8 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Paper, Link, Button } from '@mui/material';
-import PropertyCreateForm from '../../ui-components/PropertyCreateForm';
-import PropertyUpdateForm from '../../ui-components/PropertyUpdateForm';
+import PropertyCreateForm from '../ui-components/PropertyCreateForm';
+import PropertyUpdateForm from '../ui-components/PropertyUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";

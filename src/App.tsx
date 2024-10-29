@@ -27,6 +27,7 @@ function App() {
         <Route path='/calc' element = {<AnalyzePage/>} /> 
         <Route path='/sales' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
+        <Route path='/profile/:update' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/login' element = {<LoginPage/>} />
       </Routes>
     </Authenticator.Provider>   

@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import OfferCreateForm from "../../ui-components/OfferCreateForm";
-import OfferUpdateForm from "../../ui-components/OfferUpdateForm"
+import OfferCreateForm from "../ui-components/OfferCreateForm";
+import OfferUpdateForm from "../ui-components/OfferUpdateForm"
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Paper, Link } from '@mui/material';

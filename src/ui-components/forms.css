@@ -1,0 +1,12 @@
+.merge-col-field {
+    grid-column: span 2;  /* Makes the field span 2 columns */
+    /*background-color: rgb(188, 243, 173);*/
+    border-radius: 1em;
+
+    .amplify-field  {
+        width: 48%;
+        display: inline-block;
+        position: relative;
+        margin-right: 1em;
+    }
+  }

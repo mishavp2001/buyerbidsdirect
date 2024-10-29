@@ -1,141 +1,188 @@
-import React, { useState } from 'react';
-import {
-  TextField,
-  Button,
-  Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
-  Typography,
-  Box,
-  Paper,
-} from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { TextField, Button, Box, Typography, Grid, Paper, Alert } from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { fetchUserAttributes, updateUserAttributes } from 'aws-amplify/auth';
+import { useNavigate, useParams } from 'react-router-dom';
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 
-const UserProfile: React.FC = () => {
-  const [email, setEmail] = useState<string>('');
-  const [phone, setPhone] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [loanApprovalLetter, setLoanApprovalLetter] = useState<File | null>(null);
-  const [sellerFinancingOptions, setSellerFinancingOptions] = useState<string>('');
-  const [chargePerHour, setChargePerHour] = useState<string>('');
-  const [userType, setUserType] = useState<string>('buyer');
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files[0]) {
-      setLoanApprovalLetter(event.target.files[0]);
+const processFile = async ({ file }) => {
+  const fileExtension = file.name.split('.').pop();
+
+  return file
+    .arrayBuffer()
+    .then((filebuffer: BufferSource) => window.crypto.subtle.digest('SHA-1', filebuffer))
+    .then((hashBuffer: Iterable<number>) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
+      return { file, key: `${hashHex}.${fileExtension}` };
+    });
+};
+
+
+interface UserProfileAttributes {
+  name?: string;
+  family_name?: string;
+  given_name?: string;
+  middle_name?: string;
+  nickname?: string;
+  preferred_username?: string;
+  profile?: string;
+  picture?: string;
+  website?: string;
+  gender?: string;
+  birthdate?: string;
+  zoneinfo?: string;
+  locale?: string;
+  updated_at?: string;
+  address?: string;
+  email?: string;
+  phone_number?: string;
+  sub?: string;
+}
+
+const defaultAttributes: UserProfileAttributes = {
+  name: '',
+  family_name: '',
+  given_name: '',
+  middle_name: '',
+  nickname: '',
+  preferred_username: '',
+  profile: '',
+  picture: '',
+  website: '',
+  gender: '',
+  birthdate: '',
+  zoneinfo: '',
+  locale: '',
+  address: '',
+  email: '',
+  phone_number: '',
+};
+
+const UserProfileUpdateForm: React.FC = () => {
+  const [attributes, setAttributes] = useState<UserProfileAttributes>(defaultAttributes);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null); // Store the image URL
+  const navigate = useNavigate();
+  const { update } = useParams();
+
+  // Fetch user attributes when the component mounts
+  useEffect(() => {
+    const fetchAttributes = async () => {
+      try {
+        const userAttributes = await fetchUserAttributes();
+
+        // Assuming userAttributes is an object, we map it to state
+        const mappedAttributes: UserProfileAttributes = { ...defaultAttributes };
+
+        Object.keys(userAttributes).forEach((key) => {
+          const value = userAttributes[key];
+          if (mappedAttributes.hasOwnProperty(key)) {
+            mappedAttributes[key as keyof UserProfileAttributes] = value;
+          }
+        });
+
+        setAttributes(mappedAttributes);
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching user attributes:', err);
+        setLoading(false);
+      }
+    };
+
+    fetchAttributes();
+  }, []);
+
+  // Update attributes on form submit
+  const handleUpdate = async (event: React.FormEvent) => {
+    event.preventDefault();
+      
+     if(profileImageUrl) attributes.picture = profileImageUrl;
+
+    try {
+      const updateResult = await updateUserAttributes({'userAttributes': attributes});
+      console.log('Attributes updated successfully:', updateResult);
+      navigate("/profile/success");
+      //alert('User attributes updated successfully.');
+    } catch (err) {
+      console.error('Error updating user attributes:', err);
     }
   };
 
-  const handleSave = () => {
-    // Handle the save action, e.g., send data to API
-    console.log({
-      email,
-      phone,
-      password,
-      loanApprovalLetter,
-      sellerFinancingOptions,
-      chargePerHour,
-      userType,
-    });
+  // Handle input changes
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setAttributes({ ...attributes, [name]: value });
   };
 
+  if (loading) {
+    return <Typography>Loading...</Typography>;
+  }
+
   return (
-    <Paper elevation={3} sx={{ padding: 3, maxWidth: 500, margin: 'auto' }}>
+    <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        User Profile
+        Update Profile
       </Typography>
-      <Box component="form" noValidate autoComplete="off">
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Email"
-          type="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <TextField
-          fullWidth
-          margin="normal"
-          label="Phone"
-          type="tel"
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-        />
-        <TextField
-          fullWidth
-          margin="normal"
-          label="New Password"
-          type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
-        <FormControl fullWidth margin="normal">
-          <InputLabel id="user-type-label">User Type</InputLabel>
-          <Select
-            labelId="user-type-label"
-            value={userType}
-            onChange={(e) => setUserType(e.target.value as string)}
-          >
-            <MenuItem value="buyer">Buyer</MenuItem>
-            <MenuItem value="seller">Seller</MenuItem>
-            <MenuItem value="attorney">Attorney</MenuItem>
-            <MenuItem value="agent">Agent</MenuItem>
-            <MenuItem value="notary">Notary</MenuItem>
-          </Select>
-        </FormControl>
-        {userType === 'buyer' && (
-          <>
-            <Button
-              variant="contained"
-              component="label"
-              fullWidth
-              sx={{ marginTop: 2 }}
-            >
-              Upload Loan Approval Letter
-              <input
-                type="file"
-                hidden
-                onChange={handleFileChange}
+      {update === 'success' ? 
+        <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
+        'Profile Updated Successfuly
+      </Alert> : ''}
+      <Box component="form" onSubmit={handleUpdate}>
+        {attributes?.picture && <StorageImage alt={attributes.picture} path={attributes.picture} />}
+        <Grid container spacing={2}>
+        {/* Display the profile picture if it exists */}
+    
+          {/* Iterate over the attributes and render input fields for each */}
+          {Object.entries(attributes).map(([key, value]) => {
+            if (key !== 'picture')
+
+            return (
+            <Grid item xs={12} sm={6} key={key}>
+              <TextField
+                label={key.replace(/_/g, ' ')} // Display the attribute names in a readable format
+                name={key}
+                value={value || ''}
+                onChange={handleInputChange}
+                fullWidth
+                disabled={key === 'email' || key === 'sub'} // Make email and sub readonly (Cognito does not allow updating these)
+                InputProps={{
+                  readOnly: key === 'email' || key === 'sub',
+                }}
               />
-            </Button>
-            {loanApprovalLetter && (
-              <Typography variant="body2" sx={{ marginTop: 1 }}>
-                Selected file: {loanApprovalLetter.name}
-              </Typography>
-            )}
-          </>
-        )}
-        {userType === 'seller' && (
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Seller Financing Options"
-            value={sellerFinancingOptions}
-            onChange={(e) => setSellerFinancingOptions(e.target.value)}
-          />
-        )}
-        {(userType !== 'buyer' && userType !== 'seller') && (
-          <TextField
-            fullWidth
-            margin="normal"
-            label="Charge Per Hour"
-            type="number"
-            value={chargePerHour}
-            onChange={(e) => setChargePerHour(e.target.value)}
-          />
-        )}
-        <Button
-          variant="contained"
-          color="primary"
-          fullWidth
-          sx={{ marginTop: 3 }}
-          onClick={handleSave}
-        >
-          Save
+            </Grid>
+          )})}
+          <Grid item xs={12} sm={12} key='profile_picture'>
+            Profile picture: 
+          <StorageManager
+              path="profile-pictures/"
+              maxFileCount={1}
+              acceptedFileTypes={['image/*']}
+              processFile={processFile}
+              onUploadSuccess={({key}) => {
+                // assuming you have an attribute called 'images' on your data model that is an array of strings
+                setProfileImageUrl(key)
+              }}
+              onFileRemove={() => {
+                setProfileImageUrl('')
+              }}
+              onUploadError={(error, {key} ) => {
+                console.log(error, key)
+                setProfileImageUrl('')
+              }}
+            />
+          </Grid>
+        </Grid>  
+
+        <Button type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+          Update
         </Button>
       </Box>
     </Paper>
   );
 };
 
-export default UserProfile;
+export default UserProfileUpdateForm;
