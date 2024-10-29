@@ -4,7 +4,6 @@ import CheckIcon from '@mui/icons-material/Check';
 import { fetchUserAttributes, updateUserAttributes } from 'aws-amplify/auth';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
-import { useAuthenticator } from '@aws-amplify/ui-react';
 
 
 const processFile = async ({file}:any) => {
@@ -64,12 +63,12 @@ const defaultAttributes: UserProfileAttributes = {
 };
 
 const UserProfileUpdateForm: React.FC = () => {
+  const [error, setError] = useState<String>('');
   const [attributes, setAttributes] = useState<UserProfileAttributes>(defaultAttributes);
   const [loading, setLoading] = useState<boolean>(true);
   const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null); // Store the image URL
   const navigate = useNavigate();
   const { update } = useParams();
-  const { user } = useAuthenticator((context) => [context.user]);
 
   // Fetch user attributes when the component mounts
   useEffect(() => {
@@ -110,6 +109,7 @@ const UserProfileUpdateForm: React.FC = () => {
       navigate("/profile/success");
       //alert('User attributes updated successfully.');
     } catch (err) {
+      setError(err as String);
       console.error('Error updating user attributes:', err);
     }
   };
@@ -127,12 +127,17 @@ const UserProfileUpdateForm: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Update Profile: {user.userId}
+        Update Profile
       </Typography>
       {update === 'success' ? 
         <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
-        'Profile Updated Successfuly
+        Profile Updated Successfuly
       </Alert> : ''}
+
+      {error && <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="error">
+        {error.toString()}
+      </Alert>}
+
       <Box component="form" onSubmit={handleUpdate}>
         {attributes?.picture && <StorageImage alt={attributes.picture} path={attributes.picture} />}
         <Grid container spacing={2}>
