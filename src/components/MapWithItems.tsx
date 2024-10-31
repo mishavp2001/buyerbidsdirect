@@ -5,12 +5,11 @@ import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
-import { divIcon } from "leaflet";
-import { useAuthenticator } from '@aws-amplify/ui-react';
+import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button } from '@mui/material';
+import { TextField, Button} from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -33,7 +32,7 @@ const addMarker = (text: string) => {
   return div.innerHTML;
 };
 
-const MapEventHandler = ({ onCenterChange, isProgrammaticMove }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean }) => {
+const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean, properties: any[]}) => {
   const map = useMap();
 
   useEffect(() => {
@@ -51,7 +50,51 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove }: { onCenterChang
     };
   }, [map, onCenterChange, isProgrammaticMove]);
 
+  useEffect(() => {
+    if (isProgrammaticMove && properties.length > 0) {
+      // Collect all marker positions
+      const bounds: LatLngBoundsExpression = properties.map(item => {
+        const latLng = JSON.parse(item.position);
+        return [latLng.latitude, latLng.longitude] as [number, number];
+      });
+
+      // Fit the map to the bounds of the markers
+      map.fitBounds(bounds, {padding: [50, 50]});
+
+      // Set a specific zoom level after fitting bounds (optional)
+      map.setZoom(map.getZoom()); // Adjust as needed
+    }
+  }, [map, properties, isProgrammaticMove]);
+
+
   return null;
+};
+
+const CustomPopup = ({property}:any) => {
+  return (
+      <Popup className='custom-popup' keepInView>
+        <Carousel className='carousel-images' navButtonsAlwaysVisible fullHeightHover>
+          {property.photos?.map((image: string, i: number) => (
+             <Link to={`/property/${property.id}`}>
+              <StorageImage maxHeight='300px' maxWidth='500px' key={i} alt={image} path={image} />
+            </Link>
+          ))}
+        </Carousel>
+          <h1>
+            <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+          </h1>
+          <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
+        {property?.username === property.owner ? (
+          <Link to={`/sales/${property.id}`}>
+            Edit
+          </Link>
+        ) : (
+          <Link to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
+            Make Offer
+          </Link>
+        )}
+      </Popup>
+  );
 };
 
 const MapWithItems: React.FC = () => {
@@ -89,8 +132,6 @@ const MapWithItems: React.FC = () => {
   const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
 
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
-
-  const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
     if (isProgrammaticMove) {
@@ -184,8 +225,8 @@ const MapWithItems: React.FC = () => {
         </Button>
       </div>
 
-      <div style={{ height: '40vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
-        <MapContainer center={position} zoom={13} style={{ height: '40vh' }}>
+      <div style={{ height: '60vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
+        <MapContainer center={position} zoom={13} style={{ height: '60vh' }}>
           <section>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -200,35 +241,11 @@ const MapWithItems: React.FC = () => {
               })}
               key={item.id}
               position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-              <Popup>
-                <div className='popupDiv'>
-                  <Carousel className='imgCarousel' height={200}>
-                    {item?.photos?.length && item?.photos?.map(
-                      (image: string, i: number) => {
-                        return <Link to={`/property/${item.id}`}><StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} /></Link>;
-                      })}
-                  </Carousel>
-                  <Link to={`/property/${item.id}`}>
-                    <h1>
-                      <NumericFormat value={item?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                    </h1>
-                    <p>{item.bedrooms} bds | {item.bathrooms} ba | <NumericFormat value={item.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {item?.description}</p>
-                  </Link>
-                  {user?.username === item.owner ? (
-                    <Link to={`/sales/${item.id}`}>
-                      Edit
-                    </Link>
-                  ) : (
-                    <Link to={`/offers/null/${item?.address}/${item.id}/${item.owner}`}>
-                      Make Offer
-                    </Link>
-                  )}
-                </div>
-              </Popup>
+              <CustomPopup key={item.id} property={item} />
             </Marker>
           ))}
           <FullscreenControl />
-          <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} />
+          <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} />
            {/* This will force the map to recenter when `position` changes */}
           <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove}/>
         </MapContainer>

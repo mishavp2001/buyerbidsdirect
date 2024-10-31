@@ -19,7 +19,6 @@ import { generateClient } from "aws-amplify/api";
 import { createProperty } from "./graphql/mutations";
 import { getGeoLocation } from '../utils/getGeoLocation';
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
-import '@aws-amplify/ui-react/styles.css';
 import './forms.css'
 
 const processFile = async ({ file }) => {
@@ -220,8 +219,8 @@ export default function PropertyCreateForm(props) {
     yearBuilt: "",
     propertyType: "",
     listingStatus: "",
-    listingOwner: "",
-    ownerContact: "",
+    listingOwner: overrides?.listingOwner?.defaultValue,
+    ownerContact: overrides?.ownerContact?.defaultValue,
     description: "",
     photos: [],
     virtualTour: "",
@@ -300,7 +299,11 @@ export default function PropertyCreateForm(props) {
   };
   const [isPriceEditing, setIsPriceEditing] = React.useState(false);
   // Format the price as a dollar amount
-  const formattedPrice = price ? `$${parseFloat(price).toFixed(2)}` : '';
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD'
+  });
+  const formattedPrice = price ? `${formatter.format(parseFloat(price))}` : '';
   // Show the input field again when clicking the formatted value
   const handleFormattedClick = () => {
     setIsPriceEditing(!isPriceEditing);
@@ -322,8 +325,8 @@ export default function PropertyCreateForm(props) {
     yearBuilt: [{ type: "Required" }],
     propertyType: [{ type: "Required" }],
     listingStatus: [{ type: "Required" }],
-    listingOwner: [{ type: "Required" }],
-    ownerContact: [{ type: "Required" }],
+    listingOwner: [],
+    ownerContact: [],
     description: [{ type: "Required" }],
     photos: [],
     virtualTour: [],
@@ -370,8 +373,8 @@ export default function PropertyCreateForm(props) {
           yearBuilt,
           propertyType,
           listingStatus,
-          listingOwner,
-          ownerContact,
+          listingOwner: overrides?.listingOwner?.defaultValue,
+          ownerContact: overrides?.ownerContact?.defaultValue,
           description,
           photos: photos ?? null,
           virtualTour: virtualTour ?? null,
@@ -540,8 +543,13 @@ export default function PropertyCreateForm(props) {
           ></TextField>
         ) : (
           <TextField label="Price"
+            isReadOnly={false}
+            onFocus={handleFormattedClick}
+            onChange={() => { return }}
             onClick={handleFormattedClick} style={{ cursor: 'pointer' }}
-            value={formattedPrice || 'Click to enter price'}>
+            value={formattedPrice || 'Click to enter price'}
+            placeholder='Click to enter price'
+          >
           </TextField>
         )}
       </div>
@@ -1287,88 +1295,20 @@ export default function PropertyCreateForm(props) {
         <div>
           <TextField
             label="Listing owner"
-            isRequired={true}
-            isReadOnly={false}
-            value={listingOwner}
-            onChange={(e) => {
-              let { value } = e.target;
-              if (onChange) {
-                const modelFields = {
-                  address,
-                  position,
-                  price,
-                  bedrooms,
-                  bathrooms,
-                  squareFootage,
-                  lotSize,
-                  yearBuilt,
-                  propertyType,
-                  listingStatus,
-                  listingOwner: value,
-                  ownerContact,
-                  description,
-                  photos,
-                  virtualTour,
-                  propertyTax,
-                  hoaFees,
-                  mlsNumber,
-                  zestimate,
-                  neighborhood,
-                  amenities,
-                };
-                const result = onChange(modelFields);
-                value = result?.listingOwner ?? value;
-              }
-              if (errors.listingOwner?.hasError) {
-                runValidationTasks("listingOwner", value);
-              }
-              setListingOwner(value);
-            }}
-            onBlur={() => runValidationTasks("listingOwner", listingOwner)}
+            value={ownerContact}
+            onChange={() => { }}
+            isReadOnly={true}
+            defaultValue={listingOwner}
             errorMessage={errors.listingOwner?.errorMessage}
             hasError={errors.listingOwner?.hasError}
             {...getOverrideProps(overrides, "listingOwner")}
           ></TextField>
           <TextField
             label="Owner contact"
-            isRequired={true}
-            isReadOnly={false}
+            isReadOnly={true}
+            defaultValue={ownerContact}
             value={ownerContact}
-            onChange={(e) => {
-              let { value } = e.target;
-              if (onChange) {
-                const modelFields = {
-                  address,
-                  position,
-                  price,
-                  bedrooms,
-                  bathrooms,
-                  squareFootage,
-                  lotSize,
-                  yearBuilt,
-                  propertyType,
-                  listingStatus,
-                  listingOwner,
-                  ownerContact: value,
-                  description,
-                  photos,
-                  virtualTour,
-                  propertyTax,
-                  hoaFees,
-                  mlsNumber,
-                  zestimate,
-                  neighborhood,
-                  amenities,
-                };
-                const result = onChange(modelFields);
-                value = result?.ownerContact ?? value;
-              }
-              if (errors.ownerContact?.hasError) {
-                runValidationTasks("ownerContact", value);
-              }
-              setOwnerContact(value);
-            }}
-            onBlur={() => runValidationTasks("ownerContact", ownerContact)}
+            onChange={() => { }}
             errorMessage={errors.ownerContact?.errorMessage}
             hasError={errors.ownerContact?.hasError}
             {...getOverrideProps(overrides, "ownerContact")}

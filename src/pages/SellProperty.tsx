@@ -14,20 +14,26 @@ import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
 
 const client = generateClient<Schema>();
 
 const SellProperty: React.FC = () => {
+  const { propertyId } = useParams();
+
   const navigate = useNavigate();
   const { user } = useAuthenticator((context) => [context.user]);
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const { propertyId } = useParams();
+  const [owner, setOwner] = React.useState<{}>('');
+
 
   useEffect(() => {
     async function fetchProperties() {
+      const userAttributes = await fetchUserAttributes();
+      setOwner({name: userAttributes?.name, email: userAttributes?.email});
       const filter = typeof propertyId === 'string' ? { id: { eq: propertyId } } : { owner: { contains: user.userId } }
       const { data: items, errors } = await client.models.Property.list({
         filter,
@@ -98,18 +104,32 @@ const SellProperty: React.FC = () => {
       >
         <ModalDialog minWidth='90%' >
           <ModalClose style={{ margin: '10px' }} />
-          <DialogTitle><h3>Edit property details </h3></DialogTitle>
+          <DialogTitle>Edit property details</DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}
             {
               propertyId !== 'new' ?
                 <>
-                  <PropertyUpdateForm id={propertyId} onSuccess={() => { navigate("/sales", { replace: true }); }} />
+                  <PropertyUpdateForm 
+                    id={propertyId}
+                    overrides={
+                      {
+                        listingOwner: { defaultValue: owner.name, isReadOnly: true},
+                        ownerContact: { defaultValue: owner.email, isReadOnly: true},
+                    }} 
+                    onSuccess={() => { navigate("/sales", { replace: true }); }} />
                 </>
                 :
                 <>
-                  <PropertyCreateForm onSuccess={() => { navigate("/sales", { replace: true }); }} />
-
+                  <PropertyCreateForm 
+                      onSuccess={() => { navigate("/sales", { replace: true }); }} 
+                      overrides={
+                        {
+                             listingOwner: { defaultValue: owner.name, isReadOnly: true },
+                             ownerContact: { defaultValue: owner.email, isReadOnly: true},
+                        }
+                      }    
+                  /> 
                 </>
             }
           </DialogContent>

@@ -505,7 +505,6 @@ export default function PropertyUpdateForm(props) {
         {isPriceEditing ? (
           <TextField
             label="Price"
-            labelHidden
             isRequired={true}
             isReadOnly={false}
             type="number"
@@ -553,8 +552,14 @@ export default function PropertyUpdateForm(props) {
             {...getOverrideProps(overrides, "price")}
           ></TextField>
         ) : (
-          <TextField onClick={handleFormattedClick} style={{ cursor: 'pointer' }}
-            value={formattedPrice || 'Click to enter price'}>
+          <TextField label="Price"
+            isReadOnly={false}
+            onFocus={handleFormattedClick}
+            onChange={() => { return }}
+            onClick={handleFormattedClick} style={{ cursor: 'pointer' }}
+            value={formattedPrice || 'Click to enter price'}
+            placeholder='Click to enter price'
+          >
           </TextField>
         )}
       </div>
@@ -1298,88 +1303,20 @@ export default function PropertyUpdateForm(props) {
       </div>
       <TextField
         label="Listing owner"
-        isRequired={true}
-        isReadOnly={false}
-        value={listingOwner}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              address,
-              position,
-              price,
-              bedrooms,
-              bathrooms,
-              squareFootage,
-              lotSize,
-              yearBuilt,
-              propertyType,
-              listingStatus,
-              listingOwner: value,
-              ownerContact,
-              description,
-              photos,
-              virtualTour,
-              propertyTax,
-              hoaFees,
-              mlsNumber,
-              zestimate,
-              neighborhood,
-              amenities,
-            };
-            const result = onChange(modelFields);
-            value = result?.listingOwner ?? value;
-          }
-          if (errors.listingOwner?.hasError) {
-            runValidationTasks("listingOwner", value);
-          }
-          setListingOwner(value);
-        }}
-        onBlur={() => runValidationTasks("listingOwner", listingOwner)}
+        value={ownerContact}
+        onChange={() => { }}
+        isReadOnly={true}
+        defaultValue={listingOwner}
         errorMessage={errors.listingOwner?.errorMessage}
         hasError={errors.listingOwner?.hasError}
         {...getOverrideProps(overrides, "listingOwner")}
       ></TextField>
       <TextField
         label="Owner contact"
-        isRequired={true}
-        isReadOnly={false}
+        isReadOnly={true}
+        defaultValue={ownerContact}
         value={ownerContact}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              address,
-              position,
-              price,
-              bedrooms,
-              bathrooms,
-              squareFootage,
-              lotSize,
-              yearBuilt,
-              propertyType,
-              listingStatus,
-              listingOwner,
-              ownerContact: value,
-              description,
-              photos,
-              virtualTour,
-              propertyTax,
-              hoaFees,
-              mlsNumber,
-              zestimate,
-              neighborhood,
-              amenities,
-            };
-            const result = onChange(modelFields);
-            value = result?.ownerContact ?? value;
-          }
-          if (errors.ownerContact?.hasError) {
-            runValidationTasks("ownerContact", value);
-          }
-          setOwnerContact(value);
-        }}
-        onBlur={() => runValidationTasks("ownerContact", ownerContact)}
+        onChange={() => { }}
         errorMessage={errors.ownerContact?.errorMessage}
         hasError={errors.ownerContact?.hasError}
         {...getOverrideProps(overrides, "ownerContact")}

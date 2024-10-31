@@ -51,6 +51,18 @@ main {
 
   }*/
   
+  .leaflet-popup {
+    .leaflet-popup-content-wrapper, .custom-popup, .leaflet-popup-content{
+    max-height: 350px;
+    text-align: center;
+    }
+
+    .carousel-images {
+      max-height: 150px;
+    }
+
+  }
+
 
   .leaflet-div-icon {
     padding: 8px !important;
