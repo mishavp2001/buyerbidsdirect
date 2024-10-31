@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 
 
-const processFile = async ({file}:any) => {
+const processFile = async ({ file }: any) => {
   const fileExtension = file.name.split('.').pop();
 
   return file
@@ -100,11 +100,11 @@ const UserProfileUpdateForm: React.FC = () => {
   // Update attributes on form submit
   const handleUpdate = async (event: React.FormEvent) => {
     event.preventDefault();
-      
-     if(profileImageUrl) attributes.picture = profileImageUrl;
+
+    if (profileImageUrl) attributes.picture = profileImageUrl;
 
     try {
-      const updateResult = await updateUserAttributes({'userAttributes': {...attributes}});
+      const updateResult = await updateUserAttributes({ 'userAttributes': { ...attributes } });
       console.log('Attributes updated successfully:', updateResult);
       navigate("/profile/success");
       //alert('User attributes updated successfully.');
@@ -129,64 +129,72 @@ const UserProfileUpdateForm: React.FC = () => {
       <Typography variant="h5" gutterBottom>
         Update Profile
       </Typography>
-      {update === 'success' ? 
-        <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
-        Profile Updated Successfuly
-      </Alert> : ''}
+      {update === 'success' ?
+        <Alert style={{ 'marginBottom': '2em' }} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
+          Profile Updated Successfuly
+        </Alert> : ''}
 
-      {error && <Alert style={{'marginBottom': '2em'}} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="error">
+      {error && <Alert style={{ 'marginBottom': '2em' }} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="error">
         {error.toString()}
       </Alert>}
 
       <Box component="form" onSubmit={handleUpdate}>
         {attributes?.picture && <StorageImage alt={attributes.picture} path={attributes.picture} />}
         <Grid container spacing={2}>
-        {/* Display the profile picture if it exists */}
-    
+          {/* Display the profile picture if it exists */}
+
           {/* Iterate over the attributes and render input fields for each */}
           {Object.entries(attributes).map(([key, value]) => {
             if (key !== 'picture')
 
-            return (
-            <Grid item xs={12} sm={6} key={key}>
-              <TextField
-                label={key.replace(/_/g, ' ')} // Display the attribute names in a readable format
-                name={key}
-                value={value || ''}
-                onChange={handleInputChange}
-                fullWidth
-                disabled={key === 'email' || key === 'sub'} // Make email and sub readonly (Cognito does not allow updating these)
-                InputProps={{
-                  readOnly: key === 'email' || key === 'sub',
-                }}
-              />
-            </Grid>
-          )})}
+              return (
+                <Grid item xs={12} sm={6} key={key}>
+                  <TextField
+                    label={key.replace(/_/g, ' ')} // Display the attribute names in a readable format
+                    name={key}
+                    value={value || ''}
+                    onChange={handleInputChange}
+                    fullWidth
+                    disabled={key === 'email' || key === 'sub'} // Make email and sub readonly (Cognito does not allow updating these)
+                    InputProps={{
+                      readOnly: key === 'email' || key === 'sub',
+                    }}
+                  />
+                </Grid>
+              )
+          })}
           <Grid item xs={12} sm={12} key='profile_picture'>
-            Profile picture: 
-          <StorageManager
+            Profile picture:
+            <StorageManager
               path={({ identityId }) => `profile-pictures/${identityId}/`}
               maxFileCount={1}
               acceptedFileTypes={['image/*']}
               processFile={processFile}
-              onUploadSuccess={({key}) => {
+              onUploadSuccess={({ key }) => {
                 // assuming you have an attribute called 'images' on your data model that is an array of strings
                 key && setProfileImageUrl(key)
               }}
               onFileRemove={() => {
                 setProfileImageUrl('')
               }}
-              onUploadError={(error, {key} ) => {
+              onUploadError={(error, { key }) => {
                 console.log(error, key)
                 setProfileImageUrl('')
               }}
             />
           </Grid>
-        </Grid>  
+          <Grid item xs={12} sm={9} key='button-submit'>
+            <Button sx={{ gridColumn: 'span 4' }} onClick={() => { navigate("/", { replace: true }); }} variant="contained" color="primary" sx={{ mt: 3 }}>
+              Close
+            </Button>
+          </Grid>
+          <Grid item xs={12} sm={3} key='button-submit'>
+            <Button sx={{ gridColumn: 'span 6' }} type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+              Update
+            </Button>
+          </Grid>
+        </Grid>
 
-        <Button type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
-          Update
-        </Button>
       </Box>
     </Paper>
   );
