@@ -72,17 +72,17 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
 
 const CustomPopup = ({property}:any) => {
   return (
-      <Popup className='custom-popup' keepInView>
-        <Carousel className='carousel-images' navButtonsAlwaysVisible fullHeightHover>
+      <Popup className='custom-popup' maxHeight={400} maxWidth={300} minWidth={200} keepInView={true}>
+        <Carousel className='carousel-images' navButtonsAlwaysVisible>
           {property.photos?.map((image: string, i: number) => (
              <Link to={`/property/${property.id}`}>
-              <StorageImage maxHeight='300px' maxWidth='500px' key={i} alt={image} path={image} />
+              <StorageImage height='270px' width='300px' key={i} alt={image} path={image} />
             </Link>
           ))}
         </Carousel>
-          <h1>
+          <h3>
             <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-          </h1>
+          </h3>
           <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
         {property?.username === property.owner ? (
           <Link to={`/sales/${property.id}`}>

@@ -11,17 +11,21 @@ body {
 
 @media screen and (max-width: 768px) {
   body {
-      font-size: 0.75rem; /* Example: Decrease font size for smaller screens */
+    font-size: 0.75rem;
+    /* Example: Decrease font size for smaller screens */
   }
 
   header .MuiTypography-root {
-    font-size: 0.6rem; /* Example: Decrease font size for smaller screens */
+    font-size: 0.6rem;
+    /* Example: Decrease font size for smaller screens */
   }
 
   .list-items {
     width: 98vw;
-    height: 400px; /* Set a fixed height for the parent container, adjust as needed */
-    position: relative; /* Ensure proper positioning of the map container */
+    height: 400px;
+    /* Set a fixed height for the parent container, adjust as needed */
+    position: relative;
+    /* Ensure proper positioning of the map container */
   }
 
   .imgCarousel {
@@ -37,7 +41,7 @@ main {
   flex-direction: column;
   align-items: stretch;
 
-     /*..leaflet-container {
+  /*..leaflet-container {
     overflow: visible !important;
 
       leaflet-pane .leaflet-popup {
@@ -50,19 +54,20 @@ main {
     padding: 2em;
 
   }*/
-  
+
+
+
   .leaflet-popup {
-    .leaflet-popup-content-wrapper, .custom-popup, .leaflet-popup-content{
-    max-height: 350px;
-    text-align: center;
+    .leaflet-popup-content {
+      overflow-y: scroll;
+      text-align: center;
     }
 
     .carousel-images {
-      max-height: 150px;
+      max-height: 270px;
     }
 
   }
-
 
   .leaflet-div-icon {
     padding: 8px !important;
@@ -73,6 +78,7 @@ main {
     color: white;
     font-weight: 600;
   }
+
   .leaflet-div-icon::after {
     position: absolute;
     height: 0;
@@ -83,7 +89,7 @@ main {
     content: "";
     border-top-color: #A3000B;
   }
-  
+
 }
 
 button {
@@ -98,9 +104,11 @@ button {
   transition: border-color 0.25s;
   color: white;
 }
+
 button:hover {
   border-color: #646cff;
 }
+
 button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
@@ -134,7 +142,9 @@ a {
   text-decoration: none;
 }
 
-.loan-calculator-container, .investment-calculator-container, .calculatorDiv {
+.loan-calculator-container,
+.investment-calculator-container,
+.calculatorDiv {
   width: fit-content;
 }
 
