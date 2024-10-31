@@ -27,7 +27,7 @@ const SellProperty: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const [owner, setOwner] = React.useState<{}>('');
+  const [owner, setOwner] = React.useState<{name?:string, email?:string}>({});
 
 
   useEffect(() => {
