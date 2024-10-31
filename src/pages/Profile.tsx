@@ -183,13 +183,13 @@ const UserProfileUpdateForm: React.FC = () => {
               }}
             />
           </Grid>
-          <Grid item xs={12} sm={9} key='button-submit'>
-            <Button sx={{ gridColumn: 'span 4' }} onClick={() => { navigate("/", { replace: true }); }} variant="contained" color="primary" sx={{ mt: 3 }}>
+          <Grid item xs={12} sm={9} key='button-close'>
+            <Button sx={{ gridColumn: 'span 4' }} onClick={() => { navigate("/", { replace: true }); }} variant="contained" color="primary">
               Close
             </Button>
           </Grid>
           <Grid item xs={12} sm={3} key='button-submit'>
-            <Button sx={{ gridColumn: 'span 6' }} type="submit" variant="contained" color="primary" sx={{ mt: 3 }}>
+            <Button sx={{ gridColumn: 'span 6' }} type="submit" variant="contained" color="primary">
               Update
             </Button>
           </Grid>
