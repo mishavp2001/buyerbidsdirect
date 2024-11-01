@@ -374,7 +374,7 @@ export default function OfferUpdateForm(props) {
     >
       <div className="merge-col-field">
         <TextField
-          label="Property address"
+          label="Address"
           isRequired={false}
           isReadOnly={true}
           disabled

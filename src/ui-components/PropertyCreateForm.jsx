@@ -219,8 +219,8 @@ export default function PropertyCreateForm(props) {
     yearBuilt: "",
     propertyType: "",
     listingStatus: "",
-    listingOwner: overrides?.listingOwner?.defaultValue,
-    ownerContact: overrides?.ownerContact?.defaultValue,
+    listingOwner: overrides?.listingOwner?.value,
+    ownerContact: overrides?.ownerContact?.value,
     description: "",
     photos: [],
     virtualTour: "",
@@ -373,17 +373,17 @@ export default function PropertyCreateForm(props) {
           yearBuilt,
           propertyType,
           listingStatus,
-          listingOwner: overrides?.listingOwner?.defaultValue,
-          ownerContact: overrides?.ownerContact?.defaultValue,
+          listingOwner: overrides?.listingOwner?.value,
+          ownerContact: overrides?.ownerContact?.value,
           description,
-          photos: photos ?? null,
-          virtualTour: virtualTour ?? null,
-          propertyTax: propertyTax ?? null,
-          hoaFees: hoaFees ?? null,
-          mlsNumber: mlsNumber ?? null,
-          zestimate: zestimate ?? null,
-          neighborhood: neighborhood ?? null,
-          amenities: amenities ?? null,
+          photos: photos,
+          virtualTour: virtualTour,
+          propertyTax: propertyTax,
+          hoaFees: hoaFees,
+          mlsNumber: mlsNumber,
+          zestimate: zestimate,
+          neighborhood: neighborhood,
+          amenities: amenities,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -603,22 +603,6 @@ export default function PropertyCreateForm(props) {
         return <StorageImage className="merge-col-field"
           width='100%' alt={img} path={img} />;
       })}
-
-      <div className="merge-col-field">
-        <StorageManager
-          path="picture-submissions/"
-          maxFileCount={10}
-          acceptedFileTypes={['image/*']}
-          processFile={processFile}
-          onUploadSuccess={({ key }) => {
-            // assuming you have an attribute called 'images' on your data model that is an array of strings
-            setPhotos(prevImages => [...prevImages, key])
-          }}
-          onFileRemove={({ key }) => {
-            setPhotos(prevImages => prevImages.filter(img => img !== key))
-          }}
-        />
-      </div>
       <div className="merge-col-field">
         <TextField
           label="Bedrooms"
@@ -986,7 +970,7 @@ export default function PropertyCreateForm(props) {
             if (errors.virtualTour?.hasError) {
               runValidationTasks("virtualTour", value);
             }
-            setVirtualTour(value);
+            value && setVirtualTour(value);
           }}
           onBlur={() => runValidationTasks("virtualTour", virtualTour)}
           errorMessage={errors.virtualTour?.errorMessage}
@@ -1270,7 +1254,6 @@ export default function PropertyCreateForm(props) {
           errorMessage={errors?.amenities?.errorMessage}
           setFieldValue={setCurrentAmenitiesValue}
           inputFieldRef={amenitiesRef}
-          defaultFieldValue={""}
         >
           <TextField
             label="Amenities"
@@ -1295,10 +1278,9 @@ export default function PropertyCreateForm(props) {
         <div>
           <TextField
             label="Listing owner"
-            value={ownerContact}
+            value={listingOwner}
             onChange={() => { }}
             isReadOnly={true}
-            defaultValue={listingOwner}
             errorMessage={errors.listingOwner?.errorMessage}
             hasError={errors.listingOwner?.hasError}
             {...getOverrideProps(overrides, "listingOwner")}
@@ -1306,13 +1288,27 @@ export default function PropertyCreateForm(props) {
           <TextField
             label="Owner contact"
             isReadOnly={true}
-            defaultValue={ownerContact}
             value={ownerContact}
             onChange={() => { }}
             errorMessage={errors.ownerContact?.errorMessage}
             hasError={errors.ownerContact?.hasError}
             {...getOverrideProps(overrides, "ownerContact")}
           ></TextField>
+          <div className="merge-col-field">
+            <StorageManager
+              path="picture-submissions/"
+              maxFileCount={10}
+              acceptedFileTypes={['image/*']}
+              processFile={processFile}
+              onUploadSuccess={({ key }) => {
+                // assuming you have an attribute called 'images' on your data model that is an array of strings
+                setPhotos(prevImages => [...prevImages, key])
+              }}
+              onFileRemove={({ key }) => {
+                setPhotos(prevImages => prevImages.filter(img => img !== key))
+              }}
+            />
+          </div>
           <TextAreaField
             label="Position"
             style={{ 'display': 'none' }}

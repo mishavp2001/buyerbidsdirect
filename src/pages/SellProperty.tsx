@@ -27,13 +27,19 @@ const SellProperty: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const [owner, setOwner] = React.useState<{name?:string, email?:string}>({});
+  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({});
 
+  useEffect(() => {
+    async function fetchUserData() {
+      const userAttributes = await fetchUserAttributes();
+      setOwner({ name: userAttributes?.name, email: userAttributes?.email });
+    }
+    fetchUserData();
+
+  }, []);
 
   useEffect(() => {
     async function fetchProperties() {
-      const userAttributes = await fetchUserAttributes();
-      setOwner({name: userAttributes?.name, email: userAttributes?.email});
       const filter = typeof propertyId === 'string' ? { id: { eq: propertyId } } : { owner: { contains: user.userId } }
       const { data: items, errors } = await client.models.Property.list({
         filter,
@@ -110,26 +116,26 @@ const SellProperty: React.FC = () => {
             {
               propertyId !== 'new' ?
                 <>
-                  <PropertyUpdateForm 
+                  <PropertyUpdateForm
                     id={propertyId}
                     overrides={
                       {
-                        listingOwner: { defaultValue: owner.name, isReadOnly: true},
-                        ownerContact: { defaultValue: owner.email, isReadOnly: true},
-                    }} 
+                        listingOwner: { value: owner.name, isReadOnly: true },
+                        ownerContact: { value: owner.email, isReadOnly: true },
+                      }}
                     onSuccess={() => { navigate("/sales", { replace: true }); }} />
                 </>
                 :
                 <>
-                  <PropertyCreateForm 
-                      onSuccess={() => { navigate("/sales", { replace: true }); }} 
-                      overrides={
-                        {
-                             listingOwner: { defaultValue: owner.name, isReadOnly: true },
-                             ownerContact: { defaultValue: owner.email, isReadOnly: true},
-                        }
-                      }    
-                  /> 
+                  <PropertyCreateForm
+                    onSuccess={() => { navigate("/sales", { replace: true }); }}
+                    overrides={
+                      {
+                        listingOwner: { value: owner.name, isReadOnly: true },
+                        ownerContact: { value: owner.email, isReadOnly: true },
+                      }
+                    }
+                  />
                 </>
             }
           </DialogContent>

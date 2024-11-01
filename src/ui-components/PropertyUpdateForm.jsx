@@ -220,8 +220,8 @@ export default function PropertyUpdateForm(props) {
     yearBuilt: "",
     propertyType: "",
     listingStatus: "",
-    listingOwner: "",
-    ownerContact: "",
+    listingOwner: overrides?.listingOwner?.value,
+    ownerContact: overrides?.ownerContact?.value,
     description: "",
     photos: [],
     virtualTour: "",
@@ -276,6 +276,7 @@ export default function PropertyUpdateForm(props) {
     const cleanValues = propertyRecord
       ? { ...initialValues, ...propertyRecord }
       : initialValues;
+
     setAddress(cleanValues.address);
     setPosition(
       typeof cleanValues.position === "string" || cleanValues.position === null
@@ -295,12 +296,12 @@ export default function PropertyUpdateForm(props) {
     setDescription(cleanValues.description);
     setPhotos(cleanValues.photos ?? []);
     setCurrentPhotosValue("");
-    setVirtualTour(cleanValues.virtualTour);
-    setPropertyTax(cleanValues.propertyTax);
-    setHoaFees(cleanValues.hoaFees);
-    setMlsNumber(cleanValues.mlsNumber);
-    setZestimate(cleanValues.zestimate);
-    setNeighborhood(cleanValues.neighborhood);
+    setVirtualTour(cleanValues.virtualTour ?? '');
+    setPropertyTax(cleanValues.propertyTax  ?? '');
+    setHoaFees(cleanValues.hoaFees ?? '');
+    setMlsNumber(cleanValues.mlsNumber ?? '');
+    setZestimate(cleanValues.zestimate ?? '');
+    setNeighborhood(cleanValues.neighborhood ?? '');
     setAmenities(cleanValues.amenities ?? []);
     setCurrentAmenitiesValue("");
     setErrors({});
@@ -615,21 +616,7 @@ export default function PropertyUpdateForm(props) {
           width='100%' alt={img} path={img} />;
       })}
 
-      <div className="merge-col-field">
-        <StorageManager
-          path="picture-submissions/"
-          maxFileCount={10}
-          acceptedFileTypes={['image/*']}
-          processFile={processFile}
-          onUploadSuccess={({ key }) => {
-            // assuming you have an attribute called 'images' on your data model that is an array of strings
-            setPhotos(prevImages => [...prevImages, key])
-          }}
-          onFileRemove={({ key }) => {
-            setPhotos(prevImages => prevImages.filter(img => img !== key))
-          }}
-        />
-      </div>
+     
       <div className="merge-col-field">
         <TextField
           label="Bedrooms"
@@ -1314,13 +1301,31 @@ export default function PropertyUpdateForm(props) {
       <TextField
         label="Owner contact"
         isReadOnly={true}
-        defaultValue={ownerContact}
         value={ownerContact}
         onChange={() => { }}
         errorMessage={errors.ownerContact?.errorMessage}
         hasError={errors.ownerContact?.hasError}
         {...getOverrideProps(overrides, "ownerContact")}
       ></TextField>
+       <div className="merge-col-field">
+        <StorageManager
+          displayText={{
+            dropFilesText: 'Drop new once here',
+            browseFilesText: 'Or pick',
+          }}
+          path="picture-submissions/"
+          maxFileCount={10}
+          acceptedFileTypes={['image/*']}
+          processFile={processFile}
+          onUploadSuccess={({ key }) => {
+            // assuming you have an attribute called 'images' on your data model that is an array of strings
+            setPhotos(prevImages => [...prevImages, key])
+          }}
+          onFileRemove={({ key }) => {
+            setPhotos(prevImages => prevImages.filter(img => img !== key))
+          }}
+        />
+      </div>
       <Flex
         className="merge-col-field"
         justifyContent="space-between"

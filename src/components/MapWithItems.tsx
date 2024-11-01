@@ -70,9 +70,9 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
   return null;
 };
 
-const CustomPopup = ({property}:any) => {
+const CustomPopup = ({property, key}:any) => {
   return (
-      <Popup className='custom-popup' maxHeight={400} maxWidth={300} minWidth={200} keepInView={true}>
+      <Popup key={key} className='custom-popup' maxHeight={400} maxWidth={300} minWidth={200} keepInView={true}>
         <Carousel className='carousel-images' navButtonsAlwaysVisible>
           {property.photos?.map((image: string, i: number) => (
              <Link to={`/property/${property.id}`}>
