@@ -291,8 +291,8 @@ export default function PropertyUpdateForm(props) {
     setYearBuilt(cleanValues.yearBuilt);
     setPropertyType(cleanValues.propertyType);
     setListingStatus(cleanValues.listingStatus);
-    setListingOwner(cleanValues.listingOwner);
-    setOwnerContact(cleanValues.ownerContact);
+    setListingOwner(overrides?.ownerContact?.value);
+    setOwnerContact(overrides?.listingOwner?.value);
     setDescription(cleanValues.description);
     setPhotos(cleanValues.photos ?? []);
     setCurrentPhotosValue("");
@@ -392,8 +392,8 @@ export default function PropertyUpdateForm(props) {
           lotSize,
           yearBuilt,
           propertyType,
-          listingStatus,
-          listingOwner,
+          listingOwner: overrides?.listingOwner?.value,
+          ownerContact: overrides?.ownerContact?.value,
           ownerContact,
           description,
           photos: photos ?? null,
