@@ -392,6 +392,7 @@ export default function PropertyUpdateForm(props) {
           lotSize,
           yearBuilt,
           propertyType,
+          listingStatus,
           listingOwner: overrides?.listingOwner?.value,
           ownerContact: overrides?.ownerContact?.value,
           ownerContact,
