@@ -1,6 +1,6 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Typography, Paper, Link, Button } from '@mui/material';
+import { Container, Typography, Paper, Button } from '@mui/material';
 import PropertyCreateForm from '../ui-components/PropertyCreateForm';
 import PropertyUpdateForm from '../ui-components/PropertyUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -12,7 +12,7 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import ModalClose from '@mui/joy/ModalClose';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchUserAttributes } from 'aws-amplify/auth';
 
@@ -71,20 +71,14 @@ const SellProperty: React.FC = () => {
     { field: 'bedrooms', headerName: 'Bedrooms', flex: 120, type: 'number' },
     { field: 'bathrooms', headerName: 'Bathrooms', flex: 120, type: 'number' },
     { field: 'squareFootage', headerName: 'Square Footage', flex: 150, type: 'number' },
-    { field: 'amenities', headerName: 'Amenities', flex: 200 },
-    {
-      field: 'action',
-      headerName: 'Action',
-      flex: 150,
-      renderCell: (params: GridRenderCellParams) => {
-        return (
-          <Link component={RouterLink} to={`/sales/${params.row.id}`}>
-            Edit
-          </Link>
-        );
-      },
-    },
+    { field: 'amenities', headerName: 'Amenities', flex: 200 }
   ];
+
+  const handleRowClick = ( params: {
+    row: any; id: any; 
+}) => {
+    navigate(`/sales/${params.row.id}`);
+  }
 
   return (
     <Container component="main">
@@ -97,6 +91,7 @@ const SellProperty: React.FC = () => {
 
         <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', height: 400, width: '100%' }}>
           <DataGrid
+            onRowClick={handleRowClick}
             rows={properties}
             columns={columns}
           />

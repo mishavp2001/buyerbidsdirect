@@ -55,8 +55,40 @@ main {
 
   }*/
 
+  @media screen and (max-width: 868px) {
 
+  .MuiDataGrid-columnHeaders {
+    display: none;
+  }
+  .MuiDataGrid-row .MuiDataGrid-cell{
+    display: none;
+  }
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell {
+    display: none;
+  }
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="description"] {
+    min-width: 40%;
+    display: inline-block;
+  }
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="offerAmmount"] {
+    min-width: 30%;
+    display: inline-block;
+  }
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='propertyAddress'] {
+    display: inline-block;
+    min-width: 70%;
+  }
 
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
+    min-width: 60%;
+    display: inline-block;
+  }
+
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="action"]  {
+    min-width: 20%;
+    display: inline-block;
+  }
+}
   .leaflet-popup {
     .leaflet-popup-content {
       overflow-y: scroll;

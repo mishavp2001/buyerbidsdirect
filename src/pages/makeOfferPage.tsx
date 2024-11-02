@@ -3,13 +3,12 @@ import OfferCreateForm from "../ui-components/OfferCreateForm";
 import OfferUpdateForm from "../ui-components/OfferUpdateForm"
 import { Container, Typography } from '@mui/material';
 import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
-import { Paper, Link } from '@mui/material';
+import { Paper } from '@mui/material';
 import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import ModalClose from '@mui/joy/ModalClose';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
-import { Link as RouterLink } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
@@ -54,7 +53,12 @@ const MakeOffer: React.FC = () => {
   }, [offerId]);
 
 
+  const handleRowClick = ( params: {
+    row: any; id: any; 
+}) => {
+    navigate(`/offers/${params.row.id}/${params.row.propertyAddress}`);
 
+  }
 
   const columns: GridColDef[] = [
     { field: 'propertyAddress', headerName: 'Address', flex: 300 },
@@ -63,15 +67,7 @@ const MakeOffer: React.FC = () => {
     { field: 'offerAmmount', headerName: 'Offer Ammount', flex: 110, type: 'number' },
     { field: 'conditions', headerName: 'Conditions', flex: 110, type: 'string' },
     { field: 'offerType', headerName: 'Type', flex: 100, type: 'string' },
-    { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() },
-    {
-      field: 'action',
-      headerName: 'Action',
-      flex: 60,
-      renderCell: (params: GridRenderCellParams) => <Link component={RouterLink} to={`/offers/${params.row.id}/${params.row.propertyAddress}`}>
-        Edit
-      </Link>,
-    },
+    { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() }
   ];
   return (
     <Container component="main">
@@ -79,6 +75,7 @@ const MakeOffer: React.FC = () => {
         <Typography component="h1" variant="h5">My Buy Offers:</Typography>
         <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
           <DataGrid
+            onRowClick={handleRowClick}
             rows={offers}
             columns={columns}
           />
