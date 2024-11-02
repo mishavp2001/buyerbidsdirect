@@ -1,6 +1,6 @@
 import React from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
-import { Box, Paper } from '@mui/material';
+import { Box, Container, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
@@ -34,12 +34,12 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     }  
   }
   const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', minWidth: 250, flex: 1, headerClassName: 'header-grid'},
-    { field: 'price', headerName: 'Price', width: 150, type: 'number', headerClassName: 'header-grid' },
-    { field: 'bedrooms', headerName: 'Bedrooms', width: 120,type: 'number', headerClassName: 'header-grid' },
-    { field: 'bathrooms', headerName: 'Bathrooms', width: 120, type: 'number', headerClassName: 'header-grid' },
-    { field: 'squareFootage', headerName: 'Square Footage', width: 150, type: 'number', headerClassName: 'header-grid' },
-    { field: 'ownerContact', headerName: 'Contact', minWidth: 150, headerClassName: 'header-grid',
+    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid'},
+    { field: 'price', headerName: 'Price', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    { field: 'bedrooms', headerName: 'Bedrooms', flex: 90,type: 'number', headerClassName: 'header-grid' },
+    { field: 'bathrooms', headerName: 'Bathrooms', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    { field: 'squareFootage', headerName: 'Square Footage', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    { field: 'ownerContact', headerName: 'Contact', flex: 150, headerClassName: 'header-grid',
       renderCell: (params: GridRenderCellParams) => {
         return (
             <>{params.row.ownerContact}</>
@@ -48,13 +48,12 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     },
   ];
   return (
-    <Paper elevation={3} sx={{ padding: 2, height: 400 }}>
-      <Box sx={{ height: '100%'}}>
+    <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+      <Box sx={{height: '100%'}}>
         <DataGrid
           onRowClick={handleRowClick}
           rows={properties}
           columns={columns}
-          autoPageSize
         />
       </Box>
     </Paper>
