@@ -74,13 +74,17 @@ main {
     min-width: 30%;
     display: inline-block;
   }
+  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="price"] {
+    min-width: 40%;
+    display: inline-block;
+  }
   .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='propertyAddress'] {
     display: inline-block;
     min-width: 70%;
   }
 
   .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
-    min-width: 60%;
+    min-width: 40%;
     display: inline-block;
   }
 

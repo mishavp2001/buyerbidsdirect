@@ -1,7 +1,7 @@
 import React from 'react';
 import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
-import { Box, Paper, Link } from '@mui/material';
-import { Link as RouterLink, useNavigate } from 'react-router-dom';
+import { Box, Paper } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 interface Property {
@@ -20,11 +20,19 @@ interface PropertyTableProps {
   properties: Property[];
 }
 
-
 const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const { user } = useAuthenticator((context) => [context.user]);
   const navigate = useNavigate();
-
+  
+  const handleRowClick = ( params: {
+    row: any; id: any; 
+  }) => {
+    if (user?.username === params.row.owner) {
+      navigate(`/sales/${params.row.id}`);
+    } else {
+      navigate(`/property/${params.row.id}`);
+    }  
+  }
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', minWidth: 250, flex: 1, headerClassName: 'header-grid'},
     { field: 'price', headerName: 'Price', width: 150, type: 'number', headerClassName: 'header-grid' },
@@ -38,32 +46,12 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
         )  
       }
     },
-    {
-      field: 'action',
-      headerName: 'Action',
-      headerClassName: 'header-grid',
-      minWidth: 150,
-      renderCell: (params: GridRenderCellParams) => {
-        if (user?.username === params.row.owner) {
-          return (
-            <Link component={RouterLink} to={`/sales/${params.row.id}`}>
-              Edit
-            </Link>
-          );
-        }
-        return (
-          <Link component={RouterLink} to={`/offers/null/${params.row.address}/${params.row.id}/${params.row.owner}`}>
-            Make Offer
-          </Link>
-        );
-      },
-    },
   ];
   return (
-    <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+    <Paper elevation={3} sx={{ padding: 2, height: 400 }}>
       <Box sx={{ height: '100%'}}>
         <DataGrid
-          onCellClick={(params)=>{ if (params.field !== 'action') {navigate(`/property/${params.id}`, { replace: true });}}}
+          onRowClick={handleRowClick}
           rows={properties}
           columns={columns}
           autoPageSize
