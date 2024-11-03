@@ -42,7 +42,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     { field: 'ownerContact', headerName: 'Contact', flex: 150, headerClassName: 'header-grid',
       renderCell: (params: GridRenderCellParams) => {
         return (
-            <>{params.row.ownerContact}</>
+            <>{user?.username === params.row.owner ? 'Yours' : params.row.ownerContact}</>
         )  
       }
     },

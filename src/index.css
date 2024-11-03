@@ -41,90 +41,129 @@ main {
   flex-direction: column;
   align-items: stretch;
 
-  /*..leaflet-container {
-    overflow: visible !important;
-
-      leaflet-pane .leaflet-popup {
-      bottom: 0vh !important;
-    }
-  }
-
-  .leaflet-popup-content {
-    overflow: scroll!important;
-    padding: 2em;
-
-  }*/
 
   @media screen and (max-width: 868px) {
 
-  .MuiDataGrid-columnHeaders {
-    display: none;
-  }
-  .MuiDataGrid-row .MuiDataGrid-cell{
-    display: none;
-  }
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell {
-    display: none;
-  }
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="description"] {
-    min-width: 40%;
-    display: inline-block;
-  }
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="offerAmmount"] {
-    min-width: 30%;
-    display: inline-block;
-  }
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="price"] {
-    min-width: 30%;
-    display: inline-block;
-  }
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='propertyAddress'] {
-    display: inline-block;
-    min-width: 70%;
+    .MuiDataGrid-columnHeaders {
+      display: none;
+    }
+
+    .MuiDataGrid-row .MuiDataGrid-cell {
+      display: none;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell {
+      display: none;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="description"] {
+      min-width: 40%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="offerAmmount"] {
+      min-width: 30%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="price"] {
+      min-width: 40%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='propertyAddress'] {
+      display: inline-block;
+      min-width: 70%;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
+      min-width: 60%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="action"] {
+      min-width: 20%;
+      display: inline-block;
+    }
+
   }
 
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
-    min-width: 70%;
-    display: inline-block;
+  @media screen and (max-width: 490px) {
+
+    .MuiDataGrid-columnHeaders {
+      display: none;
+    }
+
+    .MuiDataGrid-row .MuiDataGrid-cell {
+      display: none;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell {
+      display: none;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textRight[data-field*="offerAmmount"] {
+      display: none;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='propertyAddress'] {
+      display: inline-block;
+      min-width: 100%;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
+      min-width: 100%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-root {
+      width: 100% !important
+    }
+
+    .MuiDataGrid-root .MuiDataGrid-virtualScroller {
+      overflow: hidden
+    }
+
+    .MuiDataGrid-root .MuiDataGrid-scrollbarContent {
+      display: none;
+    }
   }
 
-  .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="action"]  {
-    min-width: 20%;
-    display: inline-block;
-  }
+
 }
-  .leaflet-popup {
-    .leaflet-popup-content {
-      overflow-y: scroll;
-      text-align: center;
-    }
 
-    .carousel-images {
-      max-height: 270px;
-    }
-
+.leaflet-popup {
+  .leaflet-popup-content {
+    overflow-y: scroll;
+    text-align: center;
   }
 
-  .leaflet-div-icon {
-    padding: 8px !important;
-    width: 84px !important;
-    height: 40px !important;
-    background-color: #A3000B;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
+  .carousel-images {
+    max-height: 270px;
   }
 
-  .leaflet-div-icon::after {
-    position: absolute;
-    height: 0;
-    width: 0;
-    left: calc(40% - 6px);
-    top: 94%;
-    border: 15px solid transparent;
-    content: "";
-    border-top-color: #A3000B;
-  }
+}
+
+.leaflet-div-icon {
+  padding: 8px !important;
+  width: 84px !important;
+  height: 40px !important;
+  background-color: #A3000B;
+  border-radius: 10px;
+  color: white;
+  font-weight: 600;
+}
+
+.leaflet-div-icon::after {
+  position: absolute;
+  height: 0;
+  width: 0;
+  left: calc(40% - 6px);
+  top: 94%;
+  border: 15px solid transparent;
+  content: "";
+  border-top-color: #A3000B;
+}
 
 }
 

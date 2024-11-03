@@ -61,12 +61,12 @@ const MakeOffer: React.FC = () => {
   }
 
   const columns: GridColDef[] = [
-    { field: 'propertyAddress', headerName: 'Address', flex: 300 },
+    { field: 'propertyAddress', headerName: 'Address', flex: 200 },
     { field: 'buyerPhone', headerName: 'Buyer Phone', flex: 150 },
     { field: 'buyerEmail', headerName: 'Buyer Email', flex: 150 },
     { field: 'offerAmmount', headerName: 'Offer Ammount', flex: 110, type: 'number' },
-    { field: 'conditions', headerName: 'Conditions', flex: 110, type: 'string' },
-    { field: 'offerType', headerName: 'Type', flex: 100, type: 'string' },
+    { field: 'conditions', headerName: 'Conditions', flex: 90, type: 'string' },
+    { field: 'offerType', headerName: 'Type', flex: 80, type: 'string' },
     { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() }
   ];
   return (

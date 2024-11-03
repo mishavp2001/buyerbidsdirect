@@ -1,4 +1,3 @@
-// src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Paper, Button } from '@mui/material';
 import PropertyCreateForm from '../ui-components/PropertyCreateForm';
@@ -91,6 +90,7 @@ const SellProperty: React.FC = () => {
 
         <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', height: 400, width: '100%' }}>
           <DataGrid
+    
             onRowClick={handleRowClick}
             rows={properties}
             columns={columns}
