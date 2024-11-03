@@ -14,10 +14,11 @@ import {
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
+import { useNavigate } from 'react-router-dom';
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getOffer } from "./graphql/queries";
-import { updateOffer } from "./graphql/mutations";
+import { updateOffer, deleteOffer } from "./graphql/mutations";
 const client = generateClient();
 function ArrayField({
   items = [],
@@ -202,6 +203,8 @@ export default function OfferUpdateForm(props) {
     seller: "",
     buyer: "",
   };
+  const navigate = useNavigate();
+
   const [offerAmmount, setOfferAmmount] = React.useState(
     initialValues.offerAmmount
   );
@@ -245,6 +248,26 @@ export default function OfferUpdateForm(props) {
     setSeller(cleanValues.seller);
     setBuyer(cleanValues.buyer);
     setErrors({});
+  };
+  const deleteOfferHandler = async () => {
+    try {
+      await client.graphql({
+        query: deleteOffer.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: offerRecord.id
+          },
+        },
+      });
+      if (onSuccess) {
+        navigate("/offers");
+      }
+    } catch (err) {
+      if (onError) {
+        const messages = err.errors.map((e) => e.message).join("\n");
+        onError(modelFields, messages);
+      }
+    }
   };
   const [offerRecord, setOfferRecord] = React.useState(offerModelProp);
   React.useEffect(() => {
@@ -925,6 +948,14 @@ export default function OfferUpdateForm(props) {
             gap="15px"
             {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
           >
+             <Button
+            variation="primary"
+            children="Delete"
+            onClick={(event) => {
+              event.preventDefault();
+              deleteOfferHandler();
+            }}
+          ></Button>
             <Button
               children="Submit"
               type="submit"

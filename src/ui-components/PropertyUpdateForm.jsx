@@ -17,10 +17,12 @@ import {
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getProperty } from "./graphql/queries";
-import { updateProperty } from "./graphql/mutations";
+import { updateProperty, deleteProperty } from "./graphql/mutations";
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import { useNavigate } from 'react-router-dom';
 import '@aws-amplify/ui-react/styles.css';
 import './forms.css'
+
 
 const processFile = async ({ file }) => {
   const fileExtension = file.name.split('.').pop();
@@ -232,6 +234,7 @@ export default function PropertyUpdateForm(props) {
     neighborhood: "",
     amenities: [],
   };
+  const navigate = useNavigate();
   const [address, setAddress] = React.useState(initialValues.address);
   const [position, setPosition] = React.useState(initialValues.position);
   const [price, setPrice] = React.useState(initialValues.price);
@@ -297,7 +300,7 @@ export default function PropertyUpdateForm(props) {
     setPhotos(cleanValues.photos ?? []);
     setCurrentPhotosValue("");
     setVirtualTour(cleanValues.virtualTour ?? '');
-    setPropertyTax(cleanValues.propertyTax  ?? '');
+    setPropertyTax(cleanValues.propertyTax ?? '');
     setHoaFees(cleanValues.hoaFees ?? '');
     setMlsNumber(cleanValues.mlsNumber ?? '');
     setZestimate(cleanValues.zestimate ?? '');
@@ -306,6 +309,27 @@ export default function PropertyUpdateForm(props) {
     setCurrentAmenitiesValue("");
     setErrors({});
   };
+  const deletePropertyHandler = async () => {
+    try {
+      await client.graphql({
+        query: deleteProperty.replaceAll("__typename", ""),
+        variables: {
+          input: {
+            id: propertyRecord.id
+          },
+        },
+      });
+      if (onSuccess) {
+        navigate("/sales");
+      }
+    } catch (err) {
+      if (onError) {
+        const messages = err.errors.map((e) => e.message).join("\n");
+        onError(modelFields, messages);
+      }
+    }
+  };
+
   const [propertyRecord, setPropertyRecord] = React.useState(propertyModelProp);
   const [isPriceEditing, setIsPriceEditing] = React.useState(false);
   // Format the price as a dollar amount
@@ -617,7 +641,7 @@ export default function PropertyUpdateForm(props) {
           width='100%' alt={img} path={img} />;
       })}
 
-     
+
       <div className="merge-col-field">
         <TextField
           label="Bedrooms"
@@ -1308,7 +1332,7 @@ export default function PropertyUpdateForm(props) {
         hasError={errors.ownerContact?.hasError}
         {...getOverrideProps(overrides, "ownerContact")}
       ></TextField>
-       <div className="merge-col-field">
+      <div className="merge-col-field">
         <StorageManager
           displayText={{
             dropFilesText: 'Drop new once here',
@@ -1332,6 +1356,7 @@ export default function PropertyUpdateForm(props) {
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
       >
+
         <Button
           children="Reset"
           type="reset"
@@ -1346,6 +1371,14 @@ export default function PropertyUpdateForm(props) {
           gap="15px"
           {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
         >
+          <Button
+            variation="primary"
+            children="Delete"
+            onClick={(event) => {
+              event.preventDefault();
+              deletePropertyHandler();
+            }}
+          ></Button>
           <Button
             children="Submit"
             type="submit"
