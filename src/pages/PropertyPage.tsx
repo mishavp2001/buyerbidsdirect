@@ -1,4 +1,3 @@
-// src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
 import { Container, Paper } from '@mui/material';
 import { Link, useParams, useNavigate } from 'react-router-dom';
@@ -8,9 +7,9 @@ import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator, Grid, Button } from '@aws-amplify/ui-react';
+import ChatWidget from '../components/ChatWidget';
 
 const client = generateClient<Schema>();
-
 
 const PropertyPage: React.FC = () => {
   const { propertyId } = useParams();
@@ -95,6 +94,7 @@ const PropertyPage: React.FC = () => {
                   }
                 </Carousel>
           
+                <ChatWidget instanceUrl="https://salesboter.my.connect.aws/" instanceId='salesboter' contactFlowId={undefined}/>
                 <div className="merge-col-field">
                 {user?.username === property[0]?.owner ? (
                   <Button onClick={() => { navigate(`/sales/${property?.[0].id}`) }}>
