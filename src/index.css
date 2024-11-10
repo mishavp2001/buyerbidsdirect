@@ -41,6 +41,24 @@ main {
   flex-direction: column;
   align-items: stretch;
 
+  .expandChat {
+    padding: 2em;
+    background-color: #2a75c1;
+    transition: max-height 0.3s ease;
+    position: absolute;
+    top: 100px;
+    left:35%;
+    width: 55%;
+    z-index: 20000;
+
+    textarea, input {
+      background-color: black;
+      font-size: larger;
+      padding: 1em;
+      color: white;
+    }
+  }
+  
 
   @media screen and (max-width: 868px) {
 
@@ -163,8 +181,6 @@ main {
   border: 15px solid transparent;
   content: "";
   border-top-color: #A3000B;
-}
-
 }
 
 button {

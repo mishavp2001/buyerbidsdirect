@@ -1,6 +1,6 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Paper } from '@mui/material';
+import { Container, Paper,  } from '@mui/material';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
@@ -8,17 +8,39 @@ import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator, Grid, Button } from '@aws-amplify/ui-react';
+import  {NavigateNext, NavigateBefore} from '@mui/icons-material';
+
+import Chat from '../components/Chat';
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
 const client = generateClient<Schema>();
 
 
 const PropertyPage: React.FC = () => {
   const { propertyId } = useParams();
+  const [name, setName ] =  useState<string>('User');
+
   const [error, setError] = useState<string | null>(null);
   const [property, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const { user } = useAuthenticator((context) => [context.user]);
   const navigate = useNavigate();
+  
+// Fetch user attributes when the component mounts
+useEffect(() => {
+  const fetchAttributes = async () => {
+    try {
+      const userAttributes = await fetchUserAttributes();
+      const userName = userAttributes?.name ?? 'Guest';
+      setName(userName);
+    } catch (err) {
+      console.error('Error fetching user attributes:', err);
+    }
+  };
 
+  fetchAttributes();
+}, []);
+
+  
   useEffect(() => {
     async function fetchPropertie() {
       const filter = {
@@ -45,11 +67,10 @@ const PropertyPage: React.FC = () => {
       <Paper elevation={3} sx={{ padding: 6 }}>
         <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
           <Link to={'..'}>Go back</Link>
-
           {
             !error && property.length ?
               <Grid
-                templateColumns="repeat(2, 1fr)"  // Two columns layout
+                templateColumns="repeat(3, 1fr)"  // Two columns layout
                 gap="40px"  // Reduce space between fields
                 padding="30px">
 
@@ -59,7 +80,9 @@ const PropertyPage: React.FC = () => {
                 <h1>
                     <NumericFormat value={property[0]?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                   </h1>
-                
+                  <p>
+                    {property[0]?.address}
+                  </p>
                   <p>
                     {property[0].bedrooms} bds | {property[0].bathrooms} ba | {property[0].propertyType} |
                     Interior: <NumericFormat value={property[0].squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '}/>
@@ -87,14 +110,21 @@ const PropertyPage: React.FC = () => {
                   </p>
                 </div>
             
-                  <Carousel height={'40vh'}>
+                  <Carousel 
+                    autoPlay={false}
+                    fullHeightHover={true}
+                    NextIcon={<NavigateNext/>}
+                    PrevIcon={<NavigateBefore/>}
+                  >
                   {property[0]?.photos?.length && property[0]?.photos?.map(
                     (image: string, i: number) => {
                       return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
                     })
                   }
                 </Carousel>
-          
+
+                <Chat name={name} address={property[0]?.address} info={JSON.stringify(property[0])} />
+                 
                 <div className="merge-col-field">
                 {user?.username === property[0]?.owner ? (
                   <Button onClick={() => { navigate(`/sales/${property?.[0].id}`) }}>
@@ -109,7 +139,7 @@ const PropertyPage: React.FC = () => {
               </Grid>
 
               :
-              <span>Loading ...</span>
+              <p>Loading ...</p>
           }
         </Paper>
       </Paper>
