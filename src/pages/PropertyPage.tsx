@@ -7,9 +7,9 @@ import { generateClient } from "aws-amplify/data";
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
-import { useAuthenticator, Grid, Button } from '@aws-amplify/ui-react';
+import { useAuthenticator, Button } from '@aws-amplify/ui-react';
 import  {NavigateNext, NavigateBefore} from '@mui/icons-material';
-
+import  { Grid} from '@mui/material';
 import Chat from '../components/Chat';
 import { fetchUserAttributes } from 'aws-amplify/auth';
 
@@ -69,14 +69,8 @@ useEffect(() => {
           <Link to={'..'}>Go back</Link>
           {
             !error && property.length ?
-              <Grid
-                templateColumns="repeat(3, 1fr)"  // Two columns layout
-                gap="40px"  // Reduce space between fields
-                padding="30px">
-
-  
-
-                <div>
+              <Grid container spacing={1} display="flex">
+                <Grid item xs={6} md={6}>
                 <h1>
                     <NumericFormat value={property[0]?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
                   </h1>
@@ -108,23 +102,27 @@ useEffect(() => {
                   <p>
                     Status: {property[0]?.listingStatus}
                   </p>
-                </div>
+                </Grid>
             
-                  <Carousel 
-                    autoPlay={false}
-                    fullHeightHover={true}
+                <Grid 
+                  item xs={6} md={6}
+                >
+                  <Carousel
+                    height={'450px'}
                     NextIcon={<NavigateNext/>}
                     PrevIcon={<NavigateBefore/>}
                   >
                   {property[0]?.photos?.length && property[0]?.photos?.map(
                     (image: string, i: number) => {
-                      return <StorageImage key={i} alt={image} style={{ float: 'left' }} path={image} />
+                      return <StorageImage
+                                maxHeight={'450px'}
+                                key={i} alt={image} path={image} />
                     })
                   }
-                </Carousel>
+                </Carousel>      
+                </Grid>
 
-                <Chat name={name} address={property[0]?.address} info={JSON.stringify(property[0])} />
-                 
+                <Grid item xs={4} md={6}> 
                 <div className="merge-col-field">
                 {user?.username === property[0]?.owner ? (
                   <Button onClick={() => { navigate(`/sales/${property?.[0].id}`) }}>
@@ -136,6 +134,10 @@ useEffect(() => {
                   </Button>
                 )}
                 </div>
+                </Grid>
+                <Grid item xs={12} md={12}> 
+                <Chat name={name} address={property[0]?.address} info={JSON.stringify(property[0])} />
+                </Grid>  
               </Grid>
 
               :
