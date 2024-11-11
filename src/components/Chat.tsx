@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
 import { TextField } from "@aws-amplify/ui-react";
 import { useAuthenticator } from '@aws-amplify/ui-react';
-import ExpandIcon from '@mui/icons-material/Expand';
-import FitScreenIcon from '@mui/icons-material/FitScreen';
 
 interface ChatProps {
   address: string;
@@ -35,7 +33,6 @@ const fetchAIResponse = async (topic: string, address: string, info: string, use
 const Chat: React.FC<ChatProps> = ({ address, name, info }) => {
   const { user } = useAuthenticator();
   const [alertActive, setAlertActive] = useState<boolean>(false);
-  const [expand, setExpand] = useState<boolean>(false);
   const [messages, setMessages] = useState<{ text: string; sender: string; expanded: boolean }[]>([]);
   const [inputText, setInputText] = useState<string>("");
   const [isWaitingForAI, setIsWaitingForAI] = useState<boolean>(false);
