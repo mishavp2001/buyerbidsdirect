@@ -19,7 +19,8 @@ import { generateClient } from "aws-amplify/api";
 import { getProperty } from "./graphql/queries";
 import { updateProperty, deleteProperty } from "./graphql/mutations";
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
-import { useNavigate } from 'react-router-dom';
+import { remove } from 'aws-amplify/storage';
+import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';import { useNavigate } from 'react-router-dom';
 import '@aws-amplify/ui-react/styles.css';
 import './forms.css'
 
@@ -309,6 +310,16 @@ export default function PropertyUpdateForm(props) {
     setCurrentAmenitiesValue("");
     setErrors({});
   };
+
+  const deleteImage = async (img) => {
+    try {
+      await remove({path: img}); // Remove image from storage
+      setPhotos(photos.filter(photo => photo !== img)); // Update the state to remove the deleted image
+    } catch (error) {
+      console.error("Error deleting image: ", error);
+    }
+  };
+
   const deletePropertyHandler = async () => {
     try {
       await client.graphql({
@@ -419,7 +430,6 @@ export default function PropertyUpdateForm(props) {
           listingStatus,
           listingOwner: overrides?.listingOwner?.value,
           ownerContact: overrides?.ownerContact?.value,
-          ownerContact,
           description,
           photos: photos ?? null,
           virtualTour: virtualTour ?? null,
@@ -636,9 +646,28 @@ export default function PropertyUpdateForm(props) {
         {...getOverrideProps(overrides, "description")}
       ></TextField>
 
-      {photos.map(img => {
-        return <StorageImage className="merge-col-field"
-          width='100%' alt={img} path={img} />;
+      {photos.map((img, index) => {
+        return (
+          <div key={`div-${index}-${img}`} className="merge-col-field image-container" style={{ position: 'relative' }}>
+            <StorageImage
+              style={{padding: '1.3em'}}
+              width='100%' alt={img} path={img} >
+            </StorageImage>
+            <HighlightOffTwoToneIcon
+              className="delete-icon"
+              onClick={() => deleteImage(img)}
+              title="Delete Image"
+              style={{
+                position: 'absolute',
+                top: '-10px',
+                right: '-10px',
+                cursor: 'pointer',
+                fontSize: '2.2rem',
+                margin: '1em',
+                backgroundColor: 'grey',
+                color: 'white'
+              }} />
+          </div>)
       })}
 
 
