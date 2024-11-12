@@ -136,7 +136,7 @@ useEffect(() => {
                 </div>
                 </Grid>
                 <Grid item xs={12} md={12}> 
-                <Chat name={name} address={property[0]?.address} info={JSON.stringify(property[0])} />
+                <Chat name={name} address={property[0]?.address}  owner={property[0]?.owner}  info={JSON.stringify(property[0])} />
                 </Grid>  
               </Grid>
 

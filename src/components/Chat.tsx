@@ -4,6 +4,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 
 interface ChatProps {
   address: string;
+  owner: string;
   name: string;
   info: string;
 }
@@ -12,11 +13,12 @@ interface AIResponse {
   response: string;
 }
 
-const fetchAIResponse = async (topic: string, address: string, info: string, userId: string): Promise<string> => {
+const fetchAIResponse = async (topic: string, address: string, info: string, userId: string, owner: string): Promise<string> => {
   try {
+    const sell = (owner === userId ) ? true : false;
     const response = await fetch("https://9xsl4q3gdk.execute-api.us-east-2.amazonaws.com/Prod/getAssist", {
       method: "POST",
-      body: JSON.stringify({ data: topic, address, info, userId }),
+      body: JSON.stringify({ data: topic, address, info, userId, sell }),
       headers: { "Content-Type": "application/json" }
     });
 
@@ -30,7 +32,7 @@ const fetchAIResponse = async (topic: string, address: string, info: string, use
   }
 };
 
-const Chat: React.FC<ChatProps> = ({ address, name, info }) => {
+const Chat: React.FC<ChatProps> = ({ address, name, info, owner }) => {
   const { user } = useAuthenticator();
   const [alertActive, setAlertActive] = useState<boolean>(false);
   const [messages, setMessages] = useState<{ text: string; sender: string; expanded: boolean }[]>([]);
@@ -44,10 +46,10 @@ const Chat: React.FC<ChatProps> = ({ address, name, info }) => {
     setIsWaitingForAI(true); // Disable input while waiting for AI
     setInputText("Waiting for response from AI bot..."); // Show waiting message
     try {
-      const aiResponse = await fetchAIResponse(topic, address, info, user.userId);
+      const aiResponse = await fetchAIResponse(topic, address, info, user.userId, owner);
       setMessages(prevMessages => [
         ...prevMessages,
-        { text: aiResponse, sender: 'Sales Bot', expanded: false }
+        { text: aiResponse, sender: 'Bot', expanded: false }
       ]);
     } catch {
       setAlertActive(true);
@@ -59,7 +61,7 @@ const Chat: React.FC<ChatProps> = ({ address, name, info }) => {
 
   useEffect(() => {
     if (!hasInitialized.current) {  // Only run on initial load
-      handleAIResponse("Introduce yourself and highlight property");
+      handleAIResponse("Introduce yourself as helping to buy or sell depending on sell attribute. Highlight property in one sentance");
       hasInitialized.current = true; // Mark as initialized to prevent re-running
     }
   }, []);
@@ -98,7 +100,7 @@ const Chat: React.FC<ChatProps> = ({ address, name, info }) => {
             onClick={() => toggleExpand(index)}
           >
             <p className={msg.expanded ? 'expanded' : 'collapsed'}>
-              <span className={`message-sender ${msg.sender === 'Sales Bot' ? 'bot' : 'user'}`} >{msg.sender}:</span>
+              <span className={`message-sender ${msg.sender === 'Bot' ? 'bot' : 'user'}`} >{msg.sender}:</span>
               <span className='message-text'>{msg.text}</span>
             </p>
           </div>

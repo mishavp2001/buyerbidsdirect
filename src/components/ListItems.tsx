@@ -28,7 +28,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     row: any; id: any; 
   }) => {
     if (user?.username === params.row.owner) {
-      navigate(`/sales/${params.row.id}`);
+      navigate(`/property/${params.row.id}`);
     } else {
       navigate(`/property/${params.row.id}`);
     }  
