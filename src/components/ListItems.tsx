@@ -51,6 +51,16 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
       <Box sx={{height: '100%'}}>
         <DataGrid
+          sx={{
+            // disable cell selection style
+            '.MuiDataGrid-cell:focus': {
+              outline: 'none'
+            },
+            // pointer cursor on ALL rows
+            '& .MuiDataGrid-row:hover': {
+              cursor: 'pointer'
+            }
+          }}
           onRowClick={handleRowClick}
           rows={properties}
           columns={columns}

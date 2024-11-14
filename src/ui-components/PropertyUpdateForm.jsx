@@ -20,7 +20,8 @@ import { getProperty } from "./graphql/queries";
 import { updateProperty, deleteProperty } from "./graphql/mutations";
 import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 import { remove } from 'aws-amplify/storage';
-import HighlightOffTwoToneIcon from '@mui/icons-material/HighlightOffTwoTone';import { useNavigate } from 'react-router-dom';
+import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { useNavigate } from 'react-router-dom';
 import '@aws-amplify/ui-react/styles.css';
 import './forms.css'
 
@@ -599,10 +600,11 @@ export default function PropertyUpdateForm(props) {
           </TextField>
         )}
       </div>
-      <TextField
+      <TextAreaField
         label="Description"
         className="merge-col-field"
         labelHidden
+        rows={8}
         isRequired={true}
         isReadOnly={false}
         value={description}
@@ -644,7 +646,7 @@ export default function PropertyUpdateForm(props) {
         errorMessage={errors.description?.errorMessage}
         hasError={errors.description?.hasError}
         {...getOverrideProps(overrides, "description")}
-      ></TextField>
+      ></TextAreaField>
 
       {photos.map((img, index) => {
         return (
@@ -653,20 +655,20 @@ export default function PropertyUpdateForm(props) {
               style={{padding: '1.3em'}}
               width='100%' alt={img} path={img} >
             </StorageImage>
-            <HighlightOffTwoToneIcon
-              className="delete-icon"
+            <CloseRoundedIcon
               onClick={() => deleteImage(img)}
               title="Delete Image"
-              style={{
+              sx={{
+                borderRadius: '0.3em',
                 position: 'absolute',
-                top: '-10px',
-                right: '-10px',
+                top: '12px',
+                right: '12px',
                 cursor: 'pointer',
                 fontSize: '2.2rem',
-                margin: '1em',
-                backgroundColor: 'grey',
-                color: 'white'
-              }} />
+                color: 'white',
+                "&:hover": { background: "darkblue" }, 
+                background: 'rgba(0,0,0,0.9)'}}
+              />
           </div>)
       })}
 

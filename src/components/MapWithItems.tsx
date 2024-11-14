@@ -9,7 +9,7 @@ import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button} from '@mui/material';
+import { TextField, Button, Grid } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -32,7 +32,7 @@ const addMarker = (text: string) => {
   return div.innerHTML;
 };
 
-const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean, properties: any[]}) => {
+const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean, properties: any[] }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
       });
 
       // Fit the map to the bounds of the markers
-      map.fitBounds(bounds, {padding: [50, 50]});
+      map.fitBounds(bounds, { padding: [50, 50] });
 
       // Set a specific zoom level after fitting bounds (optional)
       map.setZoom(map.getZoom()); // Adjust as needed
@@ -70,30 +70,74 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
   return null;
 };
 
-const CustomPopup = ({property, key}:any) => {
+// Utility function to split photos into chunks of 3
+const chunkArray = (array: string[], chunkSize: number) => {
+  const results = [];
+  for (let i = 0; i < array.length; i += chunkSize) {
+    results.push(array.slice(i, i + chunkSize));
+  }
+  return results;
+};
+
+
+const CustomPopup = (props: { property: any, index: React.Key | null | undefined; }) => {
+  const property = props.property;
+  const imageChunks = chunkArray(property.photos || [], 3);
+
   return (
-      <Popup key={key} className='custom-popup' maxHeight={400} maxWidth={300} minWidth={200} keepInView={true}>
-        <Carousel className='carousel-images' navButtonsAlwaysVisible>
-          {property.photos?.map((image: string, i: number) => (
-             <Link to={`/property/${property.id}`}>
-              <StorageImage height='270px' width='300px' key={i} alt={image} path={image} />
-            </Link>
-          ))}
-        </Carousel>
-          <h3>
-            <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-          </h3>
-          <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
-        {property?.username === property.owner ? (
-          <Link to={`/sales/${property.id}`}>
-            Edit
-          </Link>
-        ) : (
-          <Link to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
-            Make Offer
-          </Link>
-        )}
-      </Popup>
+    <Popup key={props.index} className='custom-popup' maxHeight={600} maxWidth={400} minWidth={300} keepInView={true}>
+      <Carousel height="100px" sx={{ width: '400px' }}>
+        {imageChunks.map((chunk, index) => (
+          <Grid container spacing={2} justifyContent="center" key={`carousel-slide-${index}`}>
+            {chunk.length === 1 ? (
+              // If only one image, place it in the center column
+              <Grid item xs={4} key={0}>
+                <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
+                  <StorageImage style={{ height: '100px'}} alt={chunk[0]} path={chunk[0]} />
+                </Link>
+              </Grid>
+            ) : chunk.length === 2 ? (
+              // If two images, place them in the center columns
+              <>
+                <Grid item xs={4} key={0}>
+                  <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
+                    <StorageImage style={{ height: '100px'}} alt={chunk[0]} path={chunk[0]} />
+                  </Link>
+                </Grid>
+                <Grid item xs={4} key={1}>
+                  <Link to={`/property/${property.id}`} key={`link-main-${index}-1`}>
+                    <StorageImage style={{ height: '100px'}} alt={chunk[1]} path={chunk[1]} />
+                  </Link>
+                </Grid>
+              </>
+            ) : (
+              // If three images, display normally across three columns
+              chunk.map((image, i) => (
+                <Grid item xs={4} key={i}>
+                  <Link to={`/property/${property.id}`} key={`link-main-${index}-${i}`}>
+                    <StorageImage style={{ height: '100px'}} alt={image} path={image} />
+                  </Link>
+                </Grid>
+              ))
+            )}
+          </Grid>
+        ))}
+      </Carousel>
+
+      <h3>
+        <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+      </h3>
+      <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
+      {property?.username === property.owner ? (
+        <Link to={`/sales/${property.id}`}>
+          Edit
+        </Link>
+      ) : (
+        <Link to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
+          Make Offer
+        </Link>
+      )}
+    </Popup>
   );
 };
 
@@ -122,7 +166,7 @@ const MapWithItems: React.FC = () => {
       // Parse the JSON string
       const parsedPosition = JSON.parse(savedPosition);
       // Convert the parsed object to [latitude, longitude] array format
-      const positionArray: [number, number] = [parsedPosition.latitude, parsedPosition.longitude]; 
+      const positionArray: [number, number] = [parsedPosition.latitude, parsedPosition.longitude];
       return positionArray;
     }
     return defaultLocation;
@@ -158,7 +202,7 @@ const MapWithItems: React.FC = () => {
         }
       }
     };
-    
+
     fetchProperties();
   }, [position]);
 
@@ -177,7 +221,7 @@ const MapWithItems: React.FC = () => {
       alert('Enter a ZIP code.');
     }
   };
-  
+
 
   //Run once on initial render
   useEffect(() => {
@@ -233,21 +277,21 @@ const MapWithItems: React.FC = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </section>
-          {properties?.map(item => (
+          {properties?.map((item, index) => (
             item?.position &&
             <Marker
               icon={divIcon({
                 html: addMarker(item?.price.toFixed(0))
               })}
-              key={item.id}
+              key={`maker-${item.id}`}
               position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-              <CustomPopup key={item.id} property={item} />
+              <CustomPopup index={`popup-${item.id}`} property={item} />
             </Marker>
           ))}
           <FullscreenControl />
           <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} />
-           {/* This will force the map to recenter when `position` changes */}
-          <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove}/>
+          {/* This will force the map to recenter when `position` changes */}
+          <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove} />
         </MapContainer>
         <ListItems properties={properties} />
       </div>

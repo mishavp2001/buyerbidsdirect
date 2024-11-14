@@ -73,9 +73,9 @@ const SellProperty: React.FC = () => {
     { field: 'amenities', headerName: 'Amenities', flex: 200 }
   ];
 
-  const handleRowClick = ( params: {
-    row: any; id: any; 
-}) => {
+  const handleRowClick = (params: {
+    row: any; id: any;
+  }) => {
     navigate(`/sales/${params.row.id}`);
   }
 
@@ -90,7 +90,16 @@ const SellProperty: React.FC = () => {
 
         <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', height: 400, width: '100%' }}>
           <DataGrid
-    
+            sx={{
+              // disable cell selection style
+              '.MuiDataGrid-cell:focus': {
+                outline: 'none'
+              },
+              // pointer cursor on ALL rows
+              '& .MuiDataGrid-row:hover': {
+                cursor: 'pointer'
+              }
+            }}
             onRowClick={handleRowClick}
             rows={properties}
             columns={columns}

@@ -40,8 +40,10 @@ const MakeOffer: React.FC = () => {
       authMode: "userPool"
     }).subscribe({
       next: (data) => setOffers(data.items),
-      error: (err) =>   {    console.dir(err)
-;       setError(err.message)},
+      error: (err) => {
+        console.dir(err)
+        ; setError(err.message)
+      },
     });
     if (offerId === 'null' || typeof (offerId) === 'string') {
       setOpen(true);
@@ -53,9 +55,9 @@ const MakeOffer: React.FC = () => {
   }, [offerId]);
 
 
-  const handleRowClick = ( params: {
-    row: any; id: any; 
-}) => {
+  const handleRowClick = (params: {
+    row: any; id: any;
+  }) => {
     navigate(`/offers/${params.row.id}/${params.row.propertyAddress}`);
 
   }
@@ -75,6 +77,16 @@ const MakeOffer: React.FC = () => {
         <Typography component="h1" variant="h5">My Buy Offers:</Typography>
         <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
           <DataGrid
+            sx={{
+              // disable cell selection style
+              '.MuiDataGrid-cell:focus': {
+                outline: 'none'
+              },
+              // pointer cursor on ALL rows
+              '& .MuiDataGrid-row:hover': {
+                cursor: 'pointer'
+              }
+            }}
             onRowClick={handleRowClick}
             rows={offers}
             columns={columns}
