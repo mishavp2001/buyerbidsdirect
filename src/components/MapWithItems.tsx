@@ -290,7 +290,7 @@ const MapWithItems: React.FC = () => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </section>
-          {properties?.map((item, index) => (
+          {properties?.map((item) => (
             item?.position &&
             <Marker
               icon={divIcon({
