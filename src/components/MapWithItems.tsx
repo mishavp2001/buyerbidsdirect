@@ -82,40 +82,53 @@ const chunkArray = (array: string[], chunkSize: number) => {
 
 const CustomPopup = (props: { property: any, index: React.Key | null | undefined; }) => {
   const property = props.property;
-  const imageChunks = chunkArray(property.photos || [], 3);
+  const [imageChunks, setImageChunks] = useState(chunkArray(property.photos || [], 3));
+
+  useEffect(() => {
+    // Handler to adjust chunks based on screen size
+    const handleResize = () => {
+      const chunkSize = window.innerWidth < 880 ? 1 : 3;
+      setImageChunks(chunkArray(property.photos || [], chunkSize));
+    };
+
+    handleResize(); // Initialize chunks based on initial screen size
+    window.addEventListener('resize', handleResize); // Adjust chunks on window resize
+
+    return () => window.removeEventListener('resize', handleResize); // Cleanup on unmount
+  }, [property.photos]);
 
   return (
-    <Popup key={props.index} className='custom-popup' maxHeight={600} maxWidth={400} minWidth={300} keepInView={true}>
-      <Carousel height="100px" sx={{ width: '400px' }}>
+    <Popup key={props.index} className='custom-popup' maxHeight={600} maxWidth={400} minWidth={400} keepInView={true}>
+      <Carousel sx={{ width: '400px' }}>
         {imageChunks.map((chunk, index) => (
-          <Grid container spacing={2} justifyContent="center" key={`carousel-slide-${index}`}>
+          <Grid container spacing={1} justifyContent="center" key={`carousel-slide-${index}`}>
             {chunk.length === 1 ? (
               // If only one image, place it in the center column
-              <Grid item xs={4} key={0}>
+              <Grid item sm={12} key={0}>
                 <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                  <StorageImage style={{ height: '100px'}} alt={chunk[0]} path={chunk[0]} />
+                  <StorageImage style={{ height: '120px' }} alt={chunk[0]} path={chunk[0]} />
                 </Link>
               </Grid>
             ) : chunk.length === 2 ? (
               // If two images, place them in the center columns
               <>
-                <Grid item xs={4} key={0}>
+                <Grid item xs={12} sm={6} key={0}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                    <StorageImage style={{ height: '100px'}} alt={chunk[0]} path={chunk[0]} />
+                    <StorageImage style={{ height: '120px' }} alt={chunk[0]} path={chunk[0]} />
                   </Link>
                 </Grid>
-                <Grid item xs={4} key={1}>
+                <Grid item xs={12} sm={6} key={1}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-1`}>
-                    <StorageImage style={{ height: '100px'}} alt={chunk[1]} path={chunk[1]} />
+                    <StorageImage style={{ height: '120px' }} alt={chunk[1]} path={chunk[1]} />
                   </Link>
                 </Grid>
               </>
             ) : (
               // If three images, display normally across three columns
               chunk.map((image, i) => (
-                <Grid item xs={4} key={i}>
+                <Grid item xs={12} sm={4} key={i}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-${i}`}>
-                    <StorageImage style={{ height: '100px'}} alt={image} path={image} />
+                    <StorageImage style={{ height: '120px' }} alt={image} path={image} />
                   </Link>
                 </Grid>
               ))
