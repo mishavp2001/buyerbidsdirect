@@ -14,6 +14,8 @@ import {
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
+import { NumericFormat } from "react-number-format";
+
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getProperty } from "./graphql/queries";
@@ -67,7 +69,6 @@ function ArrayField({
   } = useTheme();
   const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
   const [isEditing, setIsEditing] = React.useState();
-  const [isPriceEditing, setIsPriceEditing] = React.useState(false);
 
   React.useEffect(() => {
     if (isEditing) {
@@ -224,8 +225,9 @@ export default function PropertyUpdateForm(props) {
     yearBuilt: "",
     propertyType: "",
     listingStatus: "",
-    listingOwner: overrides?.listingOwner?.value,
-    ownerContact: overrides?.ownerContact?.value,
+    arvprice: "",
+    listingOwner: "",
+    ownerContact: "",
     description: "",
     photos: [],
     virtualTour: "",
@@ -245,6 +247,7 @@ export default function PropertyUpdateForm(props) {
   const [squareFootage, setSquareFootage] = React.useState(
     initialValues.squareFootage
   );
+  const [arvprice, setArvprice] = React.useState(initialValues.arvprice);
   const [lotSize, setLotSize] = React.useState(initialValues.lotSize);
   const [yearBuilt, setYearBuilt] = React.useState(initialValues.yearBuilt);
   const [propertyType, setPropertyType] = React.useState(
@@ -288,6 +291,7 @@ export default function PropertyUpdateForm(props) {
         ? cleanValues.position
         : JSON.stringify(cleanValues.position)
     );
+    setArvprice(cleanValues.arvprice);
     setPrice(cleanValues.price);
     setBedrooms(cleanValues.bedrooms);
     setBathrooms(cleanValues.bathrooms);
@@ -314,7 +318,7 @@ export default function PropertyUpdateForm(props) {
 
   const deleteImage = async (img) => {
     try {
-      await remove({path: img}); // Remove image from storage
+      await remove({ path: img }); // Remove image from storage
       setPhotos(photos.filter(photo => photo !== img)); // Update the state to remove the deleted image
     } catch (error) {
       console.error("Error deleting image: ", error);
@@ -341,15 +345,7 @@ export default function PropertyUpdateForm(props) {
       }
     }
   };
-
   const [propertyRecord, setPropertyRecord] = React.useState(propertyModelProp);
-  const [isPriceEditing, setIsPriceEditing] = React.useState(false);
-  // Format the price as a dollar amount
-  const formattedPrice = price ? `$${parseFloat(price).toFixed(2)}` : '';
-  // Show the input field again when clicking the formatted value
-  const handleFormattedClick = () => {
-    setIsPriceEditing(!isPriceEditing);
-  };
 
   React.useEffect(() => {
     const queryData = async () => {
@@ -374,9 +370,9 @@ export default function PropertyUpdateForm(props) {
     address: [{ type: "Required" }],
     position: [{ type: "Required" }, { type: "JSON" }],
     price: [{ type: "Required" }],
+    arvprice: [{ type: "Required" }],
     bedrooms: [{ type: "Required" }],
     bathrooms: [{ type: "Required" }],
-    squareFootage: [{ type: "Required" }],
     lotSize: [{ type: "Required" }],
     yearBuilt: [{ type: "Required" }],
     propertyType: [{ type: "Required" }],
@@ -422,6 +418,7 @@ export default function PropertyUpdateForm(props) {
           address,
           position,
           price,
+          arvprice,
           bedrooms,
           bathrooms,
           squareFootage,
@@ -506,6 +503,7 @@ export default function PropertyUpdateForm(props) {
                 address: value,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -539,66 +537,112 @@ export default function PropertyUpdateForm(props) {
           {...getOverrideProps(overrides, "address")}
         ></TextField>
 
-        {isPriceEditing ? (
-          <TextField
-            label="Price"
-            isRequired={true}
-            isReadOnly={false}
-            type="number"
-            step="any"
-            value={price}
-            onChange={(e) => {
-              let value = isNaN(parseFloat(e.target.value))
-                ? e.target.value
-                : parseFloat(e.target.value);
-              if (onChange) {
-                const modelFields = {
-                  address,
-                  position,
-                  price: value,
-                  bedrooms,
-                  bathrooms,
-                  squareFootage,
-                  lotSize,
-                  yearBuilt,
-                  propertyType,
-                  listingStatus,
-                  listingOwner,
-                  ownerContact,
-                  description,
-                  photos,
-                  virtualTour,
-                  propertyTax,
-                  hoaFees,
-                  mlsNumber,
-                  zestimate,
-                  neighborhood,
-                  amenities,
-                };
-                const result = onChange(modelFields);
-                value = result?.price ?? value;
-              }
-              if (errors.price?.hasError) {
-                runValidationTasks("price", value);
-              }
-              setPrice(value);
-            }}
-            onBlur={() => { handleFormattedClick(); runValidationTasks("price", price) }}
-            errorMessage={errors.price?.errorMessage}
-            hasError={errors.price?.hasError}
-            {...getOverrideProps(overrides, "price")}
-          ></TextField>
-        ) : (
-          <TextField label="Price"
-            isReadOnly={false}
-            onFocus={handleFormattedClick}
-            onChange={() => { return }}
-            onClick={handleFormattedClick} style={{ cursor: 'pointer' }}
-            value={formattedPrice || 'Click to enter price'}
-            placeholder='Click to enter price'
-          >
-          </TextField>
-        )}
+        <NumericFormat
+          label="Asking Price"
+          prefix="$"
+          thousandSeparator
+          allowNegative={false}
+          isRequired={true}
+          isReadOnly={false}
+          valueIsNumericString
+          step="any"
+          value={price}
+          customInput={TextField}
+          onChange={(e) => {
+            let value = isNaN(parseFloat(e.target.value.slice(1).replace(/,/g, '')))
+              ? e.target.value
+              : parseFloat(parseFloat(e.target.value.slice(1).replace(/,/g, '')));
+            if (onChange) {
+              const modelFields = {
+                address,
+                position,
+                price: value,
+                arvprice,
+                bedrooms,
+                bathrooms,
+                squareFootage,
+                lotSize,
+                yearBuilt,
+                propertyType,
+                listingStatus,
+                listingOwner,
+                ownerContact,
+                description,
+                photos,
+                virtualTour,
+                propertyTax,
+                hoaFees,
+                mlsNumber,
+                zestimate,
+                neighborhood,
+                amenities,
+              };
+              const result = onChange(modelFields);
+              value = result?.price ?? value;
+            }
+            if (errors.price?.hasError) {
+              runValidationTasks("price", value);
+            }
+            setPrice(value);
+          }}
+          onBlur={() => {runValidationTasks("price", price) }}
+          errorMessage={errors.price?.errorMessage}
+          hasError={errors.price?.hasError}
+          {...getOverrideProps(overrides, "price")}
+        ></NumericFormat>
+        <NumericFormat
+          label="After-repair value(ARV)"
+          isRequired={true}
+          isReadOnly={false}
+          customInput={TextField}
+          thousandSeparator
+          allowNegative={false}
+          valueIsNumericString
+          value={arvprice}
+          decimalScale={2}
+          prefix="$"
+          onChange={(e) => {
+            let value = isNaN(parseFloat(e.target.value.slice(1).replace(/,/g, '')))
+              ? e.target.value
+              : parseFloat(e.target.value.slice(1).replace(/,/g, ''));
+            if (onChange) {
+              const modelFields = {
+                address,
+                position,
+                price,
+                arvprice: value,
+                bedrooms,
+                bathrooms,
+                squareFootage,
+                lotSize,
+                yearBuilt,
+                propertyType,
+                listingStatus,
+                listingOwner,
+                ownerContact,
+                description,
+                photos,
+                virtualTour,
+                propertyTax,
+                hoaFees,
+                mlsNumber,
+                zestimate,
+                neighborhood,
+                amenities,
+              };
+              const result = onChange(modelFields);
+              value = result?.arvprice ?? value;
+            }
+            if (errors.arvprice?.hasError) {
+              runValidationTasks("arvprice", value);
+            }
+            setArvprice(value);
+          }}
+          onBlur={() => runValidationTasks("arvprice", arvprice)}
+          errorMessage={errors.arvprice?.errorMessage}
+          hasError={errors.arvprice?.hasError}
+          {...getOverrideProps(overrides, "arvprice")}
+        ></NumericFormat>
       </div>
       <TextAreaField
         label="Description"
@@ -615,6 +659,7 @@ export default function PropertyUpdateForm(props) {
               address,
               position,
               price,
+              arvprice,
               bedrooms,
               bathrooms,
               squareFootage,
@@ -652,7 +697,7 @@ export default function PropertyUpdateForm(props) {
         return (
           <div key={`div-${index}-${img}`} className="merge-col-field image-container" style={{ position: 'relative' }}>
             <StorageImage
-              style={{padding: '1.3em'}}
+              style={{ padding: '1.3em' }}
               width='100%' alt={img} path={img} >
             </StorageImage>
             <CloseRoundedIcon
@@ -666,9 +711,10 @@ export default function PropertyUpdateForm(props) {
                 cursor: 'pointer',
                 fontSize: '2.2rem',
                 color: 'white',
-                "&:hover": { background: "darkblue" }, 
-                background: 'rgba(0,0,0,0.9)'}}
-              />
+                "&:hover": { background: "darkblue" },
+                background: 'rgba(0,0,0,0.9)'
+              }}
+            />
           </div>)
       })}
 
@@ -690,6 +736,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms: value,
                 bathrooms,
                 squareFootage,
@@ -738,6 +785,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms: value,
                 squareFootage,
@@ -786,6 +834,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage: value,
@@ -834,6 +883,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -882,6 +932,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -926,6 +977,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -970,6 +1022,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1014,6 +1067,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1062,6 +1116,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1110,6 +1165,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1154,6 +1210,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1202,6 +1259,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1246,6 +1304,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1286,6 +1345,7 @@ export default function PropertyUpdateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1346,13 +1406,11 @@ export default function PropertyUpdateForm(props) {
       </div>
       <TextField
         label="Listing owner"
-        value={ownerContact}
         onChange={() => { }}
         isReadOnly={true}
-        defaultValue={listingOwner}
+        value={listingOwner}
         errorMessage={errors.listingOwner?.errorMessage}
         hasError={errors.listingOwner?.hasError}
-        {...getOverrideProps(overrides, "listingOwner")}
       ></TextField>
       <TextField
         label="Owner contact"
@@ -1361,7 +1419,6 @@ export default function PropertyUpdateForm(props) {
         onChange={() => { }}
         errorMessage={errors.ownerContact?.errorMessage}
         hasError={errors.ownerContact?.hasError}
-        {...getOverrideProps(overrides, "ownerContact")}
       ></TextField>
       <div className="merge-col-field">
         <StorageManager
@@ -1436,6 +1493,7 @@ export default function PropertyUpdateForm(props) {
               address,
               position: value,
               price,
+              arvprice,
               bedrooms,
               bathrooms,
               squareFootage,

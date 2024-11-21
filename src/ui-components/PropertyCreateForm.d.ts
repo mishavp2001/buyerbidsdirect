@@ -19,6 +19,7 @@ export declare type PropertyCreateFormInputValues = {
     address?: string;
     position?: string;
     price?: number;
+    arvprice?: number;
     bedrooms?: number;
     bathrooms?: number;
     squareFootage?: number;
@@ -42,6 +43,7 @@ export declare type PropertyCreateFormValidationValues = {
     address?: ValidationFunction<string>;
     position?: ValidationFunction<string>;
     price?: ValidationFunction<number>;
+    arvprice?: ValidationFunction<number>;
     bedrooms?: ValidationFunction<number>;
     bathrooms?: ValidationFunction<number>;
     squareFootage?: ValidationFunction<number>;
@@ -67,6 +69,7 @@ export declare type PropertyCreateFormOverridesProps = {
     address?: PrimitiveOverrideProps<TextFieldProps>;
     position?: PrimitiveOverrideProps<TextAreaFieldProps>;
     price?: PrimitiveOverrideProps<TextFieldProps>;
+    arvprice?: PrimitiveOverrideProps<TextFieldProps>;
     bedrooms?: PrimitiveOverrideProps<TextFieldProps>;
     bathrooms?: PrimitiveOverrideProps<TextFieldProps>;
     squareFootage?: PrimitiveOverrideProps<TextFieldProps>;

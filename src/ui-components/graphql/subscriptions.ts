@@ -38,6 +38,7 @@ export const onCreateProperty = /* GraphQL */ `
     onCreateProperty(filter: $filter, owner: $owner) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
@@ -137,6 +138,7 @@ export const onDeleteProperty = /* GraphQL */ `
     onDeleteProperty(filter: $filter, owner: $owner) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
@@ -236,6 +238,7 @@ export const onUpdateProperty = /* GraphQL */ `
     onUpdateProperty(filter: $filter, owner: $owner) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt

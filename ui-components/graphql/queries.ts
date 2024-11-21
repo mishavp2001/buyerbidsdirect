@@ -31,6 +31,7 @@ export const getProperty = /* GraphQL */ `
     getProperty(id: $id) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
@@ -130,6 +131,7 @@ export const listProperties = /* GraphQL */ `
       items {
         address
         amenities
+        arvprice
         bathrooms
         bedrooms
         createdAt

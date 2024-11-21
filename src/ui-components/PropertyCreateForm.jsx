@@ -14,6 +14,8 @@ import {
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
+import { NumericFormat } from "react-number-format";
+
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createProperty } from "./graphql/mutations";
@@ -62,7 +64,6 @@ function ArrayField({
   } = useTheme();
   const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
   const [isEditing, setIsEditing] = React.useState();
-  const [isPriceEditing, setIsPriceEditing] = React.useState(false);
 
   React.useEffect(() => {
     if (isEditing) {
@@ -212,6 +213,7 @@ export default function PropertyCreateForm(props) {
     address: "",
     position: "",
     price: "",
+    arvprice: "",
     bedrooms: "",
     bathrooms: "",
     squareFootage: "",
@@ -219,7 +221,7 @@ export default function PropertyCreateForm(props) {
     yearBuilt: "",
     propertyType: "",
     listingStatus: "",
-    listingOwner: overrides?.listingOwner?.value,
+    listingOwner: overrides?.listingOwner?.value || overrides?.ownerContact?.value,
     ownerContact: overrides?.ownerContact?.value,
     description: "",
     photos: [],
@@ -234,6 +236,7 @@ export default function PropertyCreateForm(props) {
   const [address, setAddress] = React.useState(initialValues.address);
   const [position, setPosition] = React.useState(initialValues.position);
   const [price, setPrice] = React.useState(initialValues.price);
+  const [arvprice, setArvprice] = React.useState(initialValues.arvprice);
   const [bedrooms, setBedrooms] = React.useState(initialValues.bedrooms);
   const [bathrooms, setBathrooms] = React.useState(initialValues.bathrooms);
   const [squareFootage, setSquareFootage] = React.useState(
@@ -275,6 +278,7 @@ export default function PropertyCreateForm(props) {
     setAddress(initialValues.address);
     setPosition(initialValues.position);
     setPrice(initialValues.price);
+    setArvprice(initialValues.arvprice);
     setBedrooms(initialValues.bedrooms);
     setBathrooms(initialValues.bathrooms);
     setSquareFootage(initialValues.squareFootage);
@@ -297,18 +301,6 @@ export default function PropertyCreateForm(props) {
     setCurrentAmenitiesValue("");
     setErrors({});
   };
-  const [isPriceEditing, setIsPriceEditing] = React.useState(false);
-  // Format the price as a dollar amount
-  const formatter = new Intl.NumberFormat('en-US', {
-    style: 'currency',
-    currency: 'USD'
-  });
-  const formattedPrice = price ? `${formatter.format(parseFloat(price))}` : '';
-  // Show the input field again when clicking the formatted value
-  const handleFormattedClick = () => {
-    setIsPriceEditing(!isPriceEditing);
-  };
-
 
   const [currentPhotosValue, setCurrentPhotosValue] = React.useState("");
   const photosRef = React.createRef();
@@ -318,6 +310,7 @@ export default function PropertyCreateForm(props) {
     address: [{ type: "Required" }],
     position: [{ type: "Required" }, { type: "JSON" }],
     price: [{ type: "Required" }],
+    arvprice: [{ type: "Required" }],
     bedrooms: [{ type: "Required" }],
     bathrooms: [{ type: "Required" }],
     squareFootage: [{ type: "Required" }],
@@ -366,6 +359,7 @@ export default function PropertyCreateForm(props) {
           address,
           position,
           price,
+          arvprice,
           bedrooms,
           bathrooms,
           squareFootage,
@@ -450,6 +444,7 @@ export default function PropertyCreateForm(props) {
                 address: value,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -479,7 +474,7 @@ export default function PropertyCreateForm(props) {
           }}
           onBlur={
             async () => {
-              runValidationTasks("address", address);
+              address && runValidationTasks("address", address);
               try {
                 const geoPosition = await getGeoLocation(address);
                 setPosition(JSON.stringify(geoPosition));
@@ -492,66 +487,114 @@ export default function PropertyCreateForm(props) {
           hasError={errors.address?.hasError}
           {...getOverrideProps(overrides, "address")}
         ></TextField>
-        {isPriceEditing ? (
-          <TextField
-            label="Price"
-            isRequired={true}
-            isReadOnly={false}
-            type="number"
-            step="any"
-            value={price}
-            onChange={(e) => {
-              let value = isNaN(parseFloat(e.target.value))
-                ? e.target.value
-                : parseFloat(e.target.value);
-              if (onChange) {
-                const modelFields = {
-                  address,
-                  position,
-                  price: value,
-                  bedrooms,
-                  bathrooms,
-                  squareFootage,
-                  lotSize,
-                  yearBuilt,
-                  propertyType,
-                  listingStatus,
-                  listingOwner,
-                  ownerContact,
-                  description,
-                  photos,
-                  virtualTour,
-                  propertyTax,
-                  hoaFees,
-                  mlsNumber,
-                  zestimate,
-                  neighborhood,
-                  amenities,
-                };
-                const result = onChange(modelFields);
-                value = result?.price ?? value;
-              }
-              if (errors.price?.hasError) {
-                runValidationTasks("price", value);
-              }
-              setPrice(value);
-            }}
-            onBlur={() => { handleFormattedClick(); runValidationTasks("price", price) }}
-            errorMessage={errors.price?.errorMessage}
-            hasError={errors.price?.hasError}
-            {...getOverrideProps(overrides, "price")}
-          ></TextField>
-        ) : (
-          <TextField label="Price"
-            isReadOnly={false}
-            onFocus={handleFormattedClick}
-            onChange={() => { return }}
-            onClick={handleFormattedClick} style={{ cursor: 'pointer' }}
-            value={formattedPrice || 'Click to enter price'}
-            placeholder='Click to enter price'
-          >
-          </TextField>
-        )}
+        <NumericFormat
+          label="Asking Price"
+          prefix="$"
+          thousandSeparator
+          allowNegative={false}
+          isRequired={true}
+          isReadOnly={false}
+          valueIsNumericString
+          step="any"
+          value={price}
+          getDisplayValue={parseFloat}
+          customInput={TextField}
+          onChange={(e) => {
+            let value = isNaN(parseFloat(e.target.value.slice(1).replace(/,/g, '')))
+              ? e.target.value
+              : parseFloat(parseFloat(e.target.value.slice(1).replace(/,/g, '')));
+            if (onChange) {
+              const modelFields = {
+                address,
+                position,
+                price: value,
+                arvprice,
+                bedrooms,
+                bathrooms,
+                squareFootage,
+                lotSize,
+                yearBuilt,
+                propertyType,
+                listingStatus,
+                listingOwner,
+                ownerContact,
+                description,
+                photos,
+                virtualTour,
+                propertyTax,
+                hoaFees,
+                mlsNumber,
+                zestimate,
+                neighborhood,
+                amenities,
+              };
+              const result = onChange(modelFields);
+              value = result?.price ?? value;
+            }
+            if (errors.price?.hasError) {
+              runValidationTasks("price", value);
+            }
+            setPrice(value);
+          }}
+          onBlur={() => { runValidationTasks("price", price) }}
+          errorMessage={errors.price?.errorMessage}
+          hasError={errors.price?.hasError}
+          {...getOverrideProps(overrides, "price")}
+        ></NumericFormat>
+        <NumericFormat
+          label="After-repair value(ARV)"
+          isRequired={true}
+          isReadOnly={false}
+          customInput={TextField}
+          thousandSeparator
+          allowNegative={false}
+          valueIsNumericString
+          value={arvprice}
+          getDisplayValue={parseFloat}
+          decimalScale={2}
+          prefix="$"
+          onChange={(e) => {
+            let value = isNaN(parseFloat(e.target.value.slice(1).replace(/,/g, '')))
+              ? e.target.value
+              : parseFloat(e.target.value.slice(1).replace(/,/g, ''));
+            if (onChange) {
+              const modelFields = {
+                address,
+                position,
+                price,
+                arvprice: value,
+                bedrooms,
+                bathrooms,
+                squareFootage,
+                lotSize,
+                yearBuilt,
+                propertyType,
+                listingStatus,
+                listingOwner,
+                ownerContact,
+                description,
+                photos,
+                virtualTour,
+                propertyTax,
+                hoaFees,
+                mlsNumber,
+                zestimate,
+                neighborhood,
+                amenities,
+              };
+              const result = onChange(modelFields);
+              value = result?.arvprice ?? value;
+            }
+            if (errors.arvprice?.hasError) {
+              runValidationTasks("arvprice", value);
+            }
+            setArvprice(value);
+          }}
+          onBlur={() => runValidationTasks("arvprice", arvprice)}
+          errorMessage={errors.arvprice?.errorMessage}
+          hasError={errors.arvprice?.hasError}
+          {...getOverrideProps(overrides, "arvprice")}
+        ></NumericFormat>
       </div>
       <TextField
         label="Description"
@@ -566,6 +609,7 @@ export default function PropertyCreateForm(props) {
               address,
               position,
               price,
+                
               bedrooms,
               bathrooms,
               squareFootage,
@@ -620,6 +664,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms: value,
                 bathrooms,
                 squareFootage,
@@ -668,6 +713,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms: value,
                 squareFootage,
@@ -716,6 +762,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage: value,
@@ -764,6 +811,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -812,6 +860,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -856,6 +905,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -900,6 +950,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -945,6 +996,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -993,6 +1045,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1041,6 +1094,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1085,6 +1139,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1133,6 +1188,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1177,6 +1233,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1219,6 +1276,7 @@ export default function PropertyCreateForm(props) {
                 address,
                 position,
                 price,
+                arvprice,
                 bedrooms,
                 bathrooms,
                 squareFootage,
@@ -1254,6 +1312,7 @@ export default function PropertyCreateForm(props) {
           errorMessage={errors?.amenities?.errorMessage}
           setFieldValue={setCurrentAmenitiesValue}
           inputFieldRef={amenitiesRef}
+          defaultFieldValue={""}
         >
           <TextField
             label="Amenities"

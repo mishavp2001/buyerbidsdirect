@@ -54,6 +54,7 @@ const schema = a.schema({
       address: a.string().required(), // Using the Address model
       position: a.json().required(),
       price: a.float().required(),
+      arvprice: a.float().required(),
       bedrooms: a.integer().required(),
       bathrooms: a.float().required(),
       squareFootage: a.integer().required(),

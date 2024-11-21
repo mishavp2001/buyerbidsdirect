@@ -37,6 +37,7 @@ export const createProperty = /* GraphQL */ `
     createProperty(condition: $condition, input: $input) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
@@ -135,6 +136,7 @@ export const deleteProperty = /* GraphQL */ `
     deleteProperty(condition: $condition, input: $input) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
@@ -233,6 +235,7 @@ export const updateProperty = /* GraphQL */ `
     updateProperty(condition: $condition, input: $input) {
       address
       amenities
+      arvprice
       bathrooms
       bedrooms
       createdAt
