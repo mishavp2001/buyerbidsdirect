@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TextField, Button, Box, Typography, Grid, Paper, Alert } from '@mui/material';
+import { TextField, MenuItem, Select, Button, Box, Typography, Grid, Paper, Alert, SelectChangeEvent } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { fetchUserAttributes, updateUserAttributes } from 'aws-amplify/auth';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -40,6 +40,7 @@ interface UserProfileAttributes {
   address?: string;
   email?: string;
   phone_number?: string;
+  "custom:userRole"?: string;
   sub?: string;
 }
 
@@ -58,7 +59,8 @@ const defaultAttributes: UserProfileAttributes = {
   zoneinfo: '',
   locale: '',
   address: '',
-  email: '',
+  email: '', 
+  "custom:userRole": '',
   phone_number: '',
 };
 
@@ -74,6 +76,7 @@ const UserProfileUpdateForm: React.FC = () => {
   useEffect(() => {
     const fetchAttributes = async () => {
       try {
+        debugger;
         const userAttributes = await fetchUserAttributes();
 
         // Assuming userAttributes is an object, we map it to state
@@ -113,6 +116,10 @@ const UserProfileUpdateForm: React.FC = () => {
       console.error('Error updating user attributes:', err);
     }
   };
+  const handleSelectChange = (event: SelectChangeEvent) => {
+    const { name, value } = event.target;
+    setAttributes({ ...attributes, [name]: value });
+   };
 
   // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -127,7 +134,22 @@ const UserProfileUpdateForm: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Update Profile
+        Profile
+        {attributes["custom:userRole"] && 
+        <p>
+          <Select
+          label="User Role"
+          name='custom:userRole'
+          value={attributes["custom:userRole"]}
+          onChange={handleSelectChange}
+          >
+            <MenuItem value='owner'>Owner</MenuItem>
+            <MenuItem value='investor'>Investor</MenuItem>
+            <MenuItem value='lander'>Lander</MenuItem>
+            <MenuItem value='wholesaler'>Wholesaler</MenuItem>
+          </Select> 
+         </p>
+        }
       </Typography>
       {update === 'success' ?
         <Alert style={{ 'marginBottom': '2em' }} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
@@ -146,11 +168,11 @@ const UserProfileUpdateForm: React.FC = () => {
           {/* Iterate over the attributes and render input fields for each */}
           {Object.entries(attributes).map(([key, value]) => {
             if (key !== 'picture')
-
               return (
                 <Grid item xs={12} sm={6} key={key}>
+                  {key !== 'custom:userRole' &&
                   <TextField
-                    label={key.replace(/_/g, ' ')} // Display the attribute names in a readable format
+                    label={key.replace(/custom:|_/g, ' ')} // Display the attribute names in a readable format
                     name={key}
                     value={value || ''}
                     onChange={handleInputChange}
@@ -159,7 +181,7 @@ const UserProfileUpdateForm: React.FC = () => {
                     InputProps={{
                       readOnly: key === 'email' || key === 'sub',
                     }}
-                  />
+                  />}
                 </Grid>
               )
           })}

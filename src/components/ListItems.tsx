@@ -39,6 +39,11 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     { field: 'bedrooms', headerName: 'Bedrooms', flex: 90,type: 'number', headerClassName: 'header-grid' },
     { field: 'bathrooms', headerName: 'Bathrooms', flex: 90, type: 'number', headerClassName: 'header-grid' },
     { field: 'squareFootage', headerName: 'Square Footage', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    {
+      field: 'yield', headerName: 'Yield', valueGetter: (_value, row) => {
+        return `${((row?.arvprice - row?.price) * 100 / row?.arvprice).toFixed(2)}%`;
+      }, flex: 120,  headerClassName: 'header-grid'
+    },
     { field: 'ownerContact', headerName: 'Contact', flex: 150, headerClassName: 'header-grid',
       renderCell: (params: GridRenderCellParams) => {
         return (
