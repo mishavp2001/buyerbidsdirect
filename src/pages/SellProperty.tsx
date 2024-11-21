@@ -26,7 +26,7 @@ const SellProperty: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({name: '', email: ''});
+  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({ name: '', email: '' });
 
   useEffect(() => {
     async function fetchUserData() {
@@ -48,7 +48,7 @@ const SellProperty: React.FC = () => {
         setProperties(items);
       } else {
         setError(errors.toString)
-       //console.dir(errors);
+        //console.dir(errors);
       }
     }
     fetchProperties();
@@ -66,10 +66,15 @@ const SellProperty: React.FC = () => {
     { field: 'address', headerName: 'Address', flex: 300 },
     { field: 'description', headerName: 'Description', flex: 200 },
     { field: 'price', headerName: 'Price', flex: 150, type: 'number' },
+    { field: 'arvprice', headerName: 'ARV', flex: 150, type: 'number' },
     { field: 'bedrooms', headerName: 'Bedrooms', flex: 120, type: 'number' },
     { field: 'bathrooms', headerName: 'Bathrooms', flex: 120, type: 'number' },
     { field: 'squareFootage', headerName: 'Square Footage', flex: 150, type: 'number' },
-    { field: 'amenities', headerName: 'Amenities', flex: 200 }
+    {
+      field: 'yield', headerName: 'Yield', valueGetter: (_value, row) => {
+        return `${((row?.arvprice - row?.price) * 100 / row?.arvprice).toFixed(2)}%`;
+      }, flex: 120
+    }
   ];
 
   const handleRowClick = (params: {
@@ -98,6 +103,13 @@ const SellProperty: React.FC = () => {
               '& .MuiDataGrid-row:hover': {
                 cursor: 'pointer'
               }
+            }}
+            initialState={{
+              columns: {
+                columnVisibilityModel: {
+                  arvprice: false,
+                },
+              },
             }}
             onRowClick={handleRowClick}
             rows={properties}
