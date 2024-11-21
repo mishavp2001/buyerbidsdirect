@@ -136,11 +136,12 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
           </Grid>
         ))}
       </Carousel>
-
-      <h3>
-        <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-      </h3>
-      <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
+      <Link className="maker-main-link" to={`/property/${property.id}`}>
+        <h3>
+          <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+        </h3>
+        <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
+      </Link>
       {property?.username === property.owner ? (
         <Link to={`/sales/${property.id}`}>
           Edit

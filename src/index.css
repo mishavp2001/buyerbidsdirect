@@ -235,6 +235,12 @@ main {
   .leaflet-popup-content {
     overflow-y: scroll;
     text-align: center;
+    .maker-main-link {
+      text-decoration: none;
+      color: black;
+      font-weight: normal
+    }
+  
   }
 }
 

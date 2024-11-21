@@ -51,11 +51,11 @@ useEffect(() => {
         authMode: "identityPool"
       })
       if (!errors) {
-        console.dir(items);
+        //console.dir(items);
         setProperties(items);
       } else {
         setError(errors.toString)
-        console.dir(errors);
+        //console.dir(errors);
       }
     }
     fetchPropertie();
