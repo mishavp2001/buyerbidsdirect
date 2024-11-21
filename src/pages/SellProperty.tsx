@@ -26,7 +26,7 @@ const SellProperty: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({});
+  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({name: '', email: ''});
 
   useEffect(() => {
     async function fetchUserData() {
@@ -34,7 +34,6 @@ const SellProperty: React.FC = () => {
       setOwner({ name: userAttributes?.name, email: userAttributes?.email });
     }
     fetchUserData();
-
   }, []);
 
   useEffect(() => {
@@ -124,8 +123,8 @@ const SellProperty: React.FC = () => {
                     id={propertyId}
                     overrides={
                       {
-                        listingOwner: { value: owner.name, isReadOnly: true },
-                        ownerContact: { value: owner.email, isReadOnly: true },
+                        listingOwner: { value: owner?.name, isReadOnly: true },
+                        ownerContact: { value: owner?.email, isReadOnly: true },
                       }}
                     onSuccess={() => { navigate("/sales", { replace: true }); }} />
                 </>

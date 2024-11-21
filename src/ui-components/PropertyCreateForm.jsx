@@ -318,8 +318,8 @@ export default function PropertyCreateForm(props) {
     yearBuilt: [{ type: "Required" }],
     propertyType: [{ type: "Required" }],
     listingStatus: [{ type: "Required" }],
-    listingOwner: [],
-    ownerContact: [],
+    listingOwner: [{ type: "Required" }],
+    ownerContact: [{ type: "Required" }],
     description: [{ type: "Required" }],
     photos: [],
     virtualTour: [],
@@ -497,7 +497,6 @@ export default function PropertyCreateForm(props) {
           valueIsNumericString
           step="any"
           value={price}
-          getDisplayValue={parseFloat}
           customInput={TextField}
           onChange={(e) => {
             let value = isNaN(parseFloat(e.target.value.slice(1).replace(/,/g, '')))
@@ -550,7 +549,6 @@ export default function PropertyCreateForm(props) {
           allowNegative={false}
           valueIsNumericString
           value={arvprice}
-          getDisplayValue={parseFloat}
           decimalScale={2}
           prefix="$"
           onChange={(e) => {
@@ -595,6 +593,17 @@ export default function PropertyCreateForm(props) {
           hasError={errors.arvprice?.hasError}
           {...getOverrideProps(overrides, "arvprice")}
         ></NumericFormat>
+        <NumericFormat
+          label="Yield"
+          isDisabled
+          customInput={TextField}
+          thousandSeparator
+          allowNegative
+          valueIsNumericString
+          value={(arvprice - price) * 100 / arvprice}
+          decimalScale={2}
+          suffix="%"
+        ></NumericFormat>
       </div>
       <TextField
         label="Description"
@@ -609,7 +618,7 @@ export default function PropertyCreateForm(props) {
               address,
               position,
               price,
-                
+
               bedrooms,
               bathrooms,
               squareFootage,
@@ -1330,7 +1339,7 @@ export default function PropertyCreateForm(props) {
             errorMessage={errors.amenities?.errorMessage}
             hasError={errors.amenities?.hasError}
             ref={amenitiesRef}
-            labelHidden={true}
+            labelHidden
             {...getOverrideProps(overrides, "amenities")}
           ></TextField>
         </ArrayField>
@@ -1342,7 +1351,6 @@ export default function PropertyCreateForm(props) {
             isReadOnly={true}
             errorMessage={errors.listingOwner?.errorMessage}
             hasError={errors.listingOwner?.hasError}
-            {...getOverrideProps(overrides, "listingOwner")}
           ></TextField>
           <TextField
             label="Owner contact"
@@ -1351,7 +1359,6 @@ export default function PropertyCreateForm(props) {
             onChange={() => { }}
             errorMessage={errors.ownerContact?.errorMessage}
             hasError={errors.ownerContact?.hasError}
-            {...getOverrideProps(overrides, "ownerContact")}
           ></TextField>
           <div className="merge-col-field">
             <StorageManager
@@ -1412,7 +1419,6 @@ export default function PropertyCreateForm(props) {
             onBlur={() => runValidationTasks("position", position)}
             errorMessage={errors.position?.errorMessage}
             hasError={errors.position?.hasError}
-            {...getOverrideProps(overrides, "position")}
           ></TextAreaField>
         </div>
 

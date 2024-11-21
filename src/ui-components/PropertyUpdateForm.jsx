@@ -226,8 +226,8 @@ export default function PropertyUpdateForm(props) {
     propertyType: "",
     listingStatus: "",
     arvprice: "",
-    listingOwner: "",
-    ownerContact: "",
+    listingOwner: overrides?.listingOwner?.value || overrides?.ownerContact?.value,
+    ownerContact: overrides?.ownerContact?.value,
     description: "",
     photos: [],
     virtualTour: "",
@@ -300,8 +300,8 @@ export default function PropertyUpdateForm(props) {
     setYearBuilt(cleanValues.yearBuilt);
     setPropertyType(cleanValues.propertyType);
     setListingStatus(cleanValues.listingStatus);
-    setListingOwner(overrides?.ownerContact?.value);
-    setOwnerContact(overrides?.listingOwner?.value);
+    setListingOwner(cleanValues.listingOwner);
+    setOwnerContact(cleanValues.ownerContact);
     setDescription(cleanValues.description);
     setPhotos(cleanValues.photos ?? []);
     setCurrentPhotosValue("");
@@ -585,7 +585,7 @@ export default function PropertyUpdateForm(props) {
             }
             setPrice(value);
           }}
-          onBlur={() => {runValidationTasks("price", price) }}
+          onBlur={() => { runValidationTasks("price", price) }}
           errorMessage={errors.price?.errorMessage}
           hasError={errors.price?.hasError}
           {...getOverrideProps(overrides, "price")}
@@ -642,6 +642,17 @@ export default function PropertyUpdateForm(props) {
           errorMessage={errors.arvprice?.errorMessage}
           hasError={errors.arvprice?.hasError}
           {...getOverrideProps(overrides, "arvprice")}
+        ></NumericFormat>
+        <NumericFormat
+          label="Yield"
+          isDisabled
+          customInput={TextField}
+          thousandSeparator
+          allowNegative
+          valueIsNumericString
+          value={(arvprice - price) * 100 / arvprice}
+          decimalScale={2}
+          suffix="%"
         ></NumericFormat>
       </div>
       <TextAreaField
