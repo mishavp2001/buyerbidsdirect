@@ -134,9 +134,7 @@ const UserProfileUpdateForm: React.FC = () => {
   return (
     <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
       <Typography variant="h5" gutterBottom>
-        Profile
-        {attributes["custom:userRole"] && 
-        <p>
+        Profile <p>
           <Select
           label="User Role"
           name='custom:userRole'
@@ -149,7 +147,6 @@ const UserProfileUpdateForm: React.FC = () => {
             <MenuItem value='wholesaler'>Wholesaler</MenuItem>
           </Select> 
          </p>
-        }
       </Typography>
       {update === 'success' ?
         <Alert style={{ 'marginBottom': '2em' }} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
