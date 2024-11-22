@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Icon, useAuthenticator } from '@aws-amplify/ui-react';
 import { Link } from 'react-router-dom';
 import Box from '@mui/material/Box';
@@ -9,13 +9,29 @@ import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
 import { Logout, House } from '@mui/icons-material/index';
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
 export default function AccountMenu() {
-    const { user, authStatus, signOut } = useAuthenticator((context) => [
+    const [email, setEmail ] =  useState<string>('User');
+    const { authStatus, signOut } = useAuthenticator((context) => [
         context.authStatus,
         context.signOut
     ]);
-
+    // Fetch user attributes when the component mounts
+    useEffect(() => {
+        const fetchAttributes = async () => {
+        try {
+            const userAttributes = await fetchUserAttributes();
+            const email = userAttributes?.email ?? 'Guest';
+            setEmail(email);
+        } catch (err) {
+            console.error('Error fetching user attributes:', err);
+        }
+        };
+    
+        fetchAttributes();
+    }, []);
+  
     function handleLogOut() {
         setAnchorEl(null);
         signOut();
@@ -43,7 +59,7 @@ export default function AccountMenu() {
                             aria-haspopup="true"
                             aria-expanded={open ? 'true' : undefined}
                         >
-                            <Avatar sx={{ width: 32, height: 32 }}>{user?.signInDetails?.loginId?.[0]}</Avatar>
+                            <Avatar sx={{ width: 32, height: 32 }}>{email?.[0]}</Avatar>
                         </IconButton>
                     </Tooltip>
                 }
@@ -88,7 +104,7 @@ export default function AccountMenu() {
                         <Avatar />
                     </ListItemIcon>
                     <ListItemText>
-                        {user?.signInDetails?.loginId}
+                        {email || 'Guest'}
                     </ListItemText>
                 </MenuItem>
                 <MenuItem onClick={handleClose} {...{ component: Link, to: "/offers" }} >
