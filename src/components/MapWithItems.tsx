@@ -19,6 +19,7 @@ import Search from '/search.svg';
 import _ from 'lodash';
 import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
 import "react-leaflet-fullscreen/styles.css";
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 const client = generateClient<Schema>();
 const div = document.createElement('div');
@@ -83,6 +84,7 @@ const chunkArray = (array: string[], chunkSize: number) => {
 const CustomPopup = (props: { property: any, index: React.Key | null | undefined; }) => {
   const property = props.property;
   const [imageChunks, setImageChunks] = useState(chunkArray(property.photos || [], 3));
+  const { user } = useAuthenticator((context) => [context.user]);
 
   useEffect(() => {
     // Handler to adjust chunks based on screen size
@@ -142,7 +144,7 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
         </h3>
         <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
       </Link>
-      {property?.username === property.owner ? (
+      {user?.username === property.owner ? (
         <Link to={`/sales/${property.id}`}>
           Edit
         </Link>
