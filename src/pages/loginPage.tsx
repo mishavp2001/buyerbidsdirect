@@ -27,7 +27,7 @@ export const LoginPage: React.FC = () => {
   return (
     // TODO: socialProviders={['facebook', 'google']} to pass into Authenticator when integrated
     <View className="auth-wrapper context-container">
-      <Authenticator loginMechanisms={['email']} socialProviders={[]} />
+      <Authenticator loginMechanisms={['email']} socialProviders={['facebook']} />
     </View>
   );
 };

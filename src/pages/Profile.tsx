@@ -76,7 +76,6 @@ const UserProfileUpdateForm: React.FC = () => {
   useEffect(() => {
     const fetchAttributes = async () => {
       try {
-        debugger;
         const userAttributes = await fetchUserAttributes();
 
         // Assuming userAttributes is an object, we map it to state

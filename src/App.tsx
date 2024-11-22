@@ -2,6 +2,8 @@
 import { Authenticator } from '@aws-amplify/ui-react'
 import HomePage from './pages/homePage';
 import LoginPage from './pages/loginPage';
+import PrivacyPage from './pages/privacyPage';
+import DeleteDataPage from './pages/deleteDataPage';
 import { Route, Routes } from 'react-router-dom';
 import MakeOffer from './pages/makeOfferPage';
 import SellProperty from './pages/SellProperty';
@@ -29,6 +31,8 @@ function App() {
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/profile/:update' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/login' element = {<LoginPage/>} />
+        <Route path='/privacy' element = {<PrivacyPage/>} />
+        <Route path='/deletedata' element = {<DeleteDataPage/>} />
       </Routes>
     </Authenticator.Provider>   
   );
