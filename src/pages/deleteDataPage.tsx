@@ -1,6 +1,6 @@
 import { Container, Paper } from "@mui/material";
 
-function privacyPage() {
+function deleteDataPage() {
     return (
         <Container component="main">
             <Paper elevation={3} sx={{ padding: 6 }}>
@@ -27,5 +27,5 @@ function privacyPage() {
 }
 
 
-export default privacyPage;
+export default deleteDataPage;
 
