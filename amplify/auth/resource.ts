@@ -13,10 +13,10 @@ export const auth = defineAuth({
         clientSecret: secret('FACEBOOK_CLIENT_SECRET')
       },
       callbackUrls: [
-        'http://localhost:5173',
-        'https://buyerbidsdirect.com'
+        'http://localhost:5173/callback',
+        'https://buyerbidsdirect.com/callback'
       ],
-      logoutUrls: ['http://localhost:3000/', 'https://buyerbidsdirect.com'],
+      logoutUrls: ['http://localhost:3000/logout', 'https://buyerbidsdirect.com/logout'],
     }
   }
 });
