@@ -16,17 +16,32 @@ const schema = a.schema({
     })
     .authorization(allow => [allow.owner()]),
 
-  UserProfile: a
+    UserProfile: a
     .model({
-      email: a.string(),
-      phone: a.string(),
-      password: a.string(),
-      loanApprovalLetter: a.string(),
-      sellerFinancingOptions: a.string(),
-      chargePerHour: a.float(),
-      userType: a.enum(['buyer', 'seller', 'attorney', 'agent', 'notary']),  // Using enum for user type
-    })
-    .authorization(allow => [allow.owner()]),
+      name: a.string(),
+      user_role: a.enum(['owner', 'investor', 'lander', 'wholesaler', 'realtor']),
+      family_name: a.string(),
+      given_name: a.string(),
+      middle_name: a.string(),
+      nickname: a.string(),
+      preferred_username: a.string(),
+      profile: a.string(), // Could be a URL or descriptive text
+      picture: a.url(),
+      website: a.url(),
+      gender: a.string(),
+      birthdate: a.date(),
+      zoneinfo: a.string(), // Time zone information
+      locale: a.string(),
+      address: a.string(),
+      email: a.email().required(),
+      phone_number: a.string().required(),
+      sub: a.string().required(), // Cognito's unique user identifier
+    }).authorization(allow => [
+      allow.authenticated('identityPool').to(['read']),
+      allow.guest().to(['read']),
+      allow.owner()
+     ]),
+
    Offer: a
     .model({
       offerAmmount: a.integer(),
