@@ -11,7 +11,7 @@ const UserProfileUpdateForm: React.FC = () => {
   const { user } = useAuthenticator((context) => [context.user]);
   const userId = user?.userId;
   const [profileExists, setProfileExists] = useState(false);
-  
+
   useEffect(() => {
     const checkProfileExists = async () => {
       if (!userId) {
@@ -38,11 +38,16 @@ const UserProfileUpdateForm: React.FC = () => {
 
   return (
     <div>
-    {profileExists ? (
-      <UserProfileUpdateFormUI id={userId} />
-    ) : (
-      <UserProfileCreateFormUI />
-    )}
+      {profileExists ? (
+        <UserProfileUpdateFormUI id={userId} />
+      ) : (
+        <UserProfileCreateFormUI
+          overrides={
+            {
+              id: { value: user?.userId, hidden: true, isDisabled: true }
+            }}
+        />
+      )}
     </div>
   );
 };
