@@ -2,7 +2,6 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Typography, Paper } from '@mui/material';
 import UserProfileView from '../ui-components/UserProfileView';
-import UserProfileUpdateForm from '../ui-components/UserProfileUpdateForm';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";
