@@ -44,7 +44,8 @@ const UserProfileUpdateForm: React.FC = () => {
         <UserProfileCreateFormUI
           overrides={
             {
-              id: { value: user?.userId, hidden: true, isDisabled: true }
+              id: { value: user?.userId, hidden: true, isDisabled: true },
+              email: { value: user?.signInDetails?.loginId, hidden: true, isDisabled: true }
             }}
         />
       )}

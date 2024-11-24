@@ -26,7 +26,7 @@ const schema = a.schema({
       nickname: a.string(),
       preferred_username: a.string(),
       profile: a.string(), // Could be a URL or descriptive text
-      picture: a.url(),
+      picture: a.string(),
       website: a.url(),
       gender: a.string(),
       birthdate: a.date(),

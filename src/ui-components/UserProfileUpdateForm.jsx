@@ -4,10 +4,11 @@ import * as React from "react";
 import {
   Button,
   Flex,
-  Grid,
   SelectField,
   TextField,
 } from "@aws-amplify/ui-react";
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import { Grid, Paper} from '@mui/material';
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getUserProfile } from "./graphql/queries";
@@ -72,6 +73,23 @@ export default function UserProfileUpdateForm(props) {
     initialValues.phone_number
   );
   const [errors, setErrors] = React.useState({});
+
+
+const processFile = async ({ file }) => {
+  const fileExtension = file.name.split('.').pop();
+
+  return file
+    .arrayBuffer()
+    .then((filebuffer) => window.crypto.subtle.digest('SHA-1', filebuffer))
+    .then((hashBuffer) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
+      return { file, key: `${hashHex}.${fileExtension}` };
+    });
+};
+
   const resetStateValues = () => {
     const cleanValues = userProfileRecord
       ? { ...initialValues, ...userProfileRecord }
@@ -123,7 +141,7 @@ export default function UserProfileUpdateForm(props) {
     nickname: [],
     preferred_username: [],
     profile: [],
-    picture: [{ type: "URL" }],
+    picture: [],
     website: [{ type: "URL" }],
     gender: [],
     birthdate: [],
@@ -151,6 +169,7 @@ export default function UserProfileUpdateForm(props) {
     return validationResponse;
   };
   return (
+    <Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>
     <Grid
       as="form"
       rowGap="15px"
@@ -379,6 +398,7 @@ export default function UserProfileUpdateForm(props) {
           {...getOverrideProps(overrides, "user_roleoption4")}
         ></option>
       </SelectField>
+      {picture && <StorageImage alt={picture} path={picture} />}
       <TextField
         label="Family name"
         isRequired={false}
@@ -629,44 +649,11 @@ export default function UserProfileUpdateForm(props) {
       ></TextField>
       <TextField
         label="Picture"
+        labelHidden
+        style={{'display': 'none'}}
         isRequired={false}
         isReadOnly={false}
         value={picture}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              id,
-              name,
-              user_role,
-              family_name,
-              given_name,
-              middle_name,
-              nickname,
-              preferred_username,
-              profile,
-              picture: value,
-              website,
-              gender,
-              birthdate,
-              zoneinfo,
-              locale,
-              address,
-              email,
-              phone_number,
-            };
-            const result = onChange(modelFields);
-            value = result?.picture ?? value;
-          }
-          if (errors.picture?.hasError) {
-            runValidationTasks("picture", value);
-          }
-          setPicture(value);
-        }}
-        onBlur={() => runValidationTasks("picture", picture)}
-        errorMessage={errors.picture?.errorMessage}
-        hasError={errors.picture?.hasError}
-        {...getOverrideProps(overrides, "picture")}
       ></TextField>
       <TextField
         label="Website"
@@ -997,36 +984,47 @@ export default function UserProfileUpdateForm(props) {
         hasError={errors.phone_number?.hasError}
         {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
-      <Flex
-        justifyContent="space-between"
-        {...getOverrideProps(overrides, "CTAFlex")}
-      >
+      <Grid item xs={12} sm={12} key='profile_picture'>
+      Profile picture:
+      <StorageManager
+        path={({ identityId }) => `profile-pictures/${identityId}/`}
+        maxFileCount={1}
+        acceptedFileTypes={['image/*']}
+        processFile={processFile}
+        onUploadSuccess={({ key }) => {
+          // assuming you have an attribute called 'images' on your data model that is an array of strings
+          key && setPicture(key)
+        }}
+        onFileRemove={() => {
+          setPicture('')
+        }}
+        onUploadError={(error, { key }) => {
+          console.log(error, key)
+          setPicture('')
+        }}
+      />
+      </Grid>
+     <Grid item xs={12} sm={4} key='button-close'>
         <Button
-          children="Reset"
+          children="Clear"
           type="reset"
           onClick={(event) => {
             event.preventDefault();
             resetStateValues();
           }}
-          isDisabled={!(idProp || userProfileModelProp)}
-          {...getOverrideProps(overrides, "ResetButton")}
+          {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
-        <Flex
-          gap="15px"
-          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
-        >
+        </Grid>
+        <Grid item xs={12} sm={5} key='button-submit'>
           <Button
             children="Submit"
             type="submit"
             variation="primary"
-            isDisabled={
-              !(idProp || userProfileModelProp) ||
-              Object.values(errors).some((e) => e?.hasError)
-            }
+            isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
-        </Flex>
-      </Flex>
-    </Grid>
+        </Grid>
+        </Grid>      
+    </Paper>
   );
 }

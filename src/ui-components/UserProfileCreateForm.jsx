@@ -1,13 +1,15 @@
 /* eslint-disable */
 "use client";
-import * as React from "react";
+import React from 'react';
 import {
   Button,
-  Flex,
-  Grid,
   SelectField,
   TextField,
 } from "@aws-amplify/ui-react";
+import { Grid, Paper, Alert} from '@mui/material';
+import CheckIcon from '@mui/icons-material/Check';
+import { useNavigate, useParams } from 'react-router-dom';
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createUserProfile } from "./graphql/mutations";
@@ -40,7 +42,7 @@ export default function UserProfileCreateForm(props) {
     zoneinfo: "",
     locale: "",
     address: "",
-    email: "",
+    email:  overrides?.email?.value,
     phone_number: "",
   };
   const [id, setId] = React.useState(initialValues.id);
@@ -70,6 +72,25 @@ export default function UserProfileCreateForm(props) {
     initialValues.phone_number
   );
   const [errors, setErrors] = React.useState({});
+  const navigate = useNavigate();
+  const { update } = useParams();
+
+
+const processFile = async ({ file }) => {
+  const fileExtension = file.name.split('.').pop();
+
+  return file
+    .arrayBuffer()
+    .then((filebuffer) => window.crypto.subtle.digest('SHA-1', filebuffer))
+    .then((hashBuffer) => {
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray
+        .map((a) => a.toString(16).padStart(2, '0'))
+        .join('');
+      return { file, key: `${hashHex}.${fileExtension}` };
+    });
+};
+
   const resetStateValues = () => {
     setId(initialValues.id);
     setName(initialValues.name);
@@ -101,7 +122,7 @@ export default function UserProfileCreateForm(props) {
     nickname: [],
     preferred_username: [],
     profile: [],
-    picture: [{ type: "URL" }],
+    picture: [],
     website: [{ type: "URL" }],
     gender: [],
     birthdate: [],
@@ -129,6 +150,10 @@ export default function UserProfileCreateForm(props) {
     return validationResponse;
   };
   return (
+<Paper elevation={3} sx={{ padding: 3, maxWidth: 600, margin: 'auto' }}>    {update === 'success' ?
+  <Alert style={{ 'marginBottom': '2em' }} variant="filled" icon={<CheckIcon fontSize="inherit" />} severity="success">
+    Profile Created Successfuly
+  </Alert> : ''}  
     <Grid
       as="form"
       rowGap="15px"
@@ -292,7 +317,7 @@ export default function UserProfileCreateForm(props) {
         hasError={errors.name?.hasError}
         {...getOverrideProps(overrides, "name")}
       ></TextField>
-      <SelectField
+           <SelectField
         label="User role"
         placeholder="Please select an option"
         isDisabled={false}
@@ -359,6 +384,89 @@ export default function UserProfileCreateForm(props) {
           {...getOverrideProps(overrides, "user_roleoption4")}
         ></option>
       </SelectField>
+      <TextField
+        label="Email"
+        isRequired={true}
+        isReadOnly={false}
+        value={email}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email: value,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.email ?? value;
+          }
+          if (errors.email?.hasError) {
+            runValidationTasks("email", value);
+          }
+          setEmail(value);
+        }}
+        onBlur={() => runValidationTasks("email", email)}
+        errorMessage={errors.email?.errorMessage}
+        hasError={errors.email?.hasError}
+        {...getOverrideProps(overrides, "email")}
+      ></TextField>
+      {picture && <StorageImage alt={picture} path={picture} />}
+      <TextField
+        label="Phone number"
+        isRequired={true}
+        isReadOnly={false}
+        value={phone_number}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.phone_number ?? value;
+          }
+          if (errors.phone_number?.hasError) {
+            runValidationTasks("phone_number", value);
+          }
+          setPhone_number(value);
+        }}
+        onBlur={() => runValidationTasks("phone_number", phone_number)}
+        errorMessage={errors.phone_number?.errorMessage}
+        hasError={errors.phone_number?.hasError}
+        {...getOverrideProps(overrides, "phone_number")}
+      ></TextField>
       <TextField
         label="Family name"
         isRequired={false}
@@ -609,44 +717,11 @@ export default function UserProfileCreateForm(props) {
       ></TextField>
       <TextField
         label="Picture"
+        labelHidden
+        style={{'display': 'none'}}
         isRequired={false}
         isReadOnly={false}
         value={picture}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              id,
-              name,
-              user_role,
-              family_name,
-              given_name,
-              middle_name,
-              nickname,
-              preferred_username,
-              profile,
-              picture: value,
-              website,
-              gender,
-              birthdate,
-              zoneinfo,
-              locale,
-              address,
-              email,
-              phone_number,
-            };
-            const result = onChange(modelFields);
-            value = result?.picture ?? value;
-          }
-          if (errors.picture?.hasError) {
-            runValidationTasks("picture", value);
-          }
-          setPicture(value);
-        }}
-        onBlur={() => runValidationTasks("picture", picture)}
-        errorMessage={errors.picture?.errorMessage}
-        hasError={errors.picture?.hasError}
-        {...getOverrideProps(overrides, "picture")}
       ></TextField>
       <TextField
         label="Website"
@@ -895,92 +970,27 @@ export default function UserProfileCreateForm(props) {
         hasError={errors.address?.hasError}
         {...getOverrideProps(overrides, "address")}
       ></TextField>
-      <TextField
-        label="Email"
-        isRequired={true}
-        isReadOnly={false}
-        value={email}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              id,
-              name,
-              user_role,
-              family_name,
-              given_name,
-              middle_name,
-              nickname,
-              preferred_username,
-              profile,
-              picture,
-              website,
-              gender,
-              birthdate,
-              zoneinfo,
-              locale,
-              address,
-              email: value,
-              phone_number,
-            };
-            const result = onChange(modelFields);
-            value = result?.email ?? value;
-          }
-          if (errors.email?.hasError) {
-            runValidationTasks("email", value);
-          }
-          setEmail(value);
+      <Grid item xs={12} sm={12} key='profile_picture'>
+      Profile picture:
+      <StorageManager
+        path={({ identityId }) => `profile-pictures/${identityId}/`}
+        maxFileCount={1}
+        acceptedFileTypes={['image/*']}
+        processFile={processFile}
+        onUploadSuccess={({ key }) => {
+          // assuming you have an attribute called 'images' on your data model that is an array of strings
+          key && setPicture(key)
         }}
-        onBlur={() => runValidationTasks("email", email)}
-        errorMessage={errors.email?.errorMessage}
-        hasError={errors.email?.hasError}
-        {...getOverrideProps(overrides, "email")}
-      ></TextField>
-      <TextField
-        label="Phone number"
-        isRequired={true}
-        isReadOnly={false}
-        value={phone_number}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              id,
-              name,
-              user_role,
-              family_name,
-              given_name,
-              middle_name,
-              nickname,
-              preferred_username,
-              profile,
-              picture,
-              website,
-              gender,
-              birthdate,
-              zoneinfo,
-              locale,
-              address,
-              email,
-              phone_number: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.phone_number ?? value;
-          }
-          if (errors.phone_number?.hasError) {
-            runValidationTasks("phone_number", value);
-          }
-          setPhone_number(value);
+        onFileRemove={() => {
+          setPicture('')
         }}
-        onBlur={() => runValidationTasks("phone_number", phone_number)}
-        errorMessage={errors.phone_number?.errorMessage}
-        hasError={errors.phone_number?.hasError}
-        {...getOverrideProps(overrides, "phone_number")}
-      ></TextField>
-      <Flex
-        justifyContent="space-between"
-        {...getOverrideProps(overrides, "CTAFlex")}
-      >
+        onUploadError={(error, { key }) => {
+          console.log(error, key)
+          setPicture('')
+        }}
+      />
+    </Grid>
+    <Grid item xs={12} sm={4} key='button-close'>
         <Button
           children="Clear"
           type="reset"
@@ -990,10 +1000,8 @@ export default function UserProfileCreateForm(props) {
           }}
           {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
-        <Flex
-          gap="15px"
-          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
-        >
+        </Grid>
+        <Grid item xs={12} sm={5} key='button-submit'>
           <Button
             children="Submit"
             type="submit"
@@ -1001,8 +1009,8 @@ export default function UserProfileCreateForm(props) {
             isDisabled={Object.values(errors).some((e) => e?.hasError)}
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
-        </Flex>
-      </Flex>
+      </Grid>      
     </Grid>
+    </Paper>
   );
 }
