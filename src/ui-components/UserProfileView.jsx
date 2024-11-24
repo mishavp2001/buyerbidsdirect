@@ -38,13 +38,11 @@ export default function UserProfileView(props) {
   React.useEffect(() => {
     const fetchUserProfile = async () => {
       if (idProp) {
-        const record = (
-          await client.graphql({
-            query: getUserProfile.replaceAll("__typename", ""),
-            variables: { id: idProp },
-          })
-        )?.data?.getUserProfile;
-        setUserProfileRecord(record || initialValues);
+        const { data: items, errors } = await client.models.UserProfile.list({
+          filter: { id: { eq: idProp } }, 
+          authMode: "identityPool"
+        })
+        setUserProfileRecord(items[0] || initialValues);
       }
     };
     fetchUserProfile();

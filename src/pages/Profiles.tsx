@@ -29,7 +29,7 @@ const Profiles: React.FC = () => {
       //const filter = userId  ? { id: { eq: userId } } : null;
       const { data: items, errors } = await client.models.UserProfile.list({
         filter: userId ? { id: { eq: userId } } : undefined, // Proper conditional for filter
-        authMode: "userPool"
+        authMode: "identityPool"
       })
       if (!errors) {
         //console.dir(items);
