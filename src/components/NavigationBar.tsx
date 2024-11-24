@@ -15,6 +15,9 @@ const NavigationBar: React.FC = () => {
                 <Link to="/sales" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Sell
                 </Link>
+                <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                    Contact
+                </Link>
                 <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Analyze
                 </Link>

@@ -26,39 +26,74 @@ export default function UserProfileUpdateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
+    name: "",
+    user_role: "",
+    family_name: "",
+    given_name: "",
+    middle_name: "",
+    nickname: "",
+    preferred_username: "",
+    profile: "",
+    picture: "",
+    website: "",
+    gender: "",
+    birthdate: "",
+    zoneinfo: "",
+    locale: "",
+    address: "",
     email: "",
-    phone: "",
-    password: "",
-    loanApprovalLetter: "",
-    sellerFinancingOptions: "",
-    chargePerHour: "",
-    userType: "",
+    phone_number: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
+  const [name, setName] = React.useState(initialValues.name);
+  const [user_role, setUser_role] = React.useState(initialValues.user_role);
+  const [family_name, setFamily_name] = React.useState(
+    initialValues.family_name
+  );
+  const [given_name, setGiven_name] = React.useState(initialValues.given_name);
+  const [middle_name, setMiddle_name] = React.useState(
+    initialValues.middle_name
+  );
+  const [nickname, setNickname] = React.useState(initialValues.nickname);
+  const [preferred_username, setPreferred_username] = React.useState(
+    initialValues.preferred_username
+  );
+  const [profile, setProfile] = React.useState(initialValues.profile);
+  const [picture, setPicture] = React.useState(initialValues.picture);
+  const [website, setWebsite] = React.useState(initialValues.website);
+  const [gender, setGender] = React.useState(initialValues.gender);
+  const [birthdate, setBirthdate] = React.useState(initialValues.birthdate);
+  const [zoneinfo, setZoneinfo] = React.useState(initialValues.zoneinfo);
+  const [locale, setLocale] = React.useState(initialValues.locale);
+  const [address, setAddress] = React.useState(initialValues.address);
   const [email, setEmail] = React.useState(initialValues.email);
-  const [phone, setPhone] = React.useState(initialValues.phone);
-  const [password, setPassword] = React.useState(initialValues.password);
-  const [loanApprovalLetter, setLoanApprovalLetter] = React.useState(
-    initialValues.loanApprovalLetter
+  const [phone_number, setPhone_number] = React.useState(
+    initialValues.phone_number
   );
-  const [sellerFinancingOptions, setSellerFinancingOptions] = React.useState(
-    initialValues.sellerFinancingOptions
-  );
-  const [chargePerHour, setChargePerHour] = React.useState(
-    initialValues.chargePerHour
-  );
-  const [userType, setUserType] = React.useState(initialValues.userType);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = userProfileRecord
       ? { ...initialValues, ...userProfileRecord }
       : initialValues;
+    setId(cleanValues.id);
+    setName(cleanValues.name);
+    setUser_role(cleanValues.user_role);
+    setFamily_name(cleanValues.family_name);
+    setGiven_name(cleanValues.given_name);
+    setMiddle_name(cleanValues.middle_name);
+    setNickname(cleanValues.nickname);
+    setPreferred_username(cleanValues.preferred_username);
+    setProfile(cleanValues.profile);
+    setPicture(cleanValues.picture);
+    setWebsite(cleanValues.website);
+    setGender(cleanValues.gender);
+    setBirthdate(cleanValues.birthdate);
+    setZoneinfo(cleanValues.zoneinfo);
+    setLocale(cleanValues.locale);
+    setAddress(cleanValues.address);
     setEmail(cleanValues.email);
-    setPhone(cleanValues.phone);
-    setPassword(cleanValues.password);
-    setLoanApprovalLetter(cleanValues.loanApprovalLetter);
-    setSellerFinancingOptions(cleanValues.sellerFinancingOptions);
-    setChargePerHour(cleanValues.chargePerHour);
-    setUserType(cleanValues.userType);
+    setPhone_number(cleanValues.phone_number);
     setErrors({});
   };
   const [userProfileRecord, setUserProfileRecord] =
@@ -79,13 +114,24 @@ export default function UserProfileUpdateForm(props) {
   }, [idProp, userProfileModelProp]);
   React.useEffect(resetStateValues, [userProfileRecord]);
   const validations = {
-    email: [],
-    phone: [],
-    password: [],
-    loanApprovalLetter: [],
-    sellerFinancingOptions: [],
-    chargePerHour: [],
-    userType: [],
+    id: [{ type: "Required" }],
+    name: [],
+    user_role: [],
+    family_name: [],
+    given_name: [],
+    middle_name: [],
+    nickname: [],
+    preferred_username: [],
+    profile: [],
+    picture: [{ type: "URL" }],
+    website: [{ type: "URL" }],
+    gender: [],
+    birthdate: [],
+    zoneinfo: [],
+    locale: [],
+    address: [],
+    email: [{ type: "Required" }, { type: "Email" }],
+    phone_number: [{ type: "Required" }],
   };
   const runValidationTasks = async (
     fieldName,
@@ -113,13 +159,24 @@ export default function UserProfileUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          email: email ?? null,
-          phone: phone ?? null,
-          password: password ?? null,
-          loanApprovalLetter: loanApprovalLetter ?? null,
-          sellerFinancingOptions: sellerFinancingOptions ?? null,
-          chargePerHour: chargePerHour ?? null,
-          userType: userType ?? null,
+          id,
+          name: name ?? null,
+          user_role: user_role ?? null,
+          family_name: family_name ?? null,
+          given_name: given_name ?? null,
+          middle_name: middle_name ?? null,
+          nickname: nickname ?? null,
+          preferred_username: preferred_username ?? null,
+          profile: profile ?? null,
+          picture: picture ?? null,
+          website: website ?? null,
+          gender: gender ?? null,
+          birthdate: birthdate ?? null,
+          zoneinfo: zoneinfo ?? null,
+          locale: locale ?? null,
+          address: address ?? null,
+          email,
+          phone_number,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -172,21 +229,719 @@ export default function UserProfileUpdateForm(props) {
       {...rest}
     >
       <TextField
-        label="Email"
+        label="Id"
+        isRequired={true}
+        isReadOnly={true}
+        labelHidden
+        style={{display: 'none'}}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
+      <TextField
+        label="Name"
         isRequired={false}
+        isReadOnly={false}
+        value={name}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name: value,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.name ?? value;
+          }
+          if (errors.name?.hasError) {
+            runValidationTasks("name", value);
+          }
+          setName(value);
+        }}
+        onBlur={() => runValidationTasks("name", name)}
+        errorMessage={errors.name?.errorMessage}
+        hasError={errors.name?.hasError}
+        {...getOverrideProps(overrides, "name")}
+      ></TextField>
+      <SelectField
+        label="User role"
+        placeholder="Please select an option"
+        isDisabled={false}
+        value={user_role}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role: value,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.user_role ?? value;
+          }
+          if (errors.user_role?.hasError) {
+            runValidationTasks("user_role", value);
+          }
+          setUser_role(value);
+        }}
+        onBlur={() => runValidationTasks("user_role", user_role)}
+        errorMessage={errors.user_role?.errorMessage}
+        hasError={errors.user_role?.hasError}
+        {...getOverrideProps(overrides, "user_role")}
+      >
+        <option
+          children="Owner"
+          value="owner"
+          {...getOverrideProps(overrides, "user_roleoption0")}
+        ></option>
+        <option
+          children="Investor"
+          value="investor"
+          {...getOverrideProps(overrides, "user_roleoption1")}
+        ></option>
+        <option
+          children="Lander"
+          value="lander"
+          {...getOverrideProps(overrides, "user_roleoption2")}
+        ></option>
+        <option
+          children="Wholesaler"
+          value="wholesaler"
+          {...getOverrideProps(overrides, "user_roleoption3")}
+        ></option>
+        <option
+          children="Realtor"
+          value="realtor"
+          {...getOverrideProps(overrides, "user_roleoption4")}
+        ></option>
+      </SelectField>
+      <TextField
+        label="Family name"
+        isRequired={false}
+        isReadOnly={false}
+        value={family_name}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name: value,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.family_name ?? value;
+          }
+          if (errors.family_name?.hasError) {
+            runValidationTasks("family_name", value);
+          }
+          setFamily_name(value);
+        }}
+        onBlur={() => runValidationTasks("family_name", family_name)}
+        errorMessage={errors.family_name?.errorMessage}
+        hasError={errors.family_name?.hasError}
+        {...getOverrideProps(overrides, "family_name")}
+      ></TextField>
+      <TextField
+        label="Given name"
+        isRequired={false}
+        isReadOnly={false}
+        value={given_name}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name: value,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.given_name ?? value;
+          }
+          if (errors.given_name?.hasError) {
+            runValidationTasks("given_name", value);
+          }
+          setGiven_name(value);
+        }}
+        onBlur={() => runValidationTasks("given_name", given_name)}
+        errorMessage={errors.given_name?.errorMessage}
+        hasError={errors.given_name?.hasError}
+        {...getOverrideProps(overrides, "given_name")}
+      ></TextField>
+      <TextField
+        label="Middle name"
+        isRequired={false}
+        isReadOnly={false}
+        value={middle_name}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name: value,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.middle_name ?? value;
+          }
+          if (errors.middle_name?.hasError) {
+            runValidationTasks("middle_name", value);
+          }
+          setMiddle_name(value);
+        }}
+        onBlur={() => runValidationTasks("middle_name", middle_name)}
+        errorMessage={errors.middle_name?.errorMessage}
+        hasError={errors.middle_name?.hasError}
+        {...getOverrideProps(overrides, "middle_name")}
+      ></TextField>
+      <TextField
+        label="Nickname"
+        isRequired={false}
+        isReadOnly={false}
+        value={nickname}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname: value,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.nickname ?? value;
+          }
+          if (errors.nickname?.hasError) {
+            runValidationTasks("nickname", value);
+          }
+          setNickname(value);
+        }}
+        onBlur={() => runValidationTasks("nickname", nickname)}
+        errorMessage={errors.nickname?.errorMessage}
+        hasError={errors.nickname?.hasError}
+        {...getOverrideProps(overrides, "nickname")}
+      ></TextField>
+      <TextField
+        label="Preferred username"
+        isRequired={false}
+        isReadOnly={false}
+        value={preferred_username}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username: value,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.preferred_username ?? value;
+          }
+          if (errors.preferred_username?.hasError) {
+            runValidationTasks("preferred_username", value);
+          }
+          setPreferred_username(value);
+        }}
+        onBlur={() =>
+          runValidationTasks("preferred_username", preferred_username)
+        }
+        errorMessage={errors.preferred_username?.errorMessage}
+        hasError={errors.preferred_username?.hasError}
+        {...getOverrideProps(overrides, "preferred_username")}
+      ></TextField>
+      <TextField
+        label="Profile"
+        isRequired={false}
+        isReadOnly={false}
+        value={profile}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile: value,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.profile ?? value;
+          }
+          if (errors.profile?.hasError) {
+            runValidationTasks("profile", value);
+          }
+          setProfile(value);
+        }}
+        onBlur={() => runValidationTasks("profile", profile)}
+        errorMessage={errors.profile?.errorMessage}
+        hasError={errors.profile?.hasError}
+        {...getOverrideProps(overrides, "profile")}
+      ></TextField>
+      <TextField
+        label="Picture"
+        isRequired={false}
+        isReadOnly={false}
+        value={picture}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture: value,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.picture ?? value;
+          }
+          if (errors.picture?.hasError) {
+            runValidationTasks("picture", value);
+          }
+          setPicture(value);
+        }}
+        onBlur={() => runValidationTasks("picture", picture)}
+        errorMessage={errors.picture?.errorMessage}
+        hasError={errors.picture?.hasError}
+        {...getOverrideProps(overrides, "picture")}
+      ></TextField>
+      <TextField
+        label="Website"
+        isRequired={false}
+        isReadOnly={false}
+        value={website}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website: value,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.website ?? value;
+          }
+          if (errors.website?.hasError) {
+            runValidationTasks("website", value);
+          }
+          setWebsite(value);
+        }}
+        onBlur={() => runValidationTasks("website", website)}
+        errorMessage={errors.website?.errorMessage}
+        hasError={errors.website?.hasError}
+        {...getOverrideProps(overrides, "website")}
+      ></TextField>
+      <TextField
+        label="Gender"
+        isRequired={false}
+        isReadOnly={false}
+        value={gender}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender: value,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.gender ?? value;
+          }
+          if (errors.gender?.hasError) {
+            runValidationTasks("gender", value);
+          }
+          setGender(value);
+        }}
+        onBlur={() => runValidationTasks("gender", gender)}
+        errorMessage={errors.gender?.errorMessage}
+        hasError={errors.gender?.hasError}
+        {...getOverrideProps(overrides, "gender")}
+      ></TextField>
+      <TextField
+        label="Birthdate"
+        isRequired={false}
+        isReadOnly={false}
+        type="date"
+        value={birthdate}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate: value,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.birthdate ?? value;
+          }
+          if (errors.birthdate?.hasError) {
+            runValidationTasks("birthdate", value);
+          }
+          setBirthdate(value);
+        }}
+        onBlur={() => runValidationTasks("birthdate", birthdate)}
+        errorMessage={errors.birthdate?.errorMessage}
+        hasError={errors.birthdate?.hasError}
+        {...getOverrideProps(overrides, "birthdate")}
+      ></TextField>
+      <TextField
+        label="Zoneinfo"
+        isRequired={false}
+        isReadOnly={false}
+        value={zoneinfo}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo: value,
+              locale,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.zoneinfo ?? value;
+          }
+          if (errors.zoneinfo?.hasError) {
+            runValidationTasks("zoneinfo", value);
+          }
+          setZoneinfo(value);
+        }}
+        onBlur={() => runValidationTasks("zoneinfo", zoneinfo)}
+        errorMessage={errors.zoneinfo?.errorMessage}
+        hasError={errors.zoneinfo?.hasError}
+        {...getOverrideProps(overrides, "zoneinfo")}
+      ></TextField>
+      <TextField
+        label="Locale"
+        isRequired={false}
+        isReadOnly={false}
+        value={locale}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale: value,
+              address,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.locale ?? value;
+          }
+          if (errors.locale?.hasError) {
+            runValidationTasks("locale", value);
+          }
+          setLocale(value);
+        }}
+        onBlur={() => runValidationTasks("locale", locale)}
+        errorMessage={errors.locale?.errorMessage}
+        hasError={errors.locale?.hasError}
+        {...getOverrideProps(overrides, "locale")}
+      ></TextField>
+      <TextField
+        label="Address"
+        isRequired={false}
+        isReadOnly={false}
+        value={address}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address: value,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.address ?? value;
+          }
+          if (errors.address?.hasError) {
+            runValidationTasks("address", value);
+          }
+          setAddress(value);
+        }}
+        onBlur={() => runValidationTasks("address", address)}
+        errorMessage={errors.address?.errorMessage}
+        hasError={errors.address?.hasError}
+        {...getOverrideProps(overrides, "address")}
+      ></TextField>
+      <TextField
+        label="Email"
+        isRequired={true}
         isReadOnly={false}
         value={email}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
               email: value,
-              phone,
-              password,
-              loanApprovalLetter,
-              sellerFinancingOptions,
-              chargePerHour,
-              userType,
+              phone_number,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -202,219 +957,46 @@ export default function UserProfileUpdateForm(props) {
         {...getOverrideProps(overrides, "email")}
       ></TextField>
       <TextField
-        label="Phone"
-        isRequired={false}
+        label="Phone number"
+        isRequired={true}
         isReadOnly={false}
-        value={phone}
+        value={phone_number}
         onChange={(e) => {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
               email,
-              phone: value,
-              password,
-              loanApprovalLetter,
-              sellerFinancingOptions,
-              chargePerHour,
-              userType,
+              phone_number: value,
             };
             const result = onChange(modelFields);
-            value = result?.phone ?? value;
+            value = result?.phone_number ?? value;
           }
-          if (errors.phone?.hasError) {
-            runValidationTasks("phone", value);
+          if (errors.phone_number?.hasError) {
+            runValidationTasks("phone_number", value);
           }
-          setPhone(value);
+          setPhone_number(value);
         }}
-        onBlur={() => runValidationTasks("phone", phone)}
-        errorMessage={errors.phone?.errorMessage}
-        hasError={errors.phone?.hasError}
-        {...getOverrideProps(overrides, "phone")}
+        onBlur={() => runValidationTasks("phone_number", phone_number)}
+        errorMessage={errors.phone_number?.errorMessage}
+        hasError={errors.phone_number?.hasError}
+        {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
-      <TextField
-        label="Password"
-        isRequired={false}
-        isReadOnly={false}
-        value={password}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              phone,
-              password: value,
-              loanApprovalLetter,
-              sellerFinancingOptions,
-              chargePerHour,
-              userType,
-            };
-            const result = onChange(modelFields);
-            value = result?.password ?? value;
-          }
-          if (errors.password?.hasError) {
-            runValidationTasks("password", value);
-          }
-          setPassword(value);
-        }}
-        onBlur={() => runValidationTasks("password", password)}
-        errorMessage={errors.password?.errorMessage}
-        hasError={errors.password?.hasError}
-        {...getOverrideProps(overrides, "password")}
-      ></TextField>
-      <TextField
-        label="Loan approval letter"
-        isRequired={false}
-        isReadOnly={false}
-        value={loanApprovalLetter}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              phone,
-              password,
-              loanApprovalLetter: value,
-              sellerFinancingOptions,
-              chargePerHour,
-              userType,
-            };
-            const result = onChange(modelFields);
-            value = result?.loanApprovalLetter ?? value;
-          }
-          if (errors.loanApprovalLetter?.hasError) {
-            runValidationTasks("loanApprovalLetter", value);
-          }
-          setLoanApprovalLetter(value);
-        }}
-        onBlur={() =>
-          runValidationTasks("loanApprovalLetter", loanApprovalLetter)
-        }
-        errorMessage={errors.loanApprovalLetter?.errorMessage}
-        hasError={errors.loanApprovalLetter?.hasError}
-        {...getOverrideProps(overrides, "loanApprovalLetter")}
-      ></TextField>
-      <TextField
-        label="Seller financing options"
-        isRequired={false}
-        isReadOnly={false}
-        value={sellerFinancingOptions}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              phone,
-              password,
-              loanApprovalLetter,
-              sellerFinancingOptions: value,
-              chargePerHour,
-              userType,
-            };
-            const result = onChange(modelFields);
-            value = result?.sellerFinancingOptions ?? value;
-          }
-          if (errors.sellerFinancingOptions?.hasError) {
-            runValidationTasks("sellerFinancingOptions", value);
-          }
-          setSellerFinancingOptions(value);
-        }}
-        onBlur={() =>
-          runValidationTasks("sellerFinancingOptions", sellerFinancingOptions)
-        }
-        errorMessage={errors.sellerFinancingOptions?.errorMessage}
-        hasError={errors.sellerFinancingOptions?.hasError}
-        {...getOverrideProps(overrides, "sellerFinancingOptions")}
-      ></TextField>
-      <TextField
-        label="Charge per hour"
-        isRequired={false}
-        isReadOnly={false}
-        type="number"
-        step="any"
-        value={chargePerHour}
-        onChange={(e) => {
-          let value = isNaN(parseFloat(e.target.value))
-            ? e.target.value
-            : parseFloat(e.target.value);
-          if (onChange) {
-            const modelFields = {
-              email,
-              phone,
-              password,
-              loanApprovalLetter,
-              sellerFinancingOptions,
-              chargePerHour: value,
-              userType,
-            };
-            const result = onChange(modelFields);
-            value = result?.chargePerHour ?? value;
-          }
-          if (errors.chargePerHour?.hasError) {
-            runValidationTasks("chargePerHour", value);
-          }
-          setChargePerHour(value);
-        }}
-        onBlur={() => runValidationTasks("chargePerHour", chargePerHour)}
-        errorMessage={errors.chargePerHour?.errorMessage}
-        hasError={errors.chargePerHour?.hasError}
-        {...getOverrideProps(overrides, "chargePerHour")}
-      ></TextField>
-      <SelectField
-        label="User type"
-        placeholder="Please select an option"
-        isDisabled={false}
-        value={userType}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              email,
-              phone,
-              password,
-              loanApprovalLetter,
-              sellerFinancingOptions,
-              chargePerHour,
-              userType: value,
-            };
-            const result = onChange(modelFields);
-            value = result?.userType ?? value;
-          }
-          if (errors.userType?.hasError) {
-            runValidationTasks("userType", value);
-          }
-          setUserType(value);
-        }}
-        onBlur={() => runValidationTasks("userType", userType)}
-        errorMessage={errors.userType?.errorMessage}
-        hasError={errors.userType?.hasError}
-        {...getOverrideProps(overrides, "userType")}
-      >
-        <option
-          children="Buyer"
-          value="buyer"
-          {...getOverrideProps(overrides, "userTypeoption0")}
-        ></option>
-        <option
-          children="Seller"
-          value="seller"
-          {...getOverrideProps(overrides, "userTypeoption1")}
-        ></option>
-        <option
-          children="Attorney"
-          value="attorney"
-          {...getOverrideProps(overrides, "userTypeoption2")}
-        ></option>
-        <option
-          children="Agent"
-          value="agent"
-          {...getOverrideProps(overrides, "userTypeoption3")}
-        ></option>
-        <option
-          children="Notary"
-          value="notary"
-          {...getOverrideProps(overrides, "userTypeoption4")}
-        ></option>
-      </SelectField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

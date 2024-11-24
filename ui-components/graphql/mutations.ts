@@ -86,17 +86,27 @@ export const createUserProfile = /* GraphQL */ `
     $input: CreateUserProfileInput!
   ) {
     createUserProfile(condition: $condition, input: $input) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
@@ -185,17 +195,27 @@ export const deleteUserProfile = /* GraphQL */ `
     $input: DeleteUserProfileInput!
   ) {
     deleteUserProfile(condition: $condition, input: $input) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
@@ -284,17 +304,27 @@ export const updateUserProfile = /* GraphQL */ `
     $input: UpdateUserProfileInput!
   ) {
     updateUserProfile(condition: $condition, input: $input) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }

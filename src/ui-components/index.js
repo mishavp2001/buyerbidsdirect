@@ -6,3 +6,4 @@ export { default as OfferCreateForm } from "./OfferCreateForm";
 export { default as OfferUpdateForm } from "./OfferUpdateForm";
 export { default as PropertyCreateForm } from "./PropertyCreateForm";
 export { default as PropertyUpdateForm } from "./PropertyUpdateForm";
+export { default as UserProfileView } from "./UserProfileView";

@@ -72,19 +72,29 @@ export const getTodo = /* GraphQL */ `
   }
 `;
 export const getUserProfile = /* GraphQL */ `
-  query GetUserProfile($id: ID!) {
+  query GetUserProfile($id: String!) {
     getUserProfile(id: $id) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
@@ -182,25 +192,87 @@ export const listTodos = /* GraphQL */ `
     }
   }
 `;
-export const listUserProfiles = /* GraphQL */ `
-  query ListUserProfiles(
+export const listUserProfileByUser_role = /* GraphQL */ `
+  query ListUserProfileByUser_role(
     $filter: ModelUserProfileFilterInput
     $limit: Int
     $nextToken: String
+    $sortDirection: ModelSortDirection
+    $user_role: UserProfileUser_role!
   ) {
-    listUserProfiles(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    listUserProfileByUser_role(
+      filter: $filter
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+      user_role: $user_role
+    ) {
       items {
-        chargePerHour
+        address
+        birthdate
         createdAt
         email
+        family_name
+        gender
+        given_name
         id
-        loanApprovalLetter
+        locale
+        middle_name
+        name
+        nickname
         owner
-        password
-        phone
-        sellerFinancingOptions
+        phone_number
+        picture
+        preferred_username
+        profile
         updatedAt
-        userType
+        user_role
+        website
+        zoneinfo
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listUserProfiles = /* GraphQL */ `
+  query ListUserProfiles(
+    $filter: ModelUserProfileFilterInput
+    $id: String
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listUserProfiles(
+      filter: $filter
+      id: $id
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        address
+        birthdate
+        createdAt
+        email
+        family_name
+        gender
+        given_name
+        id
+        locale
+        middle_name
+        name
+        nickname
+        owner
+        phone_number
+        picture
+        preferred_username
+        profile
+        updatedAt
+        user_role
+        website
+        zoneinfo
         __typename
       }
       nextToken

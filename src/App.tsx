@@ -8,6 +8,8 @@ import { Route, Routes } from 'react-router-dom';
 import MakeOffer from './pages/makeOfferPage';
 import SellProperty from './pages/SellProperty';
 import UserProfile from './pages/Profile';
+import UserProfiles from './pages/Profiles';
+import ProfileAdd from './pages/ProfileAdd';
 import PropertyPage from './pages/PropertyPage';
 import NavigationBar from './components/NavigationBar'
 import AnalyzePage from './pages/analyzePage'
@@ -29,6 +31,9 @@ function App() {
         <Route path='/calc' element = {<AnalyzePage/>} /> 
         <Route path='/sales' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
+        <Route path='/profiles' element =  {<UserProfiles/>} />
+        <Route path='/profiles/:userId' element =  {<UserProfiles/>} />
+        <Route path='/profileadd' element =  {<RequireAuth><ProfileAdd/></RequireAuth>} />
         <Route path='/profile/:update' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/login' element = {<LoginPage/>} />
         <Route path='/privacy' element = {<PrivacyPage/>} />

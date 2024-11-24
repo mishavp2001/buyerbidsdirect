@@ -35,12 +35,12 @@ const schema = a.schema({
       address: a.string(),
       email: a.email().required(),
       phone_number: a.string().required(),
-      sub: a.string().required(), // Cognito's unique user identifier
+      id: a.string().required(), // Cognito's unique user identifier
     }).authorization(allow => [
       allow.authenticated('identityPool').to(['read']),
       allow.guest().to(['read']),
       allow.owner()
-     ]),
+     ]).secondaryIndexes((index) => [index("user_role")]),
 
    Offer: a
     .model({

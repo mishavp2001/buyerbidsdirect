@@ -87,17 +87,27 @@ export const onCreateUserProfile = /* GraphQL */ `
     $owner: String
   ) {
     onCreateUserProfile(filter: $filter, owner: $owner) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
@@ -187,17 +197,27 @@ export const onDeleteUserProfile = /* GraphQL */ `
     $owner: String
   ) {
     onDeleteUserProfile(filter: $filter, owner: $owner) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
@@ -287,17 +307,27 @@ export const onUpdateUserProfile = /* GraphQL */ `
     $owner: String
   ) {
     onUpdateUserProfile(filter: $filter, owner: $owner) {
-      chargePerHour
+      address
+      birthdate
       createdAt
       email
+      family_name
+      gender
+      given_name
       id
-      loanApprovalLetter
+      locale
+      middle_name
+      name
+      nickname
       owner
-      password
-      phone
-      sellerFinancingOptions
+      phone_number
+      picture
+      preferred_username
+      profile
       updatedAt
-      userType
+      user_role
+      website
+      zoneinfo
       __typename
     }
   }
