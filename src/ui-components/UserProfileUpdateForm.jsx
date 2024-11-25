@@ -250,7 +250,10 @@ export default function UserProfileUpdateForm(props) {
         {...getOverrideProps(overrides, "UserProfileUpdateForm")}
         {...rest}
       >
-       <Grid  size={{ xs: 6, md: 8 }}>
+       <Grid  
+       gap="10px"  // Reduce space between fields
+       padding="20px" 
+       >
         <TextField
           label="Id"
           isRequired={true}
@@ -402,7 +405,7 @@ export default function UserProfileUpdateForm(props) {
             {...getOverrideProps(overrides, "user_roleoption4")}
           ></option>
         </SelectField>
-        {picture && <StorageImage alt={picture} path={picture} />}
+        {picture && <StorageImage max-width="400px" alt={picture} path={picture} />}
         <TextField
           label="Family name"
           isRequired={false}

@@ -33,7 +33,8 @@ const Profiles: React.FC = () => {
       })
       if (!errors) {
         //console.dir(items);
-        setProfiles(items);
+        const filteredItems = items.filter(item => item !== null);
+        setProfiles(filteredItems);
       } else {
         setError(errors.toString)
         //console.dir(errors);
