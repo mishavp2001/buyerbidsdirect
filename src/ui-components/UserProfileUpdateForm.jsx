@@ -149,7 +149,7 @@ export default function UserProfileUpdateForm(props) {
     locale: [],
     address: [],
     email: [{ type: "Required" }, { type: "Email" }],
-    phone_number: [{ type: "Required" }],
+    phone_number: [],
   };
   const runValidationTasks = async (
     fieldName,
