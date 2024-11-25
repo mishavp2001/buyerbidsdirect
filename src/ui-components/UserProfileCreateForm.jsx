@@ -129,7 +129,7 @@ const processFile = async ({ file }) => {
     zoneinfo: [],
     locale: [],
     address: [],
-    email: [{ type: "Required" }, { type: "Email" }],
+    email: [{ type: "Email" }],
     phone_number: [{ type: "Required" }],
   };
   const runValidationTasks = async (
