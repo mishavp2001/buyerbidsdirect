@@ -233,6 +233,7 @@ const processFile = async ({ file }) => {
       {...getOverrideProps(overrides, "UserProfileCreateForm")}
       {...rest}
     >
+    <Grid item xs={12} md={12} key='profile_picture'>
       <TextField
         label="Id"
         isRequired={true}
@@ -970,7 +971,8 @@ const processFile = async ({ file }) => {
         hasError={errors.address?.hasError}
         {...getOverrideProps(overrides, "address")}
       ></TextField>
-      <Grid item xs={12} sm={12} key='profile_picture'>
+      </Grid>
+      <Grid item xs={12} md={12} key='profile_picture'>
       Profile picture:
       <StorageManager
         path={({ identityId }) => `profile-pictures/${identityId}/`}
@@ -990,7 +992,7 @@ const processFile = async ({ file }) => {
         }}
       />
     </Grid>
-    <Grid item xs={12} sm={4} key='button-close'>
+    <Grid item xs={12} md={6} key='button-close'>
         <Button
           children="Clear"
           type="reset"
@@ -1001,7 +1003,7 @@ const processFile = async ({ file }) => {
           {...getOverrideProps(overrides, "ClearButton")}
         ></Button>
         </Grid>
-        <Grid item xs={12} sm={5} key='button-submit'>
+        <Grid item xs={12} md={6} key='button-submit'>
           <Button
             children="Submit"
             type="submit"

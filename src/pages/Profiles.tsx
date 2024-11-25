@@ -102,7 +102,7 @@ const Profiles: React.FC = () => {
       >
         <ModalDialog minWidth='90%' >
           <ModalClose style={{ margin: '10px' }} />
-          <DialogTitle>Profile</DialogTitle>
+          <DialogTitle>User Profile:</DialogTitle>
           <DialogContent>
             {error && <p>{error}</p>}
               <UserProfileView id={userId} />

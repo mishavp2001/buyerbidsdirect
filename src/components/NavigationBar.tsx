@@ -16,7 +16,7 @@ const NavigationBar: React.FC = () => {
                     Sell
                 </Link>
                 <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Contact
+                    Connect
                 </Link>
                 <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Analyze

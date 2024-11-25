@@ -3,7 +3,7 @@
 import * as React from "react";
 import { Grid } from "@aws-amplify/ui-react";
 import { generateClient } from "aws-amplify/api";
-import { getUserProfile } from "../../ui-components/graphql/queries";
+import { StorageImage } from '@aws-amplify/ui-react-storage';
 
 const client = generateClient();
 
@@ -39,7 +39,7 @@ export default function UserProfileView(props) {
     const fetchUserProfile = async () => {
       if (idProp) {
         const { data: items, errors } = await client.models.UserProfile.list({
-          filter: { id: { eq: idProp } }, 
+          filter: { id: { eq: idProp } },
           authMode: "identityPool"
         })
         setUserProfileRecord(items[0] || initialValues);
@@ -55,25 +55,34 @@ export default function UserProfileView(props) {
     </div>
   );
 
+  const renderPicture = (label, value) => (
+    <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
+      {value && <StorageImage alt={label} path={value} />}
+    </div>
+  );
+
   return (
-    <Grid as="div" templateColumns="1fr 1fr" gap="25px" padding="20px" style={{ maxWidth: "800px" }}>
-      {renderField("Name", userProfileRecord.name)}
-      {renderField("User Role", userProfileRecord.user_role)}
-      {renderField("Family Name", userProfileRecord.family_name)}
-      {renderField("Given Name", userProfileRecord.given_name)}
-      {renderField("Middle Name", userProfileRecord.middle_name)}
-      {renderField("Nickname", userProfileRecord.nickname)}
-      {renderField("Preferred Username", userProfileRecord.preferred_username)}
-      {renderField("Profile", userProfileRecord.profile)}
-      {renderField("Picture", userProfileRecord.picture)}
-      {renderField("Website", userProfileRecord.website)}
-      {renderField("Gender", userProfileRecord.gender)}
-      {renderField("Birthdate", userProfileRecord.birthdate)}
-      {renderField("Zoneinfo", userProfileRecord.zoneinfo)}
-      {renderField("Locale", userProfileRecord.locale)}
-      {renderField("Address", userProfileRecord.address)}
-      {renderField("Email", userProfileRecord.email)}
-      {renderField("Phone Number", userProfileRecord.phone_number)}
-    </Grid>
+    <>
+      <Grid as="div" templateColumns="1fr 1fr" gap="25px" padding="20px" style={{ maxWidth: "800px" }}>
+        {renderField("Name", userProfileRecord.name)}
+        {renderField("User Role", userProfileRecord.user_role)}
+        {renderField("Family Name", userProfileRecord.family_name)}
+        {renderField("Given Name", userProfileRecord.given_name)}
+        {renderField("Middle Name", userProfileRecord.middle_name)}
+        {renderField("Nickname", userProfileRecord.nickname)}
+        {renderField("Preferred Username", userProfileRecord.preferred_username)}
+        {renderField("Profile", userProfileRecord.profile)}
+        {renderField("Website", userProfileRecord.website)}
+        {renderField("Gender", userProfileRecord.gender)}
+        {renderField("Birthdate", userProfileRecord.birthdate)}
+        {renderField("Zoneinfo", userProfileRecord.zoneinfo)}
+        {renderField("Locale", userProfileRecord.locale)}
+        {renderField("Address", userProfileRecord.address)}
+        {renderField("Email", userProfileRecord.email)}
+        {renderField("Phone Number", userProfileRecord.phone_number)}
+      </Grid>
+      {renderPicture("Picture", userProfileRecord.picture)}
+    </>
+
   );
 }
