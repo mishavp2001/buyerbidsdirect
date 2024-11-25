@@ -251,9 +251,7 @@ export default function UserProfileUpdateForm(props) {
         {...rest}
       >
        <Grid  
-       gap="10px"  // Reduce space between fields
-       padding="20px" 
-       >
+       item>
         <TextField
           label="Id"
           isRequired={true}
