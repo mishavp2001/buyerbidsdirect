@@ -178,7 +178,7 @@ const processFile = async ({ file }) => {
           zoneinfo,
           locale,
           address,
-          email,
+          email: overrides?.id?.value,
           phone_number,
         };
         const validationResponses = await Promise.all(
