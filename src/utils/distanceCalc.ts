@@ -38,7 +38,10 @@
   function filterPropertiesWithinRadius(
     properties: Property[]|any[],
     userPosition: UserPosition,
-    radius: number
+    radius: number,
+    maxPrice: number,
+    minPrice: number,
+    propertyType: string[]
   ): Property[] {
     return properties.filter(property => {
       const pos =  JSON.parse(property?.position);
@@ -48,7 +51,7 @@
         pos?.latitude,
         pos?.longitude
       );
-      return distance <= radius;
+      return distance <= radius && maxPrice > property?.price && minPrice < property?.price && propertyType.includes(property?.propertyType);
     });
   }
   
