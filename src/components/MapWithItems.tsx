@@ -9,7 +9,7 @@ import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button, Grid } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, Select, Paper, Icon, SelectChangeEvent, Theme, useTheme, FormControl } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -20,6 +20,12 @@ import _ from 'lodash';
 import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
 import "react-leaflet-fullscreen/styles.css";
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import TuneSharpIcon from '@mui/icons-material/TuneSharp';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputLabel from '@mui/material/InputLabel';
+
+import ListItemText from '@mui/material/ListItemText';
+import Checkbox from '@mui/material/Checkbox';
 
 const client = generateClient<Schema>();
 const div = document.createElement('div');
@@ -33,7 +39,7 @@ const addMarker = (text: string) => {
   return div.innerHTML;
 };
 
-const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean, properties: any[] }) => {
+const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties, zoom }: { onCenterChange: (lat: number, lng: number) => void, isProgrammaticMove: boolean, properties: any[], zoom: number }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -49,7 +55,7 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
     return () => {
       map.off('moveend', onMoveEnd);
     };
-  }, [map, onCenterChange, isProgrammaticMove]);
+  }, [map, onCenterChange, isProgrammaticMove, zoom]);
 
   useEffect(() => {
     if (isProgrammaticMove && properties.length > 0) {
@@ -63,9 +69,9 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties }: { o
       map.fitBounds(bounds, { padding: [50, 50] });
 
       // Set a specific zoom level after fitting bounds (optional)
-      map.setZoom(map.getZoom()); // Adjust as needed
+      map.setZoom(zoom); // Adjust as needed
     }
-  }, [map, properties, isProgrammaticMove]);
+  }, [map, properties, zoom, isProgrammaticMove]);
 
 
   return null;
@@ -174,8 +180,14 @@ const MapWithItems: React.FC = () => {
   });
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [maxPrice, setMaxPrice] = useState<number>(1000000);
+  const [minPrice, setMinPrice] = useState<number>(0);
 
   const defaultLocation: [number, number] = [38.76315823280579, -121.16611267496815];
+  const [zoom, setZoom] = useState<number>(10);
+  const [radius, setRadius] = useState<number>(1000);
+  const [showFilter, setShowFilter] = useState<boolean>(false);
+
   const [position, setPosition] = useState<[number, number]>(() => {
     const savedPosition = localStorage.getItem('searchPosition');
     if (savedPosition) {
@@ -187,6 +199,34 @@ const MapWithItems: React.FC = () => {
     }
     return defaultLocation;
   });
+  const ptypes = [
+    'House',
+    'Condo',
+    'Land',
+    'Multi-family',
+    'Manufactured'
+  ];
+  const [propertyType, setPropertyType] = React.useState<string[]>([...ptypes]);
+  const handlePtypeChange = (event: SelectChangeEvent<typeof propertyType>) => {
+    const {
+      target: { value },
+    } = event;
+    setPropertyType(
+      // On autofill we get a stringified value.
+      typeof value === 'string' ? value.split(',') : value,
+    );
+  };
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        minWidth: 350,
+      },
+    },
+  };
 
   const [error, setError] = useState<string | null>(null);
   const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
@@ -207,7 +247,7 @@ const MapWithItems: React.FC = () => {
         });
         if (position) {
           setLoading(false);
-          const filteredProperties = filterPropertiesWithinRadius(data?.data, position, 200); // Filter within radius
+          const filteredProperties = filterPropertiesWithinRadius(data?.data, position, radius, maxPrice, minPrice, propertyType); // Filter within radius
           setProperties(filteredProperties);
         }
       } catch (err: unknown) {
@@ -220,7 +260,7 @@ const MapWithItems: React.FC = () => {
     };
 
     fetchProperties();
-  }, [position]);
+  }, [position,minPrice, maxPrice, propertyType]);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -237,7 +277,6 @@ const MapWithItems: React.FC = () => {
       alert('Enter a ZIP code.');
     }
   };
-
 
   //Run once on initial render
   useEffect(() => {
@@ -263,8 +302,8 @@ const MapWithItems: React.FC = () => {
   }
 
   return (
-    <div className='list-items' style={{ width: '95vw' }}>
-      <div style={{ margin: '1em', position: 'relative', width: 'fit-content' }}>
+    <div className='list-items'>
+      <div style={{ margin: '1em', position: 'relative' }}>
         <TextField
           onBlur={handleSearchPositionChange}
           onKeyDown={(event) => {
@@ -275,18 +314,73 @@ const MapWithItems: React.FC = () => {
           label="State, County, City, Zip Code..."
           value={zipCode || ''}
           onChange={(e) => setZipCode(e.target.value)}
-          sx={{ backgroundColor: 'white', width: '90vw', borderRadius: '1em' }}
+          sx={{ backgroundColor: 'white', minWidth: '20vw', borderRadius: '1em' }}
         />
+        {showFilter && <span>
+          <NumericFormat
+            label="Min Price"
+            customInput={TextField}
+            prefix="$"
+            thousandSeparator
+            allowNegative={false}
+            color='primary'
+            className='search-filter'
+            value={minPrice}
+            style={{ backgroundColor: 'white', borderRadius: '1em', minWidth: 200 }}
+            onBlur={(evt) => { setMinPrice(parseFloat(evt.target.value.slice(1).replace(/,/g, ""))) }}
+          />
+          <NumericFormat
+            label="Max Price"
+            customInput={TextField}
+            prefix="$"
+            thousandSeparator
+            allowNegative={false}
+            color='primary'
+            className='search-filter'
+            value={maxPrice}
+            style={{ backgroundColor: 'white', borderRadius: '1em', minWidth: 200 }}
+            onBlur={(evt) => { setMaxPrice(parseFloat(evt.target.value.slice(1).replace(/,/g, ""))) }}
+          />
+          <FormControl
+            style={{ backgroundColor: 'white', borderRadius: '1em', minWidth: 200 }}
+            variant="outlined">
+            <InputLabel>Home Type</InputLabel>
+            <Select
+              multiple
+              value={propertyType}
+              onChange={handlePtypeChange}
+              input={<OutlinedInput label="Home Type" />}
+              renderValue={(selected) => selected.join(', ')}
+              MenuProps={MenuProps}
+            >
+              {ptypes.map((name) => (
+                <MenuItem key={name} value={name}>
+                  <Checkbox checked={propertyType.includes(name)} />
+                  <ListItemText primary={name} />
+                </MenuItem>
+              ))}
+
+            </Select>
+          </FormControl>
+        </span>}
+        <Button
+          variant="contained"
+          style={{ width: '4em', height: '4em' }}>
+          <TuneSharpIcon onClick={() => { setShowFilter(!showFilter) }} />
+        </Button>
         <Button
           variant="contained"
           onClick={handleSearchPositionChange}
-          style={{ width: '4em', height: '4em', top: '0em', right: '0em', position: 'absolute', zIndex: 900 }}>
+          style={{ width: '4em', height: '4em' }}>
           <img src={Search} style={{ width: '3em' }} />
         </Button>
       </div>
-
       <div style={{ height: '60vh', width: '90vw', margin: '1em 1em 1em 1em' }}>
-        <MapContainer center={position} zoom={13} style={{ height: '60vh' }}>
+        <MapContainer
+          center={position}
+          zoom={zoom}
+          style={{ width: "90vw", height: "60vh" }}
+        >
           <section>
             <TileLayer
               attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -305,7 +399,7 @@ const MapWithItems: React.FC = () => {
             </Marker>
           ))}
           <FullscreenControl />
-          <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} />
+          <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} zoom={zoom} />
           {/* This will force the map to recenter when `position` changes */}
           <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove} />
         </MapContainer>
