@@ -367,7 +367,7 @@ export default function PropertyCreateForm(props) {
           yearBuilt,
           propertyType,
           listingStatus,
-          listingOwner: overrides?.listingOwner?.value,
+          listingOwner: overrides?.listingOwner?.value || overrides?.ownerContact?.value,
           ownerContact: overrides?.ownerContact?.value,
           description,
           photos: photos,

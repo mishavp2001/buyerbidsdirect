@@ -146,8 +146,8 @@ const SellProperty: React.FC = () => {
                     onSuccess={() => { navigate("/sales", { replace: true }); }}
                     overrides={
                       {
-                        listingOwner: { value: owner.name, isReadOnly: true },
-                        ownerContact: { value: owner.email, isReadOnly: true },
+                        listingOwner: { value: owner?.name, isReadOnly: true },
+                        ownerContact: { value: owner?.email, isReadOnly: true },
                       }
                     }
                   />
