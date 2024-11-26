@@ -9,7 +9,7 @@ import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button, Grid, MenuItem, Select, Paper, Icon, SelectChangeEvent, Theme, useTheme, FormControl } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -184,8 +184,8 @@ const MapWithItems: React.FC = () => {
   const [minPrice, setMinPrice] = useState<number>(0);
 
   const defaultLocation: [number, number] = [38.76315823280579, -121.16611267496815];
-  const [zoom, setZoom] = useState<number>(10);
-  const [radius, setRadius] = useState<number>(1000);
+  const zoom = 10;
+  const radius = 1000;
   const [showFilter, setShowFilter] = useState<boolean>(false);
 
   const [position, setPosition] = useState<[number, number]>(() => {
