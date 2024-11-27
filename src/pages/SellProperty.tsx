@@ -86,7 +86,7 @@ const SellProperty: React.FC = () => {
   return (
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">My properties:
+        <Typography component="h1" variant="h5">Properties:
           <Button variant="contained" style={{ float: 'right' }} component={RouterLink} to={`/sales/new`}>
             Add new
           </Button>
@@ -121,7 +121,7 @@ const SellProperty: React.FC = () => {
 
       <Modal
         open={open}
-        onClose={() => { navigate("/sales", { replace: true }); }}
+        onClose={() => { navigate(-1); }}
       >
         <ModalDialog minWidth='90%' >
           <ModalClose style={{ margin: '10px' }} />

@@ -91,7 +91,7 @@ const MakeOffer: React.FC = () => {
           />
         </Paper>
       </Paper>
-      <Modal open={open} onClose={() => { navigate("/offers", { replace: true }); }}>
+      <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog minWidth='90%'>
           <ModalClose />
           <DialogTitle> {offerId ? `Offer for: ${address || "No address"} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>

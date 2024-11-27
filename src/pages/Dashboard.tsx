@@ -2,13 +2,14 @@ import '@aws-amplify/ui-react/styles.css'
 import Tabs from '@mui/joy/Tabs';
 import TabList from '@mui/joy/TabList';
 import Tab from '@mui/joy/Tab';
-import LoanCalculator from '../components/FinanceCalculator';
 import CapRateCalculator from '../components/CapRateCalculator';
 import TaxCalculator from '../components/TaxCalculator';
-
+import SellProperty from './SellProperty'
+import Profiles from './Profiles'
+import Offers from '../pages/makeOfferPage'
 import { TabPanel } from '@mui/joy';
 
-function toolsPage() {
+function dashboardPage() {
     return (
         <main>
             <Tabs
@@ -16,17 +17,21 @@ function toolsPage() {
                 size="md"
             >
                 <TabList>
-                    <Tab>Financing</Tab>
-                    <Tab>Investment</Tab>
-                    <Tab>Tax</Tab>
+                    <Tab>Owned</Tab>
+                    <Tab>Targets</Tab>
+                    <Tab>Contacts</Tab>
+                    <Tab>Documents</Tab>
                 </TabList>
                 <TabPanel value={0}>
-                    <LoanCalculator />
+                    <SellProperty />
                 </TabPanel>
                 <TabPanel value={1}>
-                     <CapRateCalculator />
+                     <Offers />
                 </TabPanel>
                 <TabPanel value={2}>
+                    <Profiles />
+                </TabPanel>
+                <TabPanel value={3}>
                     <TaxCalculator />
                 </TabPanel>
             </Tabs>
@@ -36,7 +41,8 @@ function toolsPage() {
 }
 
 
-export default toolsPage;
+export default dashboardPage;
+
 
 
 

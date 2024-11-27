@@ -7,6 +7,7 @@ import DeleteDataPage from './pages/deleteDataPage';
 import { Route, Routes } from 'react-router-dom';
 import MakeOffer from './pages/makeOfferPage';
 import SellProperty from './pages/SellProperty';
+import Dashboard from './pages/Dashboard';
 import UserProfile from './pages/Profile';
 import UserProfiles from './pages/Profiles';
 import ProfileAdd from './pages/ProfileAdd';
@@ -27,6 +28,7 @@ function App() {
         <Route path='/offers/:offerId' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
         <Route path='/sales/:propertyId' element = {<RequireAuth><SellProperty/></RequireAuth>} />
         <Route path='/offers' element = {<RequireAuth><MakeOffer/></RequireAuth>} />
+        <Route path='/dashboard' element = {<RequireAuth><Dashboard/></RequireAuth>} />
         <Route path='/property/:propertyId' element = {<RequireAuth><PropertyPage/></RequireAuth>} />
         <Route path='/calc' element = {<AnalyzePage/>} /> 
         <Route path='/sales' element = {<RequireAuth><SellProperty/></RequireAuth>} />

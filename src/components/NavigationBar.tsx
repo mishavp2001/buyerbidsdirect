@@ -10,16 +10,16 @@ const NavigationBar: React.FC = () => {
         <AppBar position="static">
             <Toolbar>
                 <Link to="/" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Buy
+                    BuyerBidsDirect
                 </Link>
-                <Link to="/sales" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Sell
+                <Link to="/dashboard" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                    Dashboard
                 </Link>
                 <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Connect
+                    Business Directory
                 </Link>
                 <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Analyze
+                    Tools
                 </Link>
                 <AccountMenu />
             </Toolbar>

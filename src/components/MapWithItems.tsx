@@ -66,7 +66,7 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties, zoom 
       });
 
       // Fit the map to the bounds of the markers
-      map.fitBounds(bounds, { padding: [50, 50] });
+      map.fitBounds(bounds, { padding: [100, 100] });
 
       // Set a specific zoom level after fitting bounds (optional)
       map.setZoom(zoom); // Adjust as needed
@@ -260,7 +260,7 @@ const MapWithItems: React.FC = () => {
     };
 
     fetchProperties();
-  }, [position,minPrice, maxPrice, propertyType]);
+  }, [position, minPrice, maxPrice, propertyType]);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -365,8 +365,10 @@ const MapWithItems: React.FC = () => {
         </span>}
         <Button
           variant="contained"
-          style={{ width: '4em', height: '4em' }}>
-          <TuneSharpIcon onClick={() => { setShowFilter(!showFilter) }} />
+          style={{ width: '4em', height: '4em' }}
+          onClick={() => { setShowFilter(!showFilter) }}
+        >
+          <TuneSharpIcon />
         </Button>
         <Button
           variant="contained"

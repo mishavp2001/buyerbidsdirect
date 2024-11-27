@@ -138,7 +138,18 @@ main {
       min-width: 60%;
       display: inline-block;
     }
-
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='name'] {
+      min-width: 40%;
+      display: inline-block;
+    }
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='email'] {
+      min-width: 40%;
+      display: inline-block;
+    }
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='role'] {
+      min-width: 20%;
+      display: inline-block;
+    }
     .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*="action"] {
       min-width: 20%;
       display: inline-block;
@@ -170,6 +181,11 @@ main {
     }
 
     .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
+      min-width: 100%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='name'] {
       min-width: 100%;
       display: inline-block;
     }

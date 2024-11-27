@@ -52,8 +52,8 @@ const Profiles: React.FC = () => {
   }, [userId]);
 
   const columns: GridColDef[] = [
-    { field: 'id', headerName: 'ID', flex: 300 },
-    { field: 'name', headerName: 'Name', flex: 300 },
+    { field: 'id', headerName: 'ID', flex: 10 },
+    { field: 'name', headerName: 'Name', flex: 200 },
     { field: 'email', headerName: 'Email', flex: 200 },
     { field: 'user_role', headerName: 'Role', flex: 150 },
   ];
@@ -67,7 +67,7 @@ const Profiles: React.FC = () => {
   return (
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Contacts:
+        <Typography component="h1" variant="h5">Business Directory:
         </Typography>
 
         <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', height: 400, width: '100%' }}>
@@ -99,7 +99,7 @@ const Profiles: React.FC = () => {
 
       <Modal
         open={open}
-        onClose={() => { navigate("/profiles", { replace: true }); }}
+        onClose={() => { navigate(-1); }}
       >
         <ModalDialog minWidth='90%' >
           <ModalClose style={{ margin: '10px' }} />
