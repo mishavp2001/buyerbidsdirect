@@ -29,6 +29,7 @@ function toolsPage() {
                 <TabPanel value={2}>
                     <TaxCalculator />
                 </TabPanel>
+
             </Tabs>
 
         </main>
