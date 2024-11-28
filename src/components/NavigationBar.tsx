@@ -16,7 +16,7 @@ const NavigationBar: React.FC = () => {
                     Dashboard
                 </Link>
                 <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Business Directory
+                    Experts
                 </Link>
                 <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Tools

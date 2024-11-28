@@ -43,7 +43,6 @@ function dashboardPage() {
         <TabPanel value={2}>
           <Profiles />
         </TabPanel>
-
         <TabPanel value={3}>
           <TaxCalculator />
         </TabPanel>
