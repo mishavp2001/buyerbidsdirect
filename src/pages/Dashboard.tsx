@@ -9,6 +9,7 @@ import SellProperty from './SellProperty'
 import Profiles from './Profiles'
 import Offers from '../pages/makeOfferPage'
 import { Divider, TabPanel } from '@mui/joy';
+import Chat from '../components/Chat';
 
 function dashboardPage() {
   return (
@@ -27,7 +28,8 @@ function dashboardPage() {
           <h5>Tools</h5>
           <Divider
           />
-          <h5>Calculators</h5>
+          <Tab>AI Bot</Tab>
+          <h6>Calculators</h6>
           <Divider
           />
           <Tab>Tax</Tab>
@@ -44,12 +46,15 @@ function dashboardPage() {
           <Profiles />
         </TabPanel>
         <TabPanel value={3}>
-          <TaxCalculator />
+          <Chat info='Investment tools' topic='Answer real estate related questions. IIntroduce yourself as expert in real estate.'/>
         </TabPanel>
         <TabPanel value={4}>
-          <CapRateCalculator />
+          <TaxCalculator />
         </TabPanel>
         <TabPanel value={5}>
+          <CapRateCalculator />
+        </TabPanel>
+        <TabPanel value={6}>
           <LoanCalculator />
         </TabPanel>
       </Tabs>

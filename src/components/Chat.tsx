@@ -7,6 +7,7 @@ interface ChatProps {
   owner?: string;
   name?: string;
   info: string;
+  topic?: string;
 }
 
 interface AIResponse {
@@ -32,7 +33,7 @@ const fetchAIResponse = async (topic: string, address: string, info: string, use
   }
 };
 
-const Chat: React.FC<ChatProps> = ({ address='', name='User', info, owner='' }) => {
+const Chat: React.FC<ChatProps> = ({ topic='', address='', name='User', info, owner='' }) => {
   const { user } = useAuthenticator();
   const [alertActive, setAlertActive] = useState<boolean>(false);
   const [messages, setMessages] = useState<{ text: string; sender: string; expanded: boolean }[]>([]);
@@ -61,7 +62,7 @@ const Chat: React.FC<ChatProps> = ({ address='', name='User', info, owner='' }) 
 
   useEffect(() => {
     if (!hasInitialized.current) {  // Only run on initial load
-      handleAIResponse("Introduce yourself as helping to buy or sell depending on sell attribute. Highlight property in one sentance");
+      handleAIResponse(topic || "Introduce yourself as helping to buy or sell depending on sell attribute. If  info about propert there then highlight property in one sentance");
       hasInitialized.current = true; // Mark as initialized to prevent re-running
     }
   }, []);
