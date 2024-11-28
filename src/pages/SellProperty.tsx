@@ -14,7 +14,7 @@ import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchUserAttributes } from 'aws-amplify/auth';
-import PropertiesMap from '../components/propertiesMap';
+import PropertiesMap from '../components/PropertiesMap';
 
 
 const client = generateClient<Schema>();

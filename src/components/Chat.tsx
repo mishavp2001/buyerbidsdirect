@@ -3,9 +3,9 @@ import { TextField } from "@aws-amplify/ui-react";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 
 interface ChatProps {
-  address: string;
-  owner: string;
-  name: string;
+  address?: string;
+  owner?: string;
+  name?: string;
   info: string;
 }
 

@@ -5,6 +5,7 @@ import Tab from '@mui/joy/Tab';
 import LoanCalculator from '../components/FinanceCalculator';
 import CapRateCalculator from '../components/CapRateCalculator';
 import TaxCalculator from '../components/TaxCalculator';
+import Chat from '../components/Chat';
 
 import { TabPanel } from '@mui/joy';
 
@@ -16,17 +17,21 @@ function toolsPage() {
                 size="md"
             >
                 <TabList>
+                    <Tab>AI Bot</Tab>
                     <Tab>Financing</Tab>
                     <Tab>Investment</Tab>
                     <Tab>Tax</Tab>
                 </TabList>
                 <TabPanel value={0}>
-                    <LoanCalculator />
+                    <Chat info='Please great and help with any real estate or site related questions.'/>
                 </TabPanel>
                 <TabPanel value={1}>
-                     <CapRateCalculator />
+                    <LoanCalculator />
                 </TabPanel>
                 <TabPanel value={2}>
+                     <CapRateCalculator />
+                </TabPanel>
+                <TabPanel value={3}>
                     <TaxCalculator />
                 </TabPanel>
 
