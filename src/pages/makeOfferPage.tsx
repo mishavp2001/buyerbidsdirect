@@ -91,7 +91,7 @@ const MakeOffer: React.FC = () => {
             columns={columns}
           />
         </Paper>
-        <MapWithItems offers={offers} width='60vw' mapOnly/> 
+        <MapWithItems offers={offers} width='70vw' mapOnly/> 
       </Paper>
       <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog minWidth='90%'>

@@ -32,7 +32,7 @@ const fetchAIResponse = async (topic: string, address: string, info: string, use
   }
 };
 
-const Chat: React.FC<ChatProps> = ({ address, name, info, owner }) => {
+const Chat: React.FC<ChatProps> = ({ address='', name='User', info, owner='' }) => {
   const { user } = useAuthenticator();
   const [alertActive, setAlertActive] = useState<boolean>(false);
   const [messages, setMessages] = useState<{ text: string; sender: string; expanded: boolean }[]>([]);

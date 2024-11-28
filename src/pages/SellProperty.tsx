@@ -14,11 +14,10 @@ import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchUserAttributes } from 'aws-amplify/auth';
-import PropertiesMap from '../components/PropertiesMap';
+import PropertiesWithMap from '../components/PropertiesWithMap';
 
 
 const client = generateClient<Schema>();
-
 const SellProperty: React.FC = () => {
   const { propertyId } = useParams();
 
@@ -117,7 +116,7 @@ const SellProperty: React.FC = () => {
             columns={columns}
           />
         </Paper>
-        <PropertiesMap properties={properties}/>
+        <PropertiesWithMap properties={properties}/>
       </Paper>
 
       <Modal
