@@ -6,7 +6,7 @@ import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl, Paper } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
