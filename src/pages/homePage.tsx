@@ -3,9 +3,9 @@ import MapWithItems from '../components/MapWithItems';
 
 function homePage() {
     return (
-        <main>         
-        <MapWithItems />
-    </main>
+        <main>
+            <MapWithItems />
+        </main>
     );
 }
 

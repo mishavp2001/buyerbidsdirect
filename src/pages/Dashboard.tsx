@@ -22,7 +22,7 @@ function dashboardPage() {
           <Divider
           />
           <Tab>Owned</Tab>
-          <Tab>Targets</Tab>
+          <Tab>Targeted</Tab>
           <Tab>Contacts</Tab>
           <h5>Tools</h5>
           <Divider

@@ -13,6 +13,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import MapWithItems from '../components/MapWithItems';
 
 const client = generateClient<Schema>();
 
@@ -90,6 +91,7 @@ const MakeOffer: React.FC = () => {
             columns={columns}
           />
         </Paper>
+        <MapWithItems offers={offers} width='60vw' mapOnly/> 
       </Paper>
       <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog minWidth='90%'>

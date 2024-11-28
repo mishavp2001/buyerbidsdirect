@@ -1,15 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { MapContainer, Marker, Popup, useMap, TileLayer } from 'react-leaflet';
-import ListItems from './ListItems';
-import type { Schema } from "../../amplify/data/resource";
-import { generateClient } from "aws-amplify/data";
 import { Link } from 'react-router-dom';
 import 'leaflet/dist/leaflet.css';
 import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl, Paper } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -17,7 +14,6 @@ import { FullscreenControl } from "react-leaflet-fullscreen";
 import { ReactMaker } from './ReactMaker';
 import Search from '/search.svg';
 import _ from 'lodash';
-import { filterPropertiesWithinRadius } from '../utils/distanceCalc';
 import "react-leaflet-fullscreen/styles.css";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import TuneSharpIcon from '@mui/icons-material/TuneSharp';
@@ -27,7 +23,6 @@ import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
 
-const client = generateClient<Schema>();
 const div = document.createElement('div');
 const root = createRoot(div);
 flushSync(() => {
@@ -163,9 +158,9 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
   );
 };
 
-const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
+const PropertiesMap: React.FC<any> = ({properties}) => {
 
-  // Function to handle fetching markers in parent component
+  // Functio    n to handle fetching markers in parent component
   const handleCenterChange = useCallback(
     _.debounce((lat: number, lng: number) => {
       console.log('New center:', lat, lng);
@@ -179,13 +174,11 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
     return savedZip ? JSON.parse(savedZip) : '';
   });
 
-  const [loading, setLoading] = useState<boolean>(true);
   const [maxPrice, setMaxPrice] = useState<number>(1000000);
   const [minPrice, setMinPrice] = useState<number>(0);
 
   const defaultLocation: [number, number] = [38.76315823280579, -121.16611267496815];
   const zoom = 10;
-  const radius = 1000;
   const [showFilter, setShowFilter] = useState<boolean>(false);
 
   const [position, setPosition] = useState<[number, number]>(() => {
@@ -231,36 +224,13 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
   const [error, setError] = useState<string | null>(null);
   const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
 
-  const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
-
   useEffect(() => {
     if (isProgrammaticMove) {
       setIsProgrammaticMove(false); // Reset after programmatic move finishes
     }
   }, [position, isProgrammaticMove]);
 
-  useEffect(() => {
-    const fetchProperties = async () => {
-      try {
-        const data = await client.models.Property.list({
-          authMode: "identityPool"
-        });
-        if (position) {
-          setLoading(false);
-          const filteredProperties = filterPropertiesWithinRadius(data?.data, position, radius, maxPrice, minPrice, propertyType); // Filter within radius
-          setProperties(filteredProperties);
-        }
-      } catch (err: unknown) {
-        if (err instanceof Error) {
-          console.error('Error message:', err.message);
-        } else {
-          console.error('Unknown error:', err);
-        }
-      }
-    };
 
-    fetchProperties();
-  }, [position, minPrice, maxPrice, propertyType]);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -297,13 +267,9 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
     return <div className='list-items' style={{ width: '95vw' }}>Error: {error}</div>;
   }
 
-  if (loading) {
-    return <div className='list-items' style={{ width: '95vw' }}>Loading...</div>;
-  }
-
   return (
-    <div className='list-items'>
-      <div style={{ margin: '1em', position: 'relative' }}>
+    <div>
+      <div style={{ margin: '1em', position: 'relative'  }}>
         <TextField
           onBlur={handleSearchPositionChange}
           onKeyDown={(event) => {
@@ -314,7 +280,7 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
           label="State, County, City, Zip Code..."
           value={zipCode || ''}
           onChange={(e) => setZipCode(e.target.value)}
-          sx={{ backgroundColor: 'white', minWidth: '20vw', borderRadius: '1em' }}
+          sx={{ backgroundColor: 'white', minWidth: '20vw', borderRadius: '1em'}}
         />
         {showFilter && <span>
           <NumericFormat
@@ -377,11 +343,11 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
           <img src={Search} style={{ width: '3em' }} />
         </Button>
       </div>
-      <div style={{ height: '60vh',  width: `${width || '90vw'}`, margin: '1em 1em 1em 1em' }}>
+      <div style={{ height: '60vh', width: '70vw', margin: '1em 1em 1em 1em' }}>
         <MapContainer
           center={position}
           zoom={zoom}
-          style={{ width: `${width || '90vw'}`, height: "60vh" }}
+          style={{ width: "70vw", height: "60vh" }}
         >
           <section>
             <TileLayer
@@ -389,18 +355,7 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
           </section>
-          {properties?.map((item) => (
-            item?.position &&
-            <Marker
-              icon={divIcon({
-                html: addMarker(item?.price.toFixed(0))
-              })}
-              key={`maker-${item.id}`}
-              position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-              <CustomPopup index={`popup-${item.id}`} property={item} />
-            </Marker>
-          ))}
-           {offers?.map((item: { position: string; price: number; id: any; }) => (
+          {properties?.map((item: { position: string; price: number; id: any; }) => (
             item?.position &&
             <Marker
               icon={divIcon({
@@ -416,10 +371,9 @@ const MapWithItems: React.FC<any> = ({offers, mapOnly, width}) => {
           {/* This will force the map to recenter when `position` changes */}
           <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove} />
         </MapContainer>
-        {!mapOnly && <ListItems properties={properties} />}
       </div>
     </div >
   );
 };
 
-export default MapWithItems;
+export default PropertiesMap;
