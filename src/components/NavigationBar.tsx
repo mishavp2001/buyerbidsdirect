@@ -5,12 +5,48 @@ import { AppBar, Toolbar } from '@mui/material';
 import AccountMenu from './AccountMenu';
 
 const NavigationBar: React.FC = () => {
+    function getCoreDomain(url: string) {
+        let hostname;
+
+        // Check if the input is already a hostname (e.g., localhost) or a URL
+        if (url.startsWith('http://') || url.startsWith('https://')) {
+            hostname = new URL(url).hostname; // Extract hostname from a full URL
+        } else {
+            hostname = url; // Assume it's a raw hostname like "localhost"
+        }
+
+        // Remove 'www.' if it exists
+        const stripped = hostname.replace(/^www\./, '');
+
+        // Handle localhost or cases without TLD
+        if (stripped === 'localhost') {
+            return capitalize('BuyerBidsDirect');
+        }
+
+        // Remove the TLD (e.g., .com, .org, etc.)
+        const coreDomain = stripped.split('.').slice(0, -1).join('.');
+        switch (coreDomain) {
+            case 'buyerbidsdirect':
+                return 'BuyerBidsDirect';
+                break;
+            case 'salesboter':
+                return 'SalesBoter'
+                break;
+            default:
+                return capitalize(coreDomain);
+        }
+    }
+
+    // Helper function to capitalize the first letter
+    function capitalize(str: string) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+    }
 
     return (
         <AppBar position="static">
             <Toolbar>
                 <Link to="/" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    BuyerBidsDirect
+                    {getCoreDomain(window.location.hostname) || 'BuyerBidsDirect'}
                 </Link>
                 <Link to="/dashboard" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     Dashboard

@@ -248,16 +248,26 @@ main {
 }
 
 .leaflet-popup {
-  .leaflet-popup-content {
-    overflow-y: scroll;
+ .leaflet-popup-content-wrapper {
     text-align: center;
-    .maker-main-link {
-      text-decoration: none;
-      color: black;
-      font-weight: normal
-    }
-  
+    height: 400px;
+    .leaflet-popup-content {
+      height: 400px !important;
+      width: 450px !important;
+      .maker-main-link {
+        text-decoration: none;
+        color: black;
+        font-weight: normal
+      }
+      > div {
+        overflow: show;
+        height: 250px;
+      }
+      > a {
+        height: 300px;
+      }
   }
+}
 }
 
 .leaflet-div-icon {

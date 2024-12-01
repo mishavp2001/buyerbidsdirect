@@ -102,14 +102,28 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
 
   return (
     <Popup key={props.index} className='custom-popup' maxHeight={600} maxWidth={400} minWidth={400} keepInView={true}>
-      <Carousel sx={{ width: '400px' }}>
+      <Carousel
+         navButtonsAlwaysVisible={true}
+         sx={{ maxWidth: '450px'}}
+         navButtonsWrapperProps={{   // Move the buttons to the bottom. Unsetting top here to override default style.
+          style: {
+              bottom: '0',
+              top: 'unset'
+          }
+          }}
+      >
         {imageChunks.map((chunk, index) => (
-          <Grid container spacing={1} justifyContent="center" key={`carousel-slide-${index}`}>
+          <Grid  
+            container spacing={1} 
+            justifyContent="center" 
+            key={`carousel-slide-${index}`}
+            style={{display: 'flex', flexDirection: 'column', alignContent: 'center', height: '350px'}}
+          >
             {chunk.length === 1 ? (
               // If only one image, place it in the center column
               <Grid item sm={12} key={0}>
                 <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                  <StorageImage style={{ height: '120px' }} alt={chunk[0]} path={chunk[0]} />
+                  <StorageImage style={{ height: '230px' }} alt={chunk[0]} path={chunk[0]} />
                 </Link>
               </Grid>
             ) : chunk.length === 2 ? (
@@ -117,12 +131,12 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
               <>
                 <Grid item xs={12} sm={6} key={0}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                    <StorageImage style={{ height: '120px' }} alt={chunk[0]} path={chunk[0]} />
+                    <StorageImage style={{ height: '230px' }} alt={chunk[0]} path={chunk[0]} />
                   </Link>
                 </Grid>
                 <Grid item xs={12} sm={6} key={1}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-1`}>
-                    <StorageImage style={{ height: '120px' }} alt={chunk[1]} path={chunk[1]} />
+                    <StorageImage style={{ height: '230px' }} alt={chunk[1]} path={chunk[1]} />
                   </Link>
                 </Grid>
               </>
@@ -131,7 +145,7 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
               chunk.map((image, i) => (
                 <Grid item xs={12} sm={4} key={i}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-${i}`}>
-                    <StorageImage style={{ height: '120px' }} alt={image} path={image} />
+                    <StorageImage alt={image} path={image} />
                   </Link>
                 </Grid>
               ))
