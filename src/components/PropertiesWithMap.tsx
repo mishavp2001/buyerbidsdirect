@@ -123,27 +123,27 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
               // If only one image, place it in the center column
               <Grid item sm={12} key={0}>
                 <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                  <StorageImage style={{ height: '230px' }} alt={chunk[0]} path={chunk[0]} />
+                  <StorageImage style={{ width: '330px' }} alt={chunk[0]} path={chunk[0]} />
                 </Link>
               </Grid>
             ) : chunk.length === 2 ? (
               // If two images, place them in the center columns
               <>
-                <Grid item xs={12} sm={6} key={0}>
+                <Grid item xs={12} sm={5} key={0}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
-                    <StorageImage style={{ height: '230px' }} alt={chunk[0]} path={chunk[0]} />
+                    <StorageImage alt={chunk[0]} path={chunk[0]} />
                   </Link>
                 </Grid>
-                <Grid item xs={12} sm={6} key={1}>
+                <Grid item xs={12} sm={5} key={1}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-1`}>
-                    <StorageImage style={{ height: '230px' }} alt={chunk[1]} path={chunk[1]} />
+                    <StorageImage alt={chunk[1]} path={chunk[1]} />
                   </Link>
                 </Grid>
               </>
             ) : (
               // If three images, display normally across three columns
               chunk.map((image, i) => (
-                <Grid item xs={12} sm={4} key={i}>
+                <Grid item xs={12} sm={3} key={i}>
                   <Link to={`/property/${property.id}`} key={`link-main-${index}-${i}`}>
                     <StorageImage alt={image} path={image} />
                   </Link>

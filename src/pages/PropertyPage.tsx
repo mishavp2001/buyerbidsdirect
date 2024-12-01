@@ -106,9 +106,9 @@ useEffect(() => {
             
                 <Grid 
                   item xs={6} md={6}
+                  style={{textAlign: 'center'}}
                 >
                   <Carousel
-                    height={'450px'}
                     NextIcon={<NavigateNext/>}
                     PrevIcon={<NavigateBefore/>}
                   >
