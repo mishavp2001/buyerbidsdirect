@@ -3,11 +3,13 @@ import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
 import { Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
+import { StorageImage } from '@aws-amplify/ui-react-storage';
 
 interface Property {
   id: number;
   address: string;
   price: number;
+  photos: string[];
   bedrooms: number;
   bathrooms: number;
   squareFootage: number;
@@ -34,11 +36,14 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     }  
   }
   const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid'},
-    { field: 'price', headerName: 'Price', flex: 90, type: 'number', headerClassName: 'header-grid' },
-    { field: 'bedrooms', headerName: 'Bedrooms', flex: 90,type: 'number', headerClassName: 'header-grid' },
-    { field: 'bathrooms', headerName: 'Bathrooms', flex: 90, type: 'number', headerClassName: 'header-grid' },
-    { field: 'squareFootage', headerName: 'Square Footage', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    { field: 'photos', headerName: '', renderCell: (params) => {
+      return  <StorageImage alt={params?.value[0]} path={params?.value[0]} />
+    },flex: 200, type: 'number', headerClassName: 'header-grid' },
+    { field: 'address', headerName: 'Address', flex: 150, headerClassName: 'header-grid'},
+    { field: 'price', headerName: 'Price', flex: 120, type: 'number', headerClassName: 'header-grid' },
+    { field: 'bedrooms', headerName: 'Beds', flex: 90,type: 'number', headerClassName: 'header-grid' },
+    { field: 'bathrooms', headerName: 'Bath', flex: 90, type: 'number', headerClassName: 'header-grid' },
+    { field: 'squareFootage', headerName: 'SqFt', flex: 100, type: 'number', headerClassName: 'header-grid' },
     {
       field: 'yield', headerName: 'Yield', valueGetter: (_value, row) => {
         return `${((row?.arvprice - row?.price) * 100 / row?.arvprice).toFixed(2)}%`;
@@ -53,7 +58,9 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     },
   ];
   return (
-    <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+    <Paper elevation={3} 
+      sx={{height: "90vh" }}
+      >
       <Box sx={{height: '100%'}}>
         <DataGrid
           sx={{

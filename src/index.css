@@ -250,12 +250,19 @@ main {
 .leaflet-popup {
  .leaflet-popup-content-wrapper {
     text-align: center;
-    height: 400px;
+    font-size: medium;
+    height: 420px;
     .leaflet-popup-content {
-      height: 400px !important;
+      height: 420px !important;
       width: 450px !important;
       .maker-main-link {
         text-decoration: none;
+        > * {
+          padding-left: 25px;
+          text-align: left;
+          margin: 10px;
+        }
+        
         color: black;
         font-weight: normal
       }

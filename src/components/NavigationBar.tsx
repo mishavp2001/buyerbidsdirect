@@ -3,8 +3,11 @@ import { Link } from 'react-router-dom';
 import '@aws-amplify/ui-react/styles.css';
 import { AppBar, Toolbar } from '@mui/material';
 import AccountMenu from './AccountMenu';
+import { useAuthenticator } from '@aws-amplify/ui-react';
 
 const NavigationBar: React.FC = () => {
+    const { user } = useAuthenticator((context) => [context.user]);
+
     function getCoreDomain(url: string) {
         let hostname;
 
@@ -48,15 +51,17 @@ const NavigationBar: React.FC = () => {
                 <Link to="/" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     {getCoreDomain(window.location.hostname) || 'BuyerBidsDirect'}
                 </Link>
-                <Link to="/dashboard" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Dashboard
-                </Link>
-                <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Experts
-                </Link>
-                <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                    Tools
-                </Link>
+                {!user &&
+                    <>
+                        <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                            Experts
+                        </Link>
+                        <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                            Tools
+                        </Link>
+                    </>
+                }
+
                 <AccountMenu />
             </Toolbar>
         </AppBar>
