@@ -125,7 +125,7 @@ const SellProperty: React.FC = () => {
         <PropertiesWithMap properties={properties}/>
       </Paper>}
 
-      {owner?.name && <Modal
+      <Modal
         open={open}
         onClose={() => { navigate(-1); }}
       >
@@ -161,7 +161,7 @@ const SellProperty: React.FC = () => {
             }
           </DialogContent>
         </ModalDialog>
-      </Modal>}
+      </Modal>
     </Container>
 
   );
