@@ -39,9 +39,9 @@
     properties: Property[]|any[],
     userPosition: UserPosition,
     radius: number,
-    maxPrice: number,
-    minPrice: number,
-    propertyType: string[]
+    maxPrice?: number,
+    minPrice?: number,
+    propertyType?: string[]
   ): Property[] {
     return properties.filter(property => {
       const pos =  JSON.parse(property?.position);
@@ -51,7 +51,9 @@
         pos?.latitude,
         pos?.longitude
       );
-      return distance <= radius && maxPrice > property?.price && minPrice < property?.price && (propertyType.length === 0 || propertyType.includes(property?.propertyType));
+      
+      return distance <= radius && 
+              (!maxPrice || maxPrice > property?.price) && (!minPrice || minPrice < property?.price) && (propertyType?.length === 0 || propertyType?.includes(property?.propertyType));
     });
   }
   

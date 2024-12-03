@@ -26,6 +26,24 @@ export const getOffer = /* GraphQL */ `
     }
   }
 `;
+export const getPost = /* GraphQL */ `
+  query GetPost($id: String!) {
+    getPost(id: $id) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
+      __typename
+    }
+  }
+`;
 export const getProperty = /* GraphQL */ `
   query GetProperty($id: ID!) {
     getProperty(id: $id) {
@@ -124,6 +142,74 @@ export const listOffers = /* GraphQL */ `
         propertyId
         seller
         updatedAt
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listPostByName = /* GraphQL */ `
+  query ListPostByName(
+    $filter: ModelPostFilterInput
+    $limit: Int
+    $name: String!
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listPostByName(
+      filter: $filter
+      limit: $limit
+      name: $name
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        createdAt
+        email
+        id
+        name
+        owner
+        phone_number
+        picture
+        post
+        title
+        updatedAt
+        website
+        __typename
+      }
+      nextToken
+      __typename
+    }
+  }
+`;
+export const listPosts = /* GraphQL */ `
+  query ListPosts(
+    $filter: ModelPostFilterInput
+    $id: String
+    $limit: Int
+    $nextToken: String
+    $sortDirection: ModelSortDirection
+  ) {
+    listPosts(
+      filter: $filter
+      id: $id
+      limit: $limit
+      nextToken: $nextToken
+      sortDirection: $sortDirection
+    ) {
+      items {
+        createdAt
+        email
+        id
+        name
+        owner
+        phone_number
+        picture
+        post
+        title
+        updatedAt
+        website
         __typename
       }
       nextToken

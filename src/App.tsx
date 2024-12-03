@@ -15,6 +15,7 @@ import PropertyPage from './pages/PropertyPage';
 import NavigationBar from './components/NavigationBar'
 import AnalyzePage from './pages/analyzePage'
 import RequireAuth from './components/Auth/RequireAuth';
+import Posts from './pages/Posts';
 
 function App() {
 
@@ -35,6 +36,8 @@ function App() {
         <Route path='/profile' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/profiles' element =  {<UserProfiles/>} />
         <Route path='/profiles/:userId' element =  {<UserProfiles/>} />
+        <Route path='/posts' element =  {<Posts/>} />
+        <Route path='/posts/:postId' element =  {<Posts/>} />
         <Route path='/profileadd' element =  {<RequireAuth><ProfileAdd/></RequireAuth>} />
         <Route path='/profile/:update' element =  {<RequireAuth><UserProfile/></RequireAuth>} />
         <Route path='/login' element = {<LoginPage/>} />

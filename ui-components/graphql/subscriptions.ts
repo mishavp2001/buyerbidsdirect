@@ -30,6 +30,27 @@ export const onCreateOffer = /* GraphQL */ `
     }
   }
 `;
+export const onCreatePost = /* GraphQL */ `
+  subscription OnCreatePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onCreatePost(filter: $filter, owner: $owner) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
+      __typename
+    }
+  }
+`;
 export const onCreateProperty = /* GraphQL */ `
   subscription OnCreateProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -140,6 +161,27 @@ export const onDeleteOffer = /* GraphQL */ `
     }
   }
 `;
+export const onDeletePost = /* GraphQL */ `
+  subscription OnDeletePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onDeletePost(filter: $filter, owner: $owner) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
+      __typename
+    }
+  }
+`;
 export const onDeleteProperty = /* GraphQL */ `
   subscription OnDeleteProperty(
     $filter: ModelSubscriptionPropertyFilterInput
@@ -246,6 +288,27 @@ export const onUpdateOffer = /* GraphQL */ `
       propertyId
       seller
       updatedAt
+      __typename
+    }
+  }
+`;
+export const onUpdatePost = /* GraphQL */ `
+  subscription OnUpdatePost(
+    $filter: ModelSubscriptionPostFilterInput
+    $owner: String
+  ) {
+    onUpdatePost(filter: $filter, owner: $owner) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
       __typename
     }
   }

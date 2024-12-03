@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import OfferCreateForm from "../ui-components/OfferCreateForm";
 import OfferUpdateForm from "../ui-components/OfferUpdateForm"
-import { Container, Typography } from '@mui/material';
+import { Container} from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Paper } from '@mui/material';
 import Modal from '@mui/joy/Modal';
@@ -13,7 +13,6 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import MapWithItems from '../components/MapWithItems';
 
 const client = generateClient<Schema>();
 
@@ -41,7 +40,7 @@ const MakeOffer: React.FC = () => {
       next: (data) => setOffers(data.items),
       error: (err) => {
         console.dir(err)
-        ; setError(err.message)
+          ; setError(err.message)
       },
     });
     if (offerId === 'null' || typeof (offerId) === 'string') {
@@ -72,9 +71,9 @@ const MakeOffer: React.FC = () => {
   ];
   return (
     <Container component="main">
-      <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">My Buy Offers:</Typography>
-        <Paper elevation={3} sx={{ padding: 2, height: 400, width: '100%' }}>
+      <Paper elevation={3} sx={{ padding: 3, margin: 3 }}>
+        <h3>Offer Sent</h3>
+        <Paper elevation={3} sx={{ padding: 2, height: 500, width: '100%' }}>
           <DataGrid
             sx={{
               // disable cell selection style
@@ -91,7 +90,24 @@ const MakeOffer: React.FC = () => {
             columns={columns}
           />
         </Paper>
-        <MapWithItems offers={offers} width='100%' mapOnly/> 
+        <h3>Property Saved</h3>
+        <Paper elevation={3} sx={{ padding: 2, height: 500, width: '100%' }}>
+          <DataGrid
+            sx={{
+              // disable cell selection style
+              '.MuiDataGrid-cell:focus': {
+                outline: 'none'
+              },
+              // pointer cursor on ALL rows
+              '& .MuiDataGrid-row:hover': {
+                cursor: 'pointer'
+              }
+            }}
+            onRowClick={handleRowClick}
+            rows={offers}
+            columns={columns}
+          />
+        </Paper>
       </Paper>
       <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog minWidth='90%'>

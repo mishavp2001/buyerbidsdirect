@@ -51,11 +51,14 @@ const NavigationBar: React.FC = () => {
                 <Link to="/" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                     {getCoreDomain(window.location.hostname) || 'BuyerBidsDirect'}
                 </Link>
-                {!user &&
-                    <>
-                        <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                <Link to="/profiles" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                             Experts
                         </Link>
+                        <Link to="/posts" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
+                            Posts
+                        </Link>
+                {!user &&
+                    <>
                         <Link to="/calc" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
                             Tools
                         </Link>

@@ -8,11 +8,11 @@ import { ListItemIcon, ListItemText, MenuItem } from '@mui/material';
 import Divider from '@mui/material/Divider';
 import IconButton from '@mui/material/IconButton';
 import Tooltip from '@mui/material/Tooltip';
-import { Logout, House } from '@mui/icons-material/index';
+import { Logout, House, Signpost } from '@mui/icons-material/index';
 import { fetchUserAttributes } from 'aws-amplify/auth';
 
 export default function AccountMenu() {
-    const [email, setEmail ] =  useState<string>('User');
+    const [email, setEmail] = useState<string>('User');
     const { authStatus, signOut } = useAuthenticator((context) => [
         context.authStatus,
         context.signOut
@@ -20,18 +20,18 @@ export default function AccountMenu() {
     // Fetch user attributes when the component mounts
     useEffect(() => {
         const fetchAttributes = async () => {
-        try {
-            const userAttributes = await fetchUserAttributes();
-            const email = userAttributes?.email ?? 'Guest';
-            setEmail(email);
-        } catch (err) {
-            console.error('Error fetching user attributes:', err);
-        }
+            try {
+                const userAttributes = await fetchUserAttributes();
+                const email = userAttributes?.email ?? 'Guest';
+                setEmail(email);
+            } catch (err) {
+                console.error('Error fetching user attributes:', err);
+            }
         };
-    
+
         fetchAttributes();
     }, []);
-  
+
     function handleLogOut() {
         setAnchorEl(null);
         signOut();
@@ -107,6 +107,14 @@ export default function AccountMenu() {
                         {email || 'Guest'}
                     </ListItemText>
                 </MenuItem>
+                <MenuItem onClick={handleClose} {...{ component: Link, to: "/sales" }} >
+                    <ListItemIcon>
+                        <House />
+                    </ListItemIcon>
+                    <ListItemText>
+                        Owned
+                    </ListItemText>
+                </MenuItem>
                 <MenuItem onClick={handleClose} {...{ component: Link, to: "/offers" }} >
                     <ListItemIcon>
                         <Icon
@@ -115,18 +123,16 @@ export default function AccountMenu() {
                             color="rebeccapurple" />
                     </ListItemIcon>
                     <ListItemText>
-                        Offers
+                        Wanted
                     </ListItemText>
                 </MenuItem>
-                <MenuItem onClick={handleClose} {...{ component: Link, to: "/sales" }} >
+                <MenuItem onClick={handleClose} {...{ component: Link, to: "/posts" }} >
                     <ListItemIcon>
-                        <House />
+                        < Signpost />
                     </ListItemIcon>
-
                     <ListItemText>
-                        Properties
+                        Posts
                     </ListItemText>
-
                 </MenuItem>
                 <Divider />
                 <MenuItem onClick={handleLogOut}>

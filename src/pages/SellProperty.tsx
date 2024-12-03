@@ -14,8 +14,6 @@ import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchUserAttributes } from 'aws-amplify/auth';
-import PropertiesWithMap from '../components/PropertiesWithMap';
-
 
 const client = generateClient<Schema>();
 const SellProperty: React.FC = () => {
@@ -92,7 +90,7 @@ const SellProperty: React.FC = () => {
   return (
     <Container component="main">
       {!open && <Paper elevation={3} sx={{ padding: 3 }}>
-        <Typography component="h1" variant="h5">Properties:
+        <Typography component="h1" variant="h5">Your Properties
           <Button variant="contained" style={{ float: 'right' }} component={RouterLink} to={`/sales/new`}>
             Add new
           </Button>
@@ -122,7 +120,6 @@ const SellProperty: React.FC = () => {
             columns={columns}
           />
         </Paper>
-        <PropertiesWithMap properties={properties}/>
       </Paper>}
 
       <Modal

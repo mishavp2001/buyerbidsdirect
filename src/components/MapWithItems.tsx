@@ -134,7 +134,7 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
   );
 };
 
-const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
+const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
 
   // Function to handle fetching markers in parent component
   const handleCenterChange = useCallback(
@@ -151,12 +151,12 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
   });
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [maxPrice, setMaxPrice] = useState<number>(1000000);
-  const [minPrice, setMinPrice] = useState<number>(0);
+  const [maxPrice, setMaxPrice] = useState<number>();
+  const [minPrice, setMinPrice] = useState<number>();
 
   const defaultLocation: [number, number] = [38.76315823280579, -121.16611267496815];
   const zoom = 10;
-  const radius = 1000;
+  const radius = 400;
   const [showFilter, setShowFilter] = useState<boolean>(false);
 
   const [position, setPosition] = useState<[number, number]>(() => {
@@ -177,7 +177,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
     'Multi-family',
     'Manufactured'
   ];
-  const [propertyType, setPropertyType] = React.useState<string[]>([...ptypes]);
+  const [propertyType, setPropertyType] = React.useState<string[]>([]);
   const handlePtypeChange = (event: SelectChangeEvent<typeof propertyType>) => {
     const {
       target: { value },
@@ -274,6 +274,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
 
   return (
     <div className='list-items'>
+      <h3>{header}</h3>
       <div style={{ margin: '1em', position: 'relative' }}>
         <TextField
           onBlur={handleSearchPositionChange}
@@ -351,14 +352,14 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
       <div style={{width: `${width || '98vw'}`, marginTop: '35px', padding: '1em' }}>
       <Paper 
       elevation={3} 
-      sx={{ height: "99vh", padding: '1em' }}
+      sx={{ height: "99vh", width: 'auto', padding: '1em' }}
       >
         <Grid
           container spacing={2}
           justifyContent="center"
           style={{ display: 'flex', flexDirection: 'row' }}
         >
-          <Grid item xs={12} sm={!mapOnly ? 6 : 12} height='90vh' key={0}>
+          <Grid item xs={12} sm={12} md={!mapOnly ? 6 : 12} height='90vh' key={0}>
             <MapContainer
               center={position}
               zoom={zoom}
@@ -399,7 +400,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width }) => {
             </MapContainer>
           </Grid>
           {!mapOnly && 
-            <Grid item xs={12} sm={6} key={1}> 
+            <Grid item xs={12} sm={12} md={6} key={1}> 
             <ListItems 
               properties={properties}
             />

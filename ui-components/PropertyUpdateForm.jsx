@@ -6,6 +6,7 @@ import {
   Button,
   Divider,
   Flex,
+  Grid,
   Icon,
   ScrollView,
   Text,
@@ -13,8 +14,6 @@ import {
   TextField,
   useTheme,
 } from "@aws-amplify/ui-react";
-import { Grid, Paper, Alert} from '@mui/material';
-
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getProperty } from "./graphql/queries";

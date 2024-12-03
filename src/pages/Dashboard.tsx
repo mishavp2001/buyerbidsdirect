@@ -8,6 +8,7 @@ import LoanCalculator from '../components/TaxCalculator';
 import SellProperty from './SellProperty'
 import Profiles from './Profiles'
 import Offers from '../pages/makeOfferPage'
+import PostView from '../pages/Posts'
 import MapWithItems from '../components/MapWithItems'
 import { Divider, TabPanel } from '@mui/joy';
 import Chat from '../components/Chat';
@@ -15,21 +16,23 @@ import Chat from '../components/Chat';
 function dashboardPage() {
   return (
     <main>
-      <Tabs
-        orientation="vertical"
+      <Tabs style={{minWidth: '450px'}} orientation="vertical"
         size="md"
       >
         <TabList>
+        <h5>Messages</h5>
+        <Tab>New Posts</Tab>
+        <Tab>My Posts</Tab>
         <h5>Properties</h5>
           <Divider
           />
-          <Tab>ForSale</Tab>
+          <Tab>Explore</Tab>
           <Tab>Owned</Tab>
-          <Tab>Targeted</Tab>
-          <Tab>Contacts</Tab>
-          <h5>Experts</h5>
+          <Tab>Wanted</Tab>
+          <h5>Contacts</h5>
           <Divider
           />
+          <Tab>Personal</Tab>
           <Tab>Lenders</Tab>
           <Tab>Wholesalers</Tab>
           <Tab>Inspectors</Tab>
@@ -46,19 +49,19 @@ function dashboardPage() {
           <Tab>Loan</Tab>
         </TabList>
         <TabPanel value={0}>
-          <MapWithItems width='100%'/>
+          <PostView />
         </TabPanel>
         <TabPanel value={1}>
-          <SellProperty />
+          <PostView />
         </TabPanel>
         <TabPanel value={2}>
-          <Offers />
+          <MapWithItems width='100%'/>
         </TabPanel>
         <TabPanel value={3}>
-          <Profiles />
+          <SellProperty />
         </TabPanel>
         <TabPanel value={4}>
-          <Profiles />
+          <Offers />
         </TabPanel>
         <TabPanel value={5}>
           <Profiles />
@@ -73,15 +76,21 @@ function dashboardPage() {
           <Profiles />
         </TabPanel>
         <TabPanel value={9}>
-          <Chat info='Investment tools' topic='Answer real estate related questions. IIntroduce yourself as expert in real estate.'/>
+          <Profiles />
         </TabPanel>
         <TabPanel value={10}>
-          <TaxCalculator />
+          <Profiles />
         </TabPanel>
         <TabPanel value={11}>
-          <CapRateCalculator />
+          <Chat info='Investment tools' topic='Answer real estate related questions. IIntroduce yourself as expert in real estate.'/>
         </TabPanel>
         <TabPanel value={12}>
+          <TaxCalculator />
+        </TabPanel>
+        <TabPanel value={13}>
+          <CapRateCalculator />
+        </TabPanel>
+        <TabPanel value={14}>
           <LoanCalculator />
         </TabPanel>
       </Tabs>

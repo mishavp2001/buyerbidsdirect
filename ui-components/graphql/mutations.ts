@@ -29,6 +29,27 @@ export const createOffer = /* GraphQL */ `
     }
   }
 `;
+export const createPost = /* GraphQL */ `
+  mutation CreatePost(
+    $condition: ModelPostConditionInput
+    $input: CreatePostInput!
+  ) {
+    createPost(condition: $condition, input: $input) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
+      __typename
+    }
+  }
+`;
 export const createProperty = /* GraphQL */ `
   mutation CreateProperty(
     $condition: ModelPropertyConditionInput
@@ -138,6 +159,27 @@ export const deleteOffer = /* GraphQL */ `
     }
   }
 `;
+export const deletePost = /* GraphQL */ `
+  mutation DeletePost(
+    $condition: ModelPostConditionInput
+    $input: DeletePostInput!
+  ) {
+    deletePost(condition: $condition, input: $input) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
+      __typename
+    }
+  }
+`;
 export const deleteProperty = /* GraphQL */ `
   mutation DeleteProperty(
     $condition: ModelPropertyConditionInput
@@ -243,6 +285,27 @@ export const updateOffer = /* GraphQL */ `
       propertyId
       seller
       updatedAt
+      __typename
+    }
+  }
+`;
+export const updatePost = /* GraphQL */ `
+  mutation UpdatePost(
+    $condition: ModelPostConditionInput
+    $input: UpdatePostInput!
+  ) {
+    updatePost(condition: $condition, input: $input) {
+      createdAt
+      email
+      id
+      name
+      owner
+      phone_number
+      picture
+      post
+      title
+      updatedAt
+      website
       __typename
     }
   }

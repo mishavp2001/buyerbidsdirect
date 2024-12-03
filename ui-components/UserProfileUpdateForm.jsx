@@ -123,7 +123,7 @@ export default function UserProfileUpdateForm(props) {
     nickname: [],
     preferred_username: [],
     profile: [],
-    picture: [{ type: "URL" }],
+    picture: [],
     website: [{ type: "URL" }],
     gender: [],
     birthdate: [],
@@ -995,7 +995,10 @@ export default function UserProfileUpdateForm(props) {
         hasError={errors.phone_number?.hasError}
         {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
-
+      <Flex
+        justifyContent="space-between"
+        {...getOverrideProps(overrides, "CTAFlex")}
+      >
         <Button
           children="Reset"
           type="reset"
@@ -1006,7 +1009,10 @@ export default function UserProfileUpdateForm(props) {
           isDisabled={!(idProp || userProfileModelProp)}
           {...getOverrideProps(overrides, "ResetButton")}
         ></Button>
-       
+        <Flex
+          gap="15px"
+          {...getOverrideProps(overrides, "RightAlignCTASubFlex")}
+        >
           <Button
             children="Submit"
             type="submit"
@@ -1017,6 +1023,8 @@ export default function UserProfileUpdateForm(props) {
             }
             {...getOverrideProps(overrides, "SubmitButton")}
           ></Button>
+        </Flex>
+      </Flex>
     </Grid>
   );
 }

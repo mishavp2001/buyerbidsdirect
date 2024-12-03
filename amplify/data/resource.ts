@@ -16,7 +16,7 @@ const schema = a.schema({
     })
     .authorization(allow => [allow.owner()]),
 
-    UserProfile: a
+  UserProfile: a
     .model({
       name: a.string(),
       user_role: a.enum(['owner', 'investor', 'lander', 'wholesaler', 'realtor']),
@@ -40,9 +40,25 @@ const schema = a.schema({
       allow.authenticated('identityPool').to(['read']),
       allow.guest().to(['read']),
       allow.owner()
-     ]).secondaryIndexes((index) => [index("user_role")]),
+    ]).secondaryIndexes((index) => [index("user_role")]),
 
-   Offer: a
+  Post: a
+    .model({
+      name: a.string().required(),
+      title: a.string().required(),
+      post: a.string().required(),
+      picture: a.string(),
+      website: a.url(),
+      email: a.email().required(),
+      phone_number: a.string(),
+      id: a.string().required(), // Cognito's unique user identifier
+    }).authorization(allow => [
+      allow.authenticated('identityPool').to(['read']),
+      allow.guest().to(['read']),
+      allow.owner()
+    ]).secondaryIndexes((index) => [index("name")]),
+
+  Offer: a
     .model({
       offerAmmount: a.integer(),
       propertyAddress: a.string(),
@@ -52,8 +68,8 @@ const schema = a.schema({
       buyerPhone: a.string(),
       ownerEmail: a.string(),
       ownerName: a.string(),
-      loanApprovalLetter: a.string(), 
-      offerType: a.enum(['cash', 'financing', 'sellerfinancing', 'leaseToPurchise']), 
+      loanApprovalLetter: a.string(),
+      offerType: a.enum(['cash', 'financing', 'sellerfinancing', 'leaseToPurchise']),
       conditions: a.string().array(),
       appointment: a.date(),
       seller: a.string(),
@@ -63,7 +79,7 @@ const schema = a.schema({
       allow.ownerDefinedIn("seller").to(['read']),
       allow.ownerDefinedIn("buyer").to(['create', 'read', 'delete', 'update']),
     ]),
-    
+
   Property: a
     .model({
       address: a.string().required(), // Using the Address model
@@ -90,12 +106,12 @@ const schema = a.schema({
       amenities: a.string().array(),
     })
     .authorization(
-      (allow) => 
+      (allow) =>
         [
           allow.authenticated('identityPool').to(['read']),
           allow.guest().to(['read']),
           allow.owner()
-      ])
+        ])
 });
 
 export type Schema = ClientSchema<typeof schema>;

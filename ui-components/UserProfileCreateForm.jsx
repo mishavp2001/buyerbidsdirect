@@ -101,7 +101,7 @@ export default function UserProfileCreateForm(props) {
     nickname: [],
     preferred_username: [],
     profile: [],
-    picture: [{ type: "URL" }],
+    picture: [],
     website: [{ type: "URL" }],
     gender: [],
     birthdate: [],

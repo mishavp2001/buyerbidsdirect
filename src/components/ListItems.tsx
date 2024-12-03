@@ -1,5 +1,5 @@
 import React from 'react';
-import { DataGrid, GridColDef, GridRenderCellParams} from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
 import { Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -25,44 +25,50 @@ interface PropertyTableProps {
 const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const { user } = useAuthenticator((context) => [context.user]);
   const navigate = useNavigate();
-  
-  const handleRowClick = ( params: {
-    row: any; id: any; 
+
+  const handleRowClick = (params: {
+    row: any; id: any;
   }) => {
     if (user?.username === params.row.owner) {
       navigate(`/property/${params.row.id}`);
     } else {
       navigate(`/property/${params.row.id}`);
-    }  
+    }
   }
   const columns: GridColDef[] = [
-    { field: 'photos', headerName: '', renderCell: (params) => {
-      return  <StorageImage alt={params?.value[0]} path={params?.value[0]} />
-    },flex: 200, type: 'number', headerClassName: 'header-grid' },
-    { field: 'address', headerName: 'Address', flex: 150, headerClassName: 'header-grid'},
+    {
+      field: 'photos', headerName: '', renderCell: (params) => {
+        return <Box sx={{height:160,display:"flex", flexDirection:"row", alignItems:"center", justifyContent:"center"}}>
+                <StorageImage alt={params?.value[0]} path={params?.value[0]} />
+              </Box>
+      }, flex: 220, type: 'number', headerClassName: 'header-grid'
+    },
+    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid' },
     { field: 'price', headerName: 'Price', flex: 120, type: 'number', headerClassName: 'header-grid' },
-    { field: 'bedrooms', headerName: 'Beds', flex: 90,type: 'number', headerClassName: 'header-grid' },
+    { field: 'bedrooms', headerName: 'Beds', flex: 90, type: 'number', headerClassName: 'header-grid' },
     { field: 'bathrooms', headerName: 'Bath', flex: 90, type: 'number', headerClassName: 'header-grid' },
     { field: 'squareFootage', headerName: 'SqFt', flex: 100, type: 'number', headerClassName: 'header-grid' },
     {
       field: 'yield', headerName: 'Yield', valueGetter: (_value, row) => {
         return `${((row?.arvprice - row?.price) * 100 / row?.arvprice).toFixed(2)}%`;
-      }, flex: 120,  headerClassName: 'header-grid'
+      }, flex: 120, headerClassName: 'header-grid'
     },
-    { field: 'ownerContact', headerName: 'Contact', flex: 150, headerClassName: 'header-grid',
+    {
+      field: 'ownerContact', headerName: 'Contact', flex: 150, headerClassName: 'header-grid',
       renderCell: (params: GridRenderCellParams) => {
         return (
-            <>{user?.username === params.row.owner ? 'Yours' : params.row.ownerContact}</>
-        )  
+          <>{user?.username === params.row.owner ? 'Yours' : params.row.ownerContact}</>
+        )
       }
     },
   ];
   return (
-    <Paper elevation={3} 
-      sx={{height: "90vh" }}
-      >
-      <Box sx={{height: '100%'}}>
+    <Paper elevation={3}
+      sx={{ height: "90vh" }}
+    >
+      <Box sx={{ height: '100%' }}>
         <DataGrid
+          rowHeight={160}
           sx={{
             // disable cell selection style
             '.MuiDataGrid-cell:focus': {
