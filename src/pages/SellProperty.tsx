@@ -45,7 +45,7 @@ const SellProperty: React.FC = () => {
         } else {
           setError(errors.toString());
         }
-      } catch (err) {
+      } catch (err:any) {
         setError(err.message || 'An error occurred while fetching properties');
       }
     }
