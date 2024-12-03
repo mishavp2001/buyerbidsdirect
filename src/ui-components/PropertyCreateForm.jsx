@@ -1346,7 +1346,7 @@ export default function PropertyCreateForm(props) {
         <div>
           <TextField
             label="Listing owner"
-            value={listingOwner}
+            defaultValue={listingOwner}
             onChange={() => { }}
             isReadOnly={true}
             errorMessage={errors.listingOwner?.errorMessage}
@@ -1354,7 +1354,6 @@ export default function PropertyCreateForm(props) {
           ></TextField>
           <TextField
             label="Owner contact"
-            isReadOnly={true}
             value={ownerContact}
             onChange={() => { }}
             errorMessage={errors.ownerContact?.errorMessage}

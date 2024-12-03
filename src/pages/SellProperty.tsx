@@ -29,16 +29,8 @@ const SellProperty: React.FC = () => {
   const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({ name: '', email: '' });
 
   useEffect(() => {
-    async function fetchUserData() {
-      const userAttributes = await fetchUserAttributes();
-      setOwner({ name: userAttributes?.name, email: userAttributes?.email });
-    }
-    fetchUserData();
-  }, []);
-
-  useEffect(() => {
     async function fetchProperties() {
-      const filter = typeof propertyId === 'string' ? { id: { eq: propertyId } } : { owner: { contains: user.userId } }
+      const filter = typeof propertyId === 'string' && propertyId !== 'new' ? { id: { eq: propertyId } } : { owner: { contains: user.userId } }
       const { data: items, errors } = await client.models.Property.list({
         filter,
         authMode: "userPool"
@@ -51,16 +43,18 @@ const SellProperty: React.FC = () => {
         //console.dir(errors);
       }
     }
+    async function fetchUserData() {
+      const userAttributes = await fetchUserAttributes();
+      setOwner({ name: userAttributes?.name, email: userAttributes?.email });
+    }
+    fetchUserData();
     fetchProperties();
-  }, [user.userId, propertyId]);
-
-  useEffect(() => {
     if (propertyId === 'new' || typeof (propertyId) === 'string') {
       setOpen(true);
     } else {
       setOpen(false);
     }
-  }, [propertyId]);
+  }, [user.userId, propertyId]);
 
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', flex: 300 },
@@ -119,7 +113,7 @@ const SellProperty: React.FC = () => {
         <PropertiesWithMap properties={properties}/>
       </Paper>
 
-      <Modal
+      {owner?.name && <Modal
         open={open}
         onClose={() => { navigate(-1); }}
       >
@@ -129,7 +123,7 @@ const SellProperty: React.FC = () => {
           <DialogContent>
             {error && <p>{error}</p>}
             {
-              propertyId !== 'new' ?
+              propertyId?.indexOf('new') ===  -1 ? 
                 <>
                   <PropertyUpdateForm
                     id={propertyId}
@@ -155,7 +149,7 @@ const SellProperty: React.FC = () => {
             }
           </DialogContent>
         </ModalDialog>
-      </Modal>
+      </Modal>}
     </Container>
 
   );
