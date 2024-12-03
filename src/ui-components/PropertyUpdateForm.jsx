@@ -1418,6 +1418,7 @@ export default function PropertyUpdateForm(props) {
       <TextField
         label="Listing owner"
         onChange={() => { }}
+        isDisabled
         isReadOnly={true}
         value={listingOwner}
         errorMessage={errors.listingOwner?.errorMessage}
@@ -1425,6 +1426,7 @@ export default function PropertyUpdateForm(props) {
       ></TextField>
       <TextField
         label="Owner contact"
+        isDisabled
         isReadOnly={true}
         value={ownerContact}
         onChange={() => { }}

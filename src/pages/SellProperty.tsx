@@ -30,31 +30,43 @@ const SellProperty: React.FC = () => {
 
   useEffect(() => {
     async function fetchProperties() {
-      const filter = typeof propertyId === 'string' && propertyId !== 'new' ? { id: { eq: propertyId } } : { owner: { contains: user.userId } }
-      const { data: items, errors } = await client.models.Property.list({
-        filter,
-        authMode: "userPool"
-      })
-      if (!errors) {
-        //console.dir(items);
-        setProperties(items);
-      } else {
-        setError(errors.toString)
-        //console.dir(errors);
+      const filter =
+        typeof propertyId === 'string' && propertyId !== 'new'
+          ? { id: { eq: propertyId } }
+          : { owner: { contains: user.userId } };
+  
+      try {
+        const { data: items, errors } = await client.models.Property.list({
+          filter,
+          authMode: 'userPool',
+        });
+        if (!errors) {
+          setProperties(items);
+        } else {
+          setError(errors.toString());
+        }
+      } catch (err) {
+        setError(err.message || 'An error occurred while fetching properties');
       }
     }
-    async function fetchUserData() {
-      const userAttributes = await fetchUserAttributes();
-      setOwner({ name: userAttributes?.name, email: userAttributes?.email });
-    }
-    fetchUserData();
+  
     fetchProperties();
-    if (propertyId === 'new' || typeof (propertyId) === 'string') {
-      setOpen(true);
-    } else {
-      setOpen(false);
+  }, [user.userId, propertyId]); // Dependencies for fetching properties
+  
+  useEffect(() => {
+    async function fetchUserData() {
+      try {
+        const userAttributes = await fetchUserAttributes();
+        setOwner({ name: userAttributes?.name, email: userAttributes?.email });
+      } catch (err: any) {
+        setError(err.message || 'An error occurred while fetching user data');
+      }
     }
-  }, [user.userId, propertyId]);
+  
+    fetchUserData();
+  }, []); // No dependencies since it only needs to fetch user data once on mount
+  
+  useEffect(() => setOpen(owner?.name !== '' && typeof propertyId === 'string'), [propertyId, owner.name]); // Dependency for controlling `setOpen`
 
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', flex: 300 },
@@ -79,7 +91,7 @@ const SellProperty: React.FC = () => {
 
   return (
     <Container component="main">
-      <Paper elevation={3} sx={{ padding: 3 }}>
+      {!open && <Paper elevation={3} sx={{ padding: 3 }}>
         <Typography component="h1" variant="h5">Properties:
           <Button variant="contained" style={{ float: 'right' }} component={RouterLink} to={`/sales/new`}>
             Add new
@@ -111,7 +123,7 @@ const SellProperty: React.FC = () => {
           />
         </Paper>
         <PropertiesWithMap properties={properties}/>
-      </Paper>
+      </Paper>}
 
       {owner?.name && <Modal
         open={open}
