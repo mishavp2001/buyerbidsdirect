@@ -51,7 +51,7 @@
         pos?.latitude,
         pos?.longitude
       );
-      return distance <= radius && maxPrice > property?.price && minPrice < property?.price && propertyType.includes(property?.propertyType);
+      return distance <= radius && maxPrice > property?.price && minPrice < property?.price && (propertyType.length === 0 || propertyType.includes(property?.propertyType));
     });
   }
   
