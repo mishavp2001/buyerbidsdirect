@@ -13,8 +13,6 @@ import {
 import { StorageImage } from "@aws-amplify/ui-react-storage";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import PostUpdateForm from "../ui-components/PostUpdateForm";
 import DialogContent from "@mui/joy/DialogContent";
 
