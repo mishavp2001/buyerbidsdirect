@@ -76,7 +76,6 @@ const Posts: React.FC<any> = ({ self }) => {
             <PostCreateForm
               onSuccess={() => {
                 setNeedsRefresh(true); // Signal to refetch posts
-                navigate("/posts", { replace: true });
                 setOpen(false); // Close the modal after success
               }}
             />

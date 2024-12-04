@@ -55,7 +55,7 @@ const NavigationBar: React.FC = () => {
                             Experts
                         </Link>
                         <Link to="/posts" style={{ marginRight: '2em', color: 'inherit', textDecoration: 'none' }}>
-                            Posts
+                            Articles
                         </Link>
                 {!user &&
                     <>

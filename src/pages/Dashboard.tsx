@@ -16,13 +16,13 @@ import Chat from '../components/Chat';
 function dashboardPage() {
   return (
     <main>
-      <Tabs style={{minWidth: '450px'}} orientation="vertical"
+      <Tabs className='dash-tabs' style={{minWidth: '450px'}} orientation="vertical"
         size="md"
       >
         <TabList>
-        <h5>Messages</h5>
-        <Tab>New Posts</Tab>
-        <Tab>My Posts</Tab>
+        <h5>Articles</h5>
+        <Tab>Read</Tab>
+        <Tab>Write</Tab>
         <h5>Properties</h5>
           <Divider
           />

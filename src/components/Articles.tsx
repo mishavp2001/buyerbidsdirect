@@ -8,6 +8,7 @@ import {
     Link,
     Modal,
     Box,
+    Grid,
 } from "@mui/material";
 import { StorageImage } from "@aws-amplify/ui-react-storage";
 import { useAuthenticator } from "@aws-amplify/ui-react";
@@ -36,7 +37,6 @@ interface ArticlesProps {
 }
 
 const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
-    const [expanded, setExpanded] = useState<Record<string, boolean>>({});
     const [modalData, setModalData] = useState<Post | null>(null);
     const [email, setEmail] = useState<string>("");
     const { user } = useAuthenticator((context) => [context.user]);
@@ -56,12 +56,6 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
         fetchAttributes();
     }, []);
 
-    const handleExpandClick = (id: string) => {
-        setExpanded((prev) => ({
-            ...prev,
-            [id]: !prev[id],
-        }));
-    };
 
     const handleOpenModal = (post: Post) => {
         setModalData(post);
@@ -72,46 +66,52 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
     };
 
     return (
-        <div>
-            {posts.map((post) => (
-                <Card key={post.id} style={{ marginBottom: "20px" }}>
-                    <CardHeader title={post.title} subheader={post.name} />
-                    {post.picture && (
-                        <StorageImage
-                            width="350px"
-                            alt={post.picture}
-                            path={post.picture}
-                        />
-                    )}
-                    <CardContent>
-                        <Typography variant="body2" color="text.secondary">
-                            {expanded[post.id]
-                                ? post.post
-                                : `${post.post.slice(0, 100)}...`}
-                        </Typography>
-                        <Button
-                            size="small"
-                            onClick={() => handleExpandClick(post.id)}
-                            endIcon={expanded[post.id] ? <ExpandLessIcon /> : <ExpandMoreIcon />}
-                        >
-                            {expanded[post.id] ? "Less" : "More"}
-                        </Button>
-                        {user?.username === post.owner && (
-                            <Button onClick={() => handleOpenModal(post)}>Edit</Button>
-                        )}
-                    </CardContent>
-                    <CardContent>
-                        <Typography variant="body2">
-                            Website:{" "}
-                            <Link href={post.website} target="_blank" rel="noopener">
-                                {post.website}
-                            </Link>
-                        </Typography>
-                        <Typography variant="body2">Email: {post.email}</Typography>
-                    </CardContent>
-                </Card>
-            ))}
-
+        <>
+            <Grid
+                container
+                spacing={1}
+                display="flex">
+                {posts.map((post) => (
+                    <Grid
+                        item
+                        xs={12} md={6}
+                    >
+                        <Card key={post.id} style={{ margin: "20px", height: '450px' }}>
+                            <CardHeader title={post.title} subheader={post.name} />
+                            {post.picture && (
+                                <StorageImage
+                                    width="150px"
+                                    height="150px"
+                                    alt={post.picture}
+                                    path={post.picture}
+                                    style={{ top: 0, float: 'right', margin: "20px" }}
+                                />
+                            )}
+                            <CardContent style={{
+                                height: '200px', // Set a maximum height for the scrollable area
+                                overflowY: 'auto', // Enable vertical scrolling
+                                overflowX: 'hidden', // Prevent horizontal scrolling
+                            }}>
+                                <Typography variant="body2" color="text.secondary" style={{ overflow: 'scroll' }}>
+                                    {post.post}
+                                </Typography>
+                            </CardContent>
+                            <CardContent>
+                                <Typography variant="body2">
+                                    Website:{" "}
+                                    <Link href={post.website} target="_blank" rel="noopener">
+                                        {post.website}
+                                    </Link>
+                                </Typography>
+                                <Typography variant="body2">Email: {post.email}</Typography>
+                            </CardContent>
+                            {user?.username === post.owner && (
+                                <Button onClick={() => handleOpenModal(post)}>Edit</Button>
+                            )}
+                        </Card>
+                    </Grid>
+                ))}
+            </Grid>
             <Modal
                 open={!!modalData}
                 onClose={handleCloseModal}
@@ -155,7 +155,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                     )}
                 </Box>
             </Modal>
-        </div>
+        </>
     );
 };
 
