@@ -1,11 +1,14 @@
 /* eslint-disable */
 "use client";
 import * as React from "react";
-import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
+import { Button, Flex, Grid, TextField, TextAreaField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getPost } from "./graphql/queries";
 import { updatePost } from "./graphql/mutations";
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import { processFile } from '../utils/fileProcess';
+
 const client = generateClient();
 export default function PostUpdateForm(props) {
   const {
@@ -59,11 +62,11 @@ export default function PostUpdateForm(props) {
     const queryData = async () => {
       const record = idProp
         ? (
-            await client.graphql({
-              query: getPost.replaceAll("__typename", ""),
-              variables: { id: idProp },
-            })
-          )?.data?.getPost
+          await client.graphql({
+            query: getPost.replaceAll("__typename", ""),
+            variables: { id: idProp },
+          })
+        )?.data?.getPost
         : postModelProp;
       setPostRecord(record);
     };
@@ -102,6 +105,7 @@ export default function PostUpdateForm(props) {
       as="form"
       rowGap="15px"
       columnGap="15px"
+      templateColumns="repeat(1fr, 1fr)"  // Two columns layout
       padding="20px"
       onSubmit={async (event) => {
         event.preventDefault();
@@ -167,33 +171,12 @@ export default function PostUpdateForm(props) {
     >
       <TextField
         label="Id"
+        hidden={true}
+        labelHidden
         isRequired={true}
         isReadOnly={true}
         value={id}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              id: value,
-              name,
-              title,
-              post,
-              picture,
-              website,
-              email,
-              phone_number,
-            };
-            const result = onChange(modelFields);
-            value = result?.id ?? value;
-          }
-          if (errors.id?.hasError) {
-            runValidationTasks("id", value);
-          }
-          setId(value);
-        }}
-        onBlur={() => runValidationTasks("id", id)}
-        errorMessage={errors.id?.errorMessage}
-        hasError={errors.id?.hasError}
+        style={{ display: 'none' }}
         {...getOverrideProps(overrides, "id")}
       ></TextField>
       <TextField
@@ -258,7 +241,8 @@ export default function PostUpdateForm(props) {
         hasError={errors.title?.hasError}
         {...getOverrideProps(overrides, "title")}
       ></TextField>
-      <TextField
+      <TextAreaField
+        rows={5}
         label="Post"
         isRequired={true}
         isReadOnly={false}
@@ -288,9 +272,15 @@ export default function PostUpdateForm(props) {
         errorMessage={errors.post?.errorMessage}
         hasError={errors.post?.hasError}
         {...getOverrideProps(overrides, "post")}
-      ></TextField>
+      ></TextAreaField>
+      {picture && <StorageImage 
+                      width='350px'
+                      alt={picture} 
+                      path={picture} />}
       <TextField
         label="Picture"
+        labelHidden
+        style={{display: 'none'}}
         isRequired={false}
         isReadOnly={false}
         value={picture}
@@ -413,6 +403,20 @@ export default function PostUpdateForm(props) {
         hasError={errors.phone_number?.hasError}
         {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
+      <StorageManager
+        width='350px'
+        path="picture-submissions/"
+        maxFileCount={1}
+        acceptedFileTypes={['image/*']}
+        processFile={processFile}
+        onUploadSuccess={({ key }) => {
+          // assuming you have an attribute called 'images' on your data model that is an array of strings
+          setPicture(key)
+        }}
+        onFileRemove={({ key }) => {
+          setPicture('')
+        }}
+      />
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

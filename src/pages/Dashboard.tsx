@@ -52,7 +52,7 @@ function dashboardPage() {
           <PostView />
         </TabPanel>
         <TabPanel value={1}>
-          <PostView />
+          <PostView self={true}/>
         </TabPanel>
         <TabPanel value={2}>
           <MapWithItems width='100%'/>
