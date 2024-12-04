@@ -16,7 +16,7 @@ import AnalyzePage from './pages/analyzePage'
 import RequireAuth from './components/Auth/RequireAuth';
 import Posts from './pages/Posts';
 
-import { BrowserRouter as Router, Routes, Route, useLocation, useNavigate } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 
 
 function App() {
