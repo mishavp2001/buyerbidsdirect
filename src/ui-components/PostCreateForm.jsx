@@ -5,6 +5,9 @@ import { Button, Flex, Grid, TextField } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { createPost } from "./graphql/mutations";
+import { StorageManager, StorageImage } from '@aws-amplify/ui-react-storage';
+import { processFile } from '../utils/fileProcess';
+
 const client = generateClient();
 export default function PostCreateForm(props) {
   const {
@@ -231,8 +234,14 @@ export default function PostCreateForm(props) {
         hasError={errors.post?.hasError}
         {...getOverrideProps(overrides, "post")}
       ></TextField>
+      {picture && <StorageImage
+        width='350px'
+        alt={picture}
+        path={picture} />}
       <TextField
         label="Picture"
+        labelHidden
+        style={{ display: 'none' }}
         isRequired={false}
         isReadOnly={false}
         value={picture}
@@ -240,6 +249,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post,
@@ -351,6 +361,20 @@ export default function PostCreateForm(props) {
         hasError={errors.phone_number?.hasError}
         {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
+      <StorageManager
+        width='350px'
+        path="picture-submissions/"
+        maxFileCount={1}
+        acceptedFileTypes={['image/*']}
+        processFile={processFile}
+        onUploadSuccess={({ key }) => {
+          // assuming you have an attribute called 'images' on your data model that is an array of strings
+          setPicture(key)
+        }}
+        onFileRemove={({ key }) => {
+          setPicture('')
+        }}
+      />
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}
