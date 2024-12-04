@@ -107,7 +107,10 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
             style={{ display: 'flex', flexDirection: 'column', alignContent: 'center', height: '350px' }}
           >
             <Grid item sm={12} key={0}>
-              <Link to={`/property/${property.id}`} key={`link-main-${index}-0`}>
+              <Link 
+                to={`/property/${property.id}`}
+                state={{isModal: true, backgroundLocation: '/2' }}
+                key={`link-main-${index}-0`}>
                 <StorageImage alt={item} path={item} />
               </Link>
             </Grid>
@@ -122,11 +125,11 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
         <p>{property.address}</p>
       </Link>
       {user?.username === property.owner ? (
-        <Link to={`/sales/${property.id}`}>
+        <Link state={{ isModal: true, backgroundLocation: '/2' }} to={`/sales/${property.id}`}>
           Edit
         </Link>
       ) : (
-        <Link to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
+        <Link state={{ isModal: true, backgroundLocation: '/2' }} to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
           Make Offer
         </Link>
       )}

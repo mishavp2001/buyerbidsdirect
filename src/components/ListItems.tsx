@@ -30,9 +30,9 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
     row: any; id: any;
   }) => {
     if (user?.username === params.row.owner) {
-      navigate(`/property/${params.row.id}`);
+      navigate(`/property/${params.row.id}`, {state: {isModal: true, backgroundLocation: '/2' }});
     } else {
-      navigate(`/property/${params.row.id}`);
+      navigate(`/property/${params.row.id}`, {state: {isModal: true, backgroundLocation: '/2' }});
     }
   }
   const columns: GridColDef[] = [
