@@ -118,7 +118,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
             >
                 <Box
                     sx={{
-                        width: "350px",
+                        width: "450px",
                         height: "100vh",
                         overflow: "scroll",
                         minWidth: 450,

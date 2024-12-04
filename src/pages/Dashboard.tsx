@@ -12,12 +12,25 @@ import PostView from '../pages/Posts'
 import MapWithItems from '../components/MapWithItems'
 import { Divider, TabPanel } from '@mui/joy';
 import Chat from '../components/Chat';
+import { useParams } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function dashboardPage() {
+  const { currentTab } = useParams();
+  const navigate = useNavigate();
+
+  const handleTabChange = (_event: any, newPath: any) => {
+    navigate(`/${newPath}`);; // Update the URL
+  };
+
   return (
     <main>
-      <Tabs className='dash-tabs' style={{minWidth: '450px'}} orientation="vertical"
+      <Tabs className='dash-tabs' 
+        style={{minWidth: '450px'}} 
+        orientation="vertical"
         size="md"
+        onChange={handleTabChange}
+        value={currentTab ? currentTab : '0'}
       >
         <TabList>
         <h5>Articles</h5>
@@ -48,49 +61,49 @@ function dashboardPage() {
           <Tab>Investment</Tab>
           <Tab>Loan</Tab>
         </TabList>
-        <TabPanel value={0}>
+        <TabPanel value='0'>
           <PostView />
         </TabPanel>
-        <TabPanel value={1}>
+        <TabPanel value='1'>
           <PostView self={true}/>
         </TabPanel>
-        <TabPanel value={2}>
+        <TabPanel value='2'>
           <MapWithItems width='100%'/>
         </TabPanel>
-        <TabPanel value={3}>
+        <TabPanel value='3'>
           <SellProperty />
         </TabPanel>
-        <TabPanel value={4}>
+        <TabPanel value='4'>
           <Offers />
         </TabPanel>
-        <TabPanel value={5}>
+        <TabPanel value='5'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={6}>
+        <TabPanel value='6'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={7}>
+        <TabPanel value='7'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={8}>
+        <TabPanel value='8'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={9}>
+        <TabPanel value='9'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={10}>
+        <TabPanel value='10'>
           <Profiles />
         </TabPanel>
-        <TabPanel value={11}>
+        <TabPanel value='11'>
           <Chat info='Investment tools' topic='Answer real estate related questions. IIntroduce yourself as expert in real estate.'/>
         </TabPanel>
-        <TabPanel value={12}>
+        <TabPanel value='12'>
           <TaxCalculator />
         </TabPanel>
-        <TabPanel value={13}>
+        <TabPanel value='13'>
           <CapRateCalculator />
         </TabPanel>
-        <TabPanel value={14}>
+        <TabPanel value='14'>
           <LoanCalculator />
         </TabPanel>
       </Tabs>

@@ -1,14 +1,14 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
 import { Container, Paper, } from '@mui/material';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator, Button } from '@aws-amplify/ui-react';
-import { ArrowBack} from '@mui/icons-material';
+import { ArrowBack } from '@mui/icons-material';
 import { Grid } from '@mui/material';
 import Chat from '../components/Chat';
 import { fetchUserAttributes } from 'aws-amplify/auth';
@@ -66,7 +66,9 @@ const PropertyPage: React.FC = () => {
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 6 }}>
         <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
-          <Link to={'..'}><ArrowBack /></Link>
+          <Button onClick={() => navigate(-1)}>
+            <ArrowBack />
+          </Button>
           {
             !error && property.length ?
               <Grid container spacing={1} display="flex">
