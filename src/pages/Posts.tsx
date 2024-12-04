@@ -7,7 +7,6 @@ import Modal from '@mui/joy/Modal';
 import ModalDialog from '@mui/joy/ModalDialog';
 import ModalClose from '@mui/joy/ModalClose';
 import DialogContent from '@mui/joy/DialogContent';
-import { Link as RouterLink } from 'react-router-dom';
 import PostCreateForm from '../ui-components/PostCreateForm';
 import Articles from '../components/Articles';
 import { useAuthenticator } from '@aws-amplify/ui-react';
