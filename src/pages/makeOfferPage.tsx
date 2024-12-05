@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import OfferCreateForm from "../ui-components/OfferCreateForm";
 import OfferUpdateForm from "../ui-components/OfferUpdateForm"
-import { Container} from '@mui/material';
+import { Container } from '@mui/material';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Paper } from '@mui/material';
 import Modal from '@mui/joy/Modal';
@@ -13,7 +13,6 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
-import { fetchUserAttributes } from 'aws-amplify/auth';
 
 const client = generateClient<Schema>();
 
@@ -27,7 +26,6 @@ const MakeOffer: React.FC = () => {
 
   const { offerId, address, propertyId, ownerId } = useParams();
   const [buyerAttr, setBuyerAttr] = useState<any>({});
-
 
   useEffect(() => {
     async function fetchUserProfiles() {
@@ -149,7 +147,7 @@ const MakeOffer: React.FC = () => {
                     propertyAddress: { value: address },
                     ownerName: { value: ownerId },
                     ownerEmail: { value: address },
-                    buyerEmail:  { value: buyerAttr?.email },
+                    buyerEmail: { value: buyerAttr?.email },
                     buyerName: { value: buyerAttr?.name },
                     buyerPhone: { value: buyerAttr?.phone_number },
                     seller: { value: ownerId }
