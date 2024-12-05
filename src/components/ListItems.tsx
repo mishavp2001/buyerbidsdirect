@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { DataGrid, GridCellParams, GridColDef, GridEventListener, GridRenderCellParams } from '@mui/x-data-grid';
 import { Box, Paper } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
@@ -27,14 +27,17 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
   const { user } = useAuthenticator((context) => [context.user]);
   const navigate = useNavigate();
 
-  const handleRowClick = (params: { field: string; row: { owner: string; id: any; }, event:  React.MouseEvent<HTMLDivElement, MouseEvent> }) => {
+  const handleCellClick: GridEventListener<'cellClick'> = (
+    params: GridCellParams,
+    event: React.MouseEvent<HTMLElement, MouseEvent>
+  ) => {
     const target = event?.target as HTMLElement;
     const isLinkClicked = target.tagName === 'A';
     if (isLinkClicked) {
       // Prevent DataGrid from handling the click if the link was clicked
       event?.stopPropagation(); // Stop the click from propagating to the DataGrid
       return;
-    } 
+    }
     if (user?.username === params.row.owner) {
       navigate(`/property/${params.row.id}`, { state: { isModal: true, backgroundLocation: '/2' } });
     } else {
@@ -53,14 +56,14 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
       field: 'summary', headerName: 'Description', renderCell: (params) => {
         const { address, description, ownerContact } = params.row;
         return (
-          <div style={{ lineHeight: '1' }}>
+          <div style={{ lineHeight: '1', textAlign: 'left' }}>
             <p>{address}</p>
             <p>{description}</p>
             <p><a href={`mailto:${ownerContact}`}>{ownerContact}</a></p>
           </div>)
       }, flex: 250, headerClassName: 'header-grid'
     },
-    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid', hide: true },
+    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid' },
     { field: 'description', headerName: 'Description', flex: 250, headerClassName: 'header-grid' },
     { field: 'price', headerName: 'Price', flex: 120, type: 'number', headerClassName: 'header-grid' },
     { field: 'bedrooms', headerName: 'Beds', flex: 90, type: 'number', headerClassName: 'header-grid' },
@@ -109,7 +112,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
               cursor: 'pointer'
             }
           }}
-          onCellClick={handleRowClick}
+          onCellClick={handleCellClick}
           rows={properties}
           columns={columns}
         />
