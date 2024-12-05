@@ -41,7 +41,7 @@ function dashboardPage() {
           />
           <Tab>Explore</Tab>
           <Tab>Owned</Tab>
-          <Tab>Wanted</Tab>
+          <Tab>Saved</Tab>
           <h5>Contacts</h5>
           <Divider
           />

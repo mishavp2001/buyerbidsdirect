@@ -120,7 +120,6 @@ function ArrayField({
           })}
         </ScrollView>
       )}
-      <Divider orientation="horizontal" marginTop={5} />
     </React.Fragment>
   );
   if (lengthLimit !== undefined && items.length >= lengthLimit && !isEditing) {
@@ -282,7 +281,7 @@ export default function OfferCreateForm(props) {
       as="form"
       templateColumns="repeat(2, 1fr)"  // Two columns layout
       gap="10px"  // Reduce space between fields
-      padding="20px"
+      padding="10px"
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
@@ -354,51 +353,8 @@ export default function OfferCreateForm(props) {
       {...rest}
     >
       <div className="merge-col-field">
-        <TextField
-          label="Offer ammount"
-          isRequired={false}
-          isReadOnly={false}
-          type="number"
-          step="any"
-          value={offerAmmount}
-          onChange={(e) => {
-            let value = isNaN(parseInt(e.target.value))
-              ? e.target.value
-              : parseInt(e.target.value);
-            if (onChange) {
-              const modelFields = {
-                offerAmmount: value,
-                propertyAddress,
-                propertyId,
-                buyerName,
-                buyerEmail,
-                buyerPhone,
-                ownerEmail,
-                ownerName,
-                loanApprovalLetter,
-                offerType,
-                conditions,
-                appointment,
-                seller,
-                buyer,
-              };
-              const result = onChange(modelFields);
-              value = result?.offerAmmount ?? value;
-            }
-            if (errors.offerAmmount?.hasError) {
-              runValidationTasks("offerAmmount", value);
-            }
-            setOfferAmmount(value);
-          }}
-          onBlur={() => runValidationTasks("offerAmmount", offerAmmount)}
-          errorMessage={errors.offerAmmount?.errorMessage}
-          hasError={errors.offerAmmount?.hasError}
-          {...getOverrideProps(overrides, "offerAmmount")}
-        ></TextField>
-      </div>
-
       <TextField
-        label="Name"
+        label="From"
         isRequired={false}
         isReadOnly={false}
         isDisabled
@@ -435,8 +391,7 @@ export default function OfferCreateForm(props) {
         hasError={errors.buyerName?.hasError}
         {...getOverrideProps(overrides, "buyerName")}
       ></TextField>
-      <div className="merge-col-field">
-        <TextField
+       <TextField
           label="Email"
           isDisabled
           isRequired={false}
@@ -512,18 +467,23 @@ export default function OfferCreateForm(props) {
           hasError={errors.buyerPhone?.hasError}
           {...getOverrideProps(overrides, "buyerPhone")}
         ></TextField>
+
       </div>
       <div className="merge-col-field">
-        <TextField
-          label="Loan approval letter"
+      <TextField
+          label="Offer ammount"
           isRequired={false}
           isReadOnly={false}
-          value={loanApprovalLetter}
+          type="number"
+          step="any"
+          value={offerAmmount}
           onChange={(e) => {
-            let { value } = e.target;
+            let value = isNaN(parseInt(e.target.value))
+              ? e.target.value
+              : parseInt(e.target.value);
             if (onChange) {
               const modelFields = {
-                offerAmmount,
+                offerAmmount: value,
                 propertyAddress,
                 propertyId,
                 buyerName,
@@ -531,7 +491,7 @@ export default function OfferCreateForm(props) {
                 buyerPhone,
                 ownerEmail,
                 ownerName,
-                loanApprovalLetter: value,
+                loanApprovalLetter,
                 offerType,
                 conditions,
                 appointment,
@@ -539,19 +499,17 @@ export default function OfferCreateForm(props) {
                 buyer,
               };
               const result = onChange(modelFields);
-              value = result?.loanApprovalLetter ?? value;
+              value = result?.offerAmmount ?? value;
             }
-            if (errors.loanApprovalLetter?.hasError) {
-              runValidationTasks("loanApprovalLetter", value);
+            if (errors.offerAmmount?.hasError) {
+              runValidationTasks("offerAmmount", value);
             }
-            setLoanApprovalLetter(value);
+            setOfferAmmount(value);
           }}
-          onBlur={() =>
-            runValidationTasks("loanApprovalLetter", loanApprovalLetter)
-          }
-          errorMessage={errors.loanApprovalLetter?.errorMessage}
-          hasError={errors.loanApprovalLetter?.hasError}
-          {...getOverrideProps(overrides, "loanApprovalLetter")}
+          onBlur={() => runValidationTasks("offerAmmount", offerAmmount)}
+          errorMessage={errors.offerAmmount?.errorMessage}
+          hasError={errors.offerAmmount?.hasError}
+          {...getOverrideProps(overrides, "offerAmmount")}
         ></TextField>
         <SelectField
           label="Offer type"
@@ -611,8 +569,89 @@ export default function OfferCreateForm(props) {
             {...getOverrideProps(overrides, "offerTypeoption3")}
           ></option>
         </SelectField>
+        <TextField
+        label="Offer valid untill"
+        isRequired={false}
+        isReadOnly={false}
+        type="date"
+        value={appointment}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              appointment: value,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.appointment ?? value;
+          }
+          if (errors.appointment?.hasError) {
+            runValidationTasks("appointment", value);
+          }
+          setAppointment(value);
+        }}
+        onBlur={() => runValidationTasks("appointment", appointment)}
+        errorMessage={errors.appointment?.errorMessage}
+        hasError={errors.appointment?.hasError}
+        {...getOverrideProps(overrides, "appointment")}
+      ></TextField>
+        <TextField
+          label="Loan approval letter"
+          labelHidden
+          style={{display: 'none'}}
+          isRequired={false}
+          isReadOnly={false}
+          value={loanApprovalLetter}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (onChange) {
+              const modelFields = {
+                offerAmmount,
+                propertyAddress,
+                propertyId,
+                buyerName,
+                buyerEmail,
+                buyerPhone,
+                ownerEmail,
+                ownerName,
+                loanApprovalLetter: value,
+                offerType,
+                conditions,
+                appointment,
+                seller,
+                buyer,
+              };
+              const result = onChange(modelFields);
+              value = result?.loanApprovalLetter ?? value;
+            }
+            if (errors.loanApprovalLetter?.hasError) {
+              runValidationTasks("loanApprovalLetter", value);
+            }
+            setLoanApprovalLetter(value);
+          }}
+          onBlur={() =>
+            runValidationTasks("loanApprovalLetter", loanApprovalLetter)
+          }
+          errorMessage={errors.loanApprovalLetter?.errorMessage}
+          hasError={errors.loanApprovalLetter?.hasError}
+          {...getOverrideProps(overrides, "loanApprovalLetter")}
+        ></TextField>
       </div>
+      
       <div className="merge-col-field">
+        
         <ArrayField
           onChange={async (items) => {
             let values = items;
@@ -674,44 +713,6 @@ export default function OfferCreateForm(props) {
           ></TextField>
         </ArrayField>
       </div>
-      <TextField
-        label="Schedule appointment"
-        isRequired={false}
-        isReadOnly={false}
-        type="date"
-        value={appointment}
-        onChange={(e) => {
-          let { value } = e.target;
-          if (onChange) {
-            const modelFields = {
-              offerAmmount,
-              propertyAddress,
-              propertyId,
-              buyerName,
-              buyerEmail,
-              buyerPhone,
-              ownerEmail,
-              ownerName,
-              loanApprovalLetter,
-              offerType,
-              conditions,
-              appointment: value,
-              seller,
-              buyer,
-            };
-            const result = onChange(modelFields);
-            value = result?.appointment ?? value;
-          }
-          if (errors.appointment?.hasError) {
-            runValidationTasks("appointment", value);
-          }
-          setAppointment(value);
-        }}
-        onBlur={() => runValidationTasks("appointment", appointment)}
-        errorMessage={errors.appointment?.errorMessage}
-        hasError={errors.appointment?.hasError}
-        {...getOverrideProps(overrides, "appointment")}
-      ></TextField>
       <TextField
         label="Seller"
         style={{ display: 'none' }}
@@ -829,8 +830,10 @@ export default function OfferCreateForm(props) {
         hasError={errors.propertyId?.hasError}
         {...getOverrideProps(overrides, "propertyId")}
       ></TextField>
+      
       <div className="merge-col-field">
         <Flex
+          marginTop={20}
           justifyContent="space-between"
           {...getOverrideProps(overrides, "CTAFlex")}
         >

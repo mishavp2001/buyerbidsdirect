@@ -25,21 +25,27 @@ const MakeOffer: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const { offerId, address, propertyId, ownerId } = useParams();
-  const [buyerAttr, setBuyerAttr] = useState<any>({});
+  const [userAttr, setUserAttr] = useState<any>({});
 
   useEffect(() => {
     async function fetchUserProfiles() {
       //const filter = userId  ? { id: { eq: userId } } : null;
-      const { data: items, errors } = await client.models.UserProfile.list({
+      const { data: itemsBuyer, errors: errorsB } = await client.models.UserProfile.list({
         filter: { id: { eq: user.userId } }, // Proper conditional for filter
         authMode: "identityPool"
       })
-      if (!errors) {
+      const { data: itemsSeller, errors: errorsS } = await client.models.UserProfile.list({
+        filter: { id: { eq: ownerId } }, // Proper conditional for filter
+        authMode: "identityPool"
+      })
+      if (!errorsS && !errorsB) {
         //console.dir(items);
         //const filteredItems = items.filter(item => item !== null);
-        setBuyerAttr(items?.[0]);
+        setUserAttr({buyer: itemsBuyer?.[0],seller: itemsSeller?.[0]});
+
       } else {
-        setError(errors.toString)
+        const error = (errorsS ? errorsS.toString() : '' + errorsB ? errorsB?.toString() : '') || 'Unknown';
+        setError(error);
         //console.dir(errors);
       }
     }
@@ -133,7 +139,11 @@ const MakeOffer: React.FC = () => {
       <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog maxWidth='950px'>
           <ModalClose />
-          <DialogTitle> {offerId ? `Offer for: ${address || "No address"} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
+          <DialogTitle> Offer</DialogTitle>
+          <div style={{padding: 10, margin: 0,  backgroundColor:'var(--amplify-components-fieldcontrol-disabled-background-color)' }}>
+          <p> {`Property address: ${address || "Unknown address"}`}</p>
+          <p> {`To: ${userAttr?.seller?.name + '(' + userAttr?.seller?.email + ')' || 'unknown'}`}</p>
+          </div>
           <DialogContent>
             {error && <p>{error}</p>}
             <p style={{ 'display': 'none' }}>{user.userId} - {ownerId}</p>
@@ -147,9 +157,9 @@ const MakeOffer: React.FC = () => {
                     propertyAddress: { value: address },
                     ownerName: { value: ownerId },
                     ownerEmail: { value: address },
-                    buyerEmail: { value: buyerAttr?.email },
-                    buyerName: { value: buyerAttr?.name },
-                    buyerPhone: { value: buyerAttr?.phone_number },
+                    buyerEmail: { value: userAttr?.buyer?.email },
+                    buyerName: { value: userAttr?.buyer?.name },
+                    buyerPhone: { value: userAttr?.buyer?.phone_number },
                     seller: { value: ownerId }
                   }
                 }

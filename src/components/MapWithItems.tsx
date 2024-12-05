@@ -111,7 +111,7 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
                 to={`/property/${property.id}`}
                 state={{isModal: true, backgroundLocation: '/2' }}
                 key={`link-main-${index}-0`}>
-                <StorageImage alt={item} path={item} />
+                <StorageImage width='100%' objectFit='cover' height='250px' alt={item} path={item} />
               </Link>
             </Grid>
           </Grid>

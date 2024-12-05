@@ -1,6 +1,5 @@
 // src/components/Makeproperty.tsx
 import React, { useEffect, useState } from 'react';
-import { Container, Paper, } from '@mui/material';
 import { useParams, useNavigate } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
@@ -9,10 +8,11 @@ import Carousel from 'react-material-ui-carousel';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { useAuthenticator, Button } from '@aws-amplify/ui-react';
 import { ArrowBack } from '@mui/icons-material';
-import { Grid } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import Chat from '../components/Chat';
 import { fetchUserAttributes } from 'aws-amplify/auth';
 import { Modal } from '@mui/material';
+import ModalDialog from '@mui/joy/ModalDialog';
 
 const client = generateClient<Schema>();
 
@@ -22,7 +22,7 @@ const PropertyPage: React.FC = () => {
   const [name, setName] = useState<string>('User');
 
   const [error, setError] = useState<string | null>(null);
-  const [property, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
+  const [property, setProperties] = useState<any>(); // Adjust the type according to your schema
   const { user } = useAuthenticator((context) => [context.user]);
   const navigate = useNavigate();
 
@@ -53,7 +53,7 @@ const PropertyPage: React.FC = () => {
       })
       if (!errors) {
         //console.dir(items);
-        setProperties(items);
+        setProperties(items?.[0]);
       } else {
         setError(errors.toString)
         //console.dir(errors);
@@ -68,100 +68,92 @@ const PropertyPage: React.FC = () => {
 
   return (
     <Modal open onClose={handleClose}>
-      <Container component="main">
-        <Paper elevation={3} sx={{ padding: 6 }}>
-          <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
-            <Button onClick={() => navigate(-1)}>
-              <ArrowBack />
-            </Button>
-            {
-              !error && property.length ?
-                <Grid container spacing={1} display="flex">
-                  <Grid item xs={6} md={6}>
-                    <h1>
-                      <NumericFormat value={property[0]?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-                    </h1>
-                    <p>
-                      {property[0]?.address}
-                    </p>
-                    <p>
-                      {property[0].bedrooms} bds | {property[0].bathrooms} ba | {property[0].propertyType} |
-                      Interior: <NumericFormat value={property[0].squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
-                    </p>
-                    <p>
-                      Interior: <NumericFormat value={property[0].squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
-                      Lot: <NumericFormat value={property[0].lotSize.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
-                    </p>
-                    <p>
-                      Year built: {property[0]?.yearBuilt}
-                    </p>
-                    <p>
-                      {property[0]?.description}
-                    </p>
+      <ModalDialog minWidth='80%' >
+        {
+          !error && property?.id ?
+            <Grid
+              container
+              spacing={2}
+              overflow='scroll'
+              display="flex">
+              <Grid item
+                xs={12}
+                md={12}>
+                <Button
+                  width='12px'
+                  style={{ position: 'absolute', top: 30, left: 30, backgroundColor: 'white', zIndex: '11111' }}
+                  onClick={() => navigate(-1)}>
+                  <ArrowBack />
+                </Button>
+                <Carousel
+                  navButtonsAlwaysVisible={true}
+                  height={550}
+                  autoPlay={false}
+                >
+                  {property?.photos?.map((image: string, i: number) => (
+                    <StorageImage
+                      key={i}
+                      alt={image}
+                      path={image} />
+                  ))}
+                </Carousel>
+              </Grid>
+              <Grid item xs={12} md={12}>
+                {user?.username === property?.owner ? (
+                  <Button onClick={() => { navigate(`/sales/${property?.id}`) }}>
+                    Edit
+                  </Button>
+                ) : (
+                  <Button variation="primary" onClick={() => { navigate(`/offers/null/${property?.address}/${property?.id}/${property?.owner}`) }}>
+                    Make Offer
+                  </Button>
+                )}
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Paper
+                  sx={{ padding: '20px' }}
+                  elevation={3} >
+                  <h1>
+                    <NumericFormat value={property?.price.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+                  </h1>
+                  <p>
+                    {property?.address}
+                  </p>
+                  <p>
+                    {property.bedrooms} bds | {property.bathrooms} ba | {property.propertyType} |
+                    Interior: <NumericFormat value={property.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+                  </p>
+                  <p>
+                    Interior: <NumericFormat value={property.squareFootage.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+                    Lot: <NumericFormat value={property.lotSize.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+                  </p>
+                  <p>
+                    Year built: {property?.yearBuilt}
+                  </p>
+                  <p>
+                    {property?.description}
+                  </p>
 
-                    <p>
-                      Contact: {property[0]?.ownerContact} | {property[0]?.listingOwner}
-                    </p>
+                  <p>
+                    Contact: {property?.ownerContact} | {property?.listingOwner}
+                  </p>
 
-                    <p>
-                      Ammenities: {property[0]?.ammenities}
-                    </p>
-                    <p>
-                      Status: {property[0]?.listingStatus}
-                    </p>
-                  </Grid>
-
-                  <Grid
-                    item
-                    xs={6} md={6}
-                    style={{ textAlign: 'center' }}
-                  >
-                    <Carousel
-                      navButtonsAlwaysVisible={true}
-                      sx={{ maxWidth: '450px', height: '450px' }}
-                      autoPlay={false}
-                      navButtonsWrapperProps={{   // Move the buttons to the bottom. Unsetting top here to override default style.
-                        style: {
-                          bottom: '0',
-                          top: 'unset'
-                        }
-                      }}>
-
-                      {property[0]?.photos?.length && property[0]?.photos?.map(
-                        (image: string, i: number) => {
-
-                          return <Grid item sm={12} key={0}>
-                            <StorageImage
-                              key={i} alt={image} path={image} />
-                          </Grid>
-                        })};
-                    </Carousel>
-                  </Grid>
-
-                  <Grid item xs={4} md={6}>
-                    <div className="merge-col-field">
-                      {user?.username === property[0]?.owner ? (
-                        <Button onClick={() => { navigate(`/sales/${property?.[0].id}`) }}>
-                          Edit
-                        </Button>
-                      ) : (
-                        <Button variation="primary" onClick={() => { navigate(`/offers/null/${property?.[0].address}/${property?.[0].id}/${property?.[0].owner}`) }}>
-                          Make Offer
-                        </Button>
-                      )}
-                    </div>
-                  </Grid>
-                  <Grid item xs={12} md={12}>
-                    <Chat name={name} address={property[0]?.address} owner={property[0]?.owner} info={JSON.stringify(property[0])} />
-                  </Grid>
-                </Grid>
-
-                :
-                <p>Loading ...</p>
-            }
-          </Paper>
-        </Paper>
-      </Container>
+                  <p>
+                    Ammenities: {property?.ammenities}
+                  </p>
+                  <p>
+                    Status: {property?.listingStatus}
+                  </p>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <Chat name={name} address={property?.address} owner={property?.owner} info={JSON.stringify(property)} />
+              </Grid>
+            </Grid>
+            :
+            <p>Loading ...</p>
+        }
+      </ModalDialog>
     </Modal>
   );
 };
