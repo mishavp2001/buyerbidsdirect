@@ -13,6 +13,7 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import { fetchUserAttributes } from 'aws-amplify/auth';
 
 const client = generateClient<Schema>();
 
@@ -25,6 +26,28 @@ const MakeOffer: React.FC = () => {
   const [open, setOpen] = React.useState<boolean>(false);
 
   const { offerId, address, propertyId, ownerId } = useParams();
+  const [buyerAttr, setBuyerAttr] = useState<any>({});
+
+
+  useEffect(() => {
+    async function fetchUserProfiles() {
+      //const filter = userId  ? { id: { eq: userId } } : null;
+      const { data: items, errors } = await client.models.UserProfile.list({
+        filter: { id: { eq: user.userId } }, // Proper conditional for filter
+        authMode: "identityPool"
+      })
+      if (!errors) {
+        //console.dir(items);
+        //const filteredItems = items.filter(item => item !== null);
+        setBuyerAttr(items?.[0]);
+      } else {
+        setError(errors.toString)
+        //console.dir(errors);
+      }
+    }
+    fetchUserProfiles();
+  }, []);
+
   useEffect(() => {
     const filter = {
       and: [
@@ -110,7 +133,7 @@ const MakeOffer: React.FC = () => {
         </Paper>
       </Paper>
       <Modal open={open} onClose={() => { navigate(-1); }}>
-        <ModalDialog minWidth='90%'>
+        <ModalDialog maxWidth='950px'>
           <ModalClose />
           <DialogTitle> {offerId ? `Offer for: ${address || "No address"} from ${user.signInDetails?.loginId}` : 'New offer'}</DialogTitle>
           <DialogContent>
@@ -126,6 +149,9 @@ const MakeOffer: React.FC = () => {
                     propertyAddress: { value: address },
                     ownerName: { value: ownerId },
                     ownerEmail: { value: address },
+                    buyerEmail:  { value: buyerAttr?.email },
+                    buyerName: { value: buyerAttr?.name },
+                    buyerPhone: { value: buyerAttr?.phone_number },
                     seller: { value: ownerId }
                   }
                 }
