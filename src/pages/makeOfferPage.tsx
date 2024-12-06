@@ -41,7 +41,7 @@ const MakeOffer: React.FC = () => {
       if (!errorsS && !errorsB) {
         //console.dir(items);
         //const filteredItems = items.filter(item => item !== null);
-        setUserAttr({buyer: itemsBuyer?.[0],seller: itemsSeller?.[0]});
+        setUserAttr({ buyer: itemsBuyer?.[0], seller: itemsSeller?.[0] });
 
       } else {
         const error = (errorsS ? errorsS.toString() : '' + errorsB ? errorsB?.toString() : '') || 'Unknown';
@@ -53,30 +53,31 @@ const MakeOffer: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const filter = {
-      and: [
-        { buyer: { contains: user.userId } },
-        ...(typeof offerId === 'string' ? [{ id: { eq: offerId } }] : [])
-      ]
-    };
-
-    const subscription = client.models.Offer.observeQuery({
-      filter,
-      authMode: "userPool"
-    }).subscribe({
-      next: (data) => setOffers(data.items),
-      error: (err) => {
-        console.dir(err)
-          ; setError(err.message)
-      },
-    });
-    if (offerId === 'null' || typeof (offerId) === 'string') {
-      setOpen(true);
-    } else {
-      setOpen(false);
+    const getOffers = async () => {
+      const filter = {
+        and: [
+          { buyer: { contains: user.userId } },
+          ...(typeof offerId === 'string' ? [{ id: { eq: offerId } }] : [])
+        ]
+      };
+      try {
+        const { data: offers } = await client.models.UserProfile.list({
+          filter,
+          authMode: "userPool"
+        })
+        setOffers(offers)
+      }
+      catch (error) {
+        console.error("Error getting opffers:", error);
+        setOffers([]); // Fallback to false on error
+      };
+      if (offerId === 'null' || typeof (offerId) === 'string') {
+        setOpen(true);
+      } else {
+        setOpen(false);
+      }
     }
-    // Cleanup the subscription on unmount
-    return () => subscription.unsubscribe();
+    getOffers();
   }, [offerId]);
 
 
@@ -140,9 +141,9 @@ const MakeOffer: React.FC = () => {
         <ModalDialog maxWidth='950px'>
           <ModalClose />
           <DialogTitle> Offer</DialogTitle>
-          <div style={{padding: 10, margin: 0,  backgroundColor:'var(--amplify-components-fieldcontrol-disabled-background-color)' }}>
-          <p> {`Property address: ${address || "Unknown address"}`}</p>
-          <p> {`To: ${userAttr?.seller?.name + '(' + userAttr?.seller?.email + ')' || 'unknown'}`}</p>
+          <div style={{ padding: 10, margin: 0, backgroundColor: 'var(--amplify-components-fieldcontrol-disabled-background-color)' }}>
+            <p> {`Property address: ${address || "Unknown address"}`}</p>
+            <p> {`To: ${userAttr?.seller?.name + '(' + userAttr?.seller?.email + ')' || 'unknown'}`}</p>
           </div>
           <DialogContent>
             {error && <p>{error}</p>}
