@@ -107,7 +107,12 @@ const schema = a.schema({
       zestimate: a.float(),
       neighborhood: a.string(),
       amenities: a.string().array(),
-      likes: a.integer()
+      likes: a.integer().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read','update']),
+            allow.owner()
+          ])
     })
     .authorization(
       (allow) =>

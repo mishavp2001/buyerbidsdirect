@@ -18,6 +18,7 @@ export default function PostCreateForm(props) {
     ...rest
   } = props;
   const initialValues = {
+    id: "",
     name: "",
     title: "",
     post: "",
@@ -26,6 +27,7 @@ export default function PostCreateForm(props) {
     email: "",
     phone_number: "",
   };
+  const [id, setId] = React.useState(initialValues.id);
   const [name, setName] = React.useState(initialValues.name);
   const [title, setTitle] = React.useState(initialValues.title);
   const [post, setPost] = React.useState(initialValues.post);
@@ -37,6 +39,7 @@ export default function PostCreateForm(props) {
   );
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
+    setId(initialValues.id);
     setName(initialValues.name);
     setTitle(initialValues.title);
     setPost(initialValues.post);
@@ -47,6 +50,7 @@ export default function PostCreateForm(props) {
     setErrors({});
   };
   const validations = {
+    id: [{ type: "Required" }],
     name: [{ type: "Required" }],
     title: [{ type: "Required" }],
     post: [{ type: "Required" }],
@@ -81,6 +85,7 @@ export default function PostCreateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
+          id,
           name,
           title,
           post,
@@ -142,6 +147,37 @@ export default function PostCreateForm(props) {
       {...rest}
     >
       <TextField
+        label="Id"
+        isRequired={true}
+        isReadOnly={false}
+        value={id}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              id: value,
+              name,
+              title,
+              post,
+              picture,
+              website,
+              email,
+              phone_number,
+            };
+            const result = onChange(modelFields);
+            value = result?.id ?? value;
+          }
+          if (errors.id?.hasError) {
+            runValidationTasks("id", value);
+          }
+          setId(value);
+        }}
+        onBlur={() => runValidationTasks("id", id)}
+        errorMessage={errors.id?.errorMessage}
+        hasError={errors.id?.hasError}
+        {...getOverrideProps(overrides, "id")}
+      ></TextField>
+      <TextField
         label="Name"
         isRequired={true}
         isReadOnly={false}
@@ -150,6 +186,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name: value,
               title,
               post,
@@ -180,6 +217,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title: value,
               post,
@@ -210,6 +248,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post: value,
@@ -240,6 +279,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post,
@@ -270,6 +310,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post,
@@ -300,6 +341,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post,
@@ -330,6 +372,7 @@ export default function PostCreateForm(props) {
           let { value } = e.target;
           if (onChange) {
             const modelFields = {
+              id,
               name,
               title,
               post,

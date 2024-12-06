@@ -16,6 +16,8 @@ export const onCreateOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
+      details
+      expires
       id
       loanApprovalLetter
       offerAmmount
@@ -66,6 +68,7 @@ export const onCreateProperty = /* GraphQL */ `
       description
       hoaFees
       id
+      likes
       listingOwner
       listingStatus
       lotSize
@@ -113,6 +116,7 @@ export const onCreateUserProfile = /* GraphQL */ `
       createdAt
       email
       family_name
+      favorites
       gender
       given_name
       id
@@ -147,6 +151,8 @@ export const onDeleteOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
+      details
+      expires
       id
       loanApprovalLetter
       offerAmmount
@@ -197,6 +203,7 @@ export const onDeleteProperty = /* GraphQL */ `
       description
       hoaFees
       id
+      likes
       listingOwner
       listingStatus
       lotSize
@@ -244,6 +251,7 @@ export const onDeleteUserProfile = /* GraphQL */ `
       createdAt
       email
       family_name
+      favorites
       gender
       given_name
       id
@@ -278,6 +286,8 @@ export const onUpdateOffer = /* GraphQL */ `
       buyerPhone
       conditions
       createdAt
+      details
+      expires
       id
       loanApprovalLetter
       offerAmmount
@@ -328,6 +338,7 @@ export const onUpdateProperty = /* GraphQL */ `
       description
       hoaFees
       id
+      likes
       listingOwner
       listingStatus
       lotSize
@@ -375,6 +386,7 @@ export const onUpdateUserProfile = /* GraphQL */ `
       createdAt
       email
       family_name
+      favorites
       gender
       given_name
       id

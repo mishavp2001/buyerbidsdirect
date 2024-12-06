@@ -38,6 +38,7 @@ export declare type PropertyCreateFormInputValues = {
     zestimate?: number;
     neighborhood?: string;
     amenities?: string[];
+    likes?: number;
 };
 export declare type PropertyCreateFormValidationValues = {
     address?: ValidationFunction<string>;
@@ -62,6 +63,7 @@ export declare type PropertyCreateFormValidationValues = {
     zestimate?: ValidationFunction<number>;
     neighborhood?: ValidationFunction<string>;
     amenities?: ValidationFunction<string>;
+    likes?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type PropertyCreateFormOverridesProps = {
@@ -88,6 +90,7 @@ export declare type PropertyCreateFormOverridesProps = {
     zestimate?: PrimitiveOverrideProps<TextFieldProps>;
     neighborhood?: PrimitiveOverrideProps<TextFieldProps>;
     amenities?: PrimitiveOverrideProps<TextFieldProps>;
+    likes?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type PropertyCreateFormProps = React.PropsWithChildren<{
     overrides?: PropertyCreateFormOverridesProps | undefined | null;

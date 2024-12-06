@@ -198,6 +198,8 @@ export default function OfferUpdateForm(props) {
     loanApprovalLetter: "",
     offerType: "",
     conditions: [],
+    details: "",
+    expires: "",
     appointment: "",
     seller: "",
     buyer: "",
@@ -219,6 +221,8 @@ export default function OfferUpdateForm(props) {
   );
   const [offerType, setOfferType] = React.useState(initialValues.offerType);
   const [conditions, setConditions] = React.useState(initialValues.conditions);
+  const [details, setDetails] = React.useState(initialValues.details);
+  const [expires, setExpires] = React.useState(initialValues.expires);
   const [appointment, setAppointment] = React.useState(
     initialValues.appointment
   );
@@ -241,6 +245,8 @@ export default function OfferUpdateForm(props) {
     setOfferType(cleanValues.offerType);
     setConditions(cleanValues.conditions ?? []);
     setCurrentConditionsValue("");
+    setDetails(cleanValues.details);
+    setExpires(cleanValues.expires);
     setAppointment(cleanValues.appointment);
     setSeller(cleanValues.seller);
     setBuyer(cleanValues.buyer);
@@ -266,17 +272,19 @@ export default function OfferUpdateForm(props) {
     React.useState("");
   const conditionsRef = React.createRef();
   const validations = {
-    offerAmmount: [],
+    offerAmmount: [{ type: "Required" }],
     propertyAddress: [],
-    propertyId: [],
-    buyerName: [],
-    buyerEmail: [],
-    buyerPhone: [],
+    propertyId: [{ type: "Required" }],
+    buyerName: [{ type: "Required" }],
+    buyerEmail: [{ type: "Required" }],
+    buyerPhone: [{ type: "Required" }],
     ownerEmail: [],
     ownerName: [],
     loanApprovalLetter: [],
     offerType: [],
     conditions: [],
+    details: [],
+    expires: [],
     appointment: [],
     seller: [],
     buyer: [],
@@ -307,17 +315,19 @@ export default function OfferUpdateForm(props) {
       onSubmit={async (event) => {
         event.preventDefault();
         let modelFields = {
-          offerAmmount: offerAmmount ?? null,
+          offerAmmount,
           propertyAddress: propertyAddress ?? null,
-          propertyId: propertyId ?? null,
-          buyerName: buyerName ?? null,
-          buyerEmail: buyerEmail ?? null,
-          buyerPhone: buyerPhone ?? null,
+          propertyId,
+          buyerName,
+          buyerEmail,
+          buyerPhone,
           ownerEmail: ownerEmail ?? null,
           ownerName: ownerName ?? null,
           loanApprovalLetter: loanApprovalLetter ?? null,
           offerType: offerType ?? null,
           conditions: conditions ?? null,
+          details: details ?? null,
+          expires: expires ?? null,
           appointment: appointment ?? null,
           seller: seller ?? null,
           buyer: buyer ?? null,
@@ -374,7 +384,7 @@ export default function OfferUpdateForm(props) {
     >
       <TextField
         label="Offer ammount"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         type="number"
         step="any"
@@ -396,6 +406,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -433,6 +445,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -452,7 +466,7 @@ export default function OfferUpdateForm(props) {
       ></TextField>
       <TextField
         label="Property id"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={propertyId}
         onChange={(e) => {
@@ -470,6 +484,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -489,7 +505,7 @@ export default function OfferUpdateForm(props) {
       ></TextField>
       <TextField
         label="Buyer name"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={buyerName}
         onChange={(e) => {
@@ -507,6 +523,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -526,7 +544,7 @@ export default function OfferUpdateForm(props) {
       ></TextField>
       <TextField
         label="Buyer email"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={buyerEmail}
         onChange={(e) => {
@@ -544,6 +562,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -563,7 +583,7 @@ export default function OfferUpdateForm(props) {
       ></TextField>
       <TextField
         label="Buyer phone"
-        isRequired={false}
+        isRequired={true}
         isReadOnly={false}
         value={buyerPhone}
         onChange={(e) => {
@@ -581,6 +601,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -618,6 +640,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -655,6 +679,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -692,6 +718,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter: value,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -731,6 +759,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType: value,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -785,6 +815,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions: values,
+              details,
+              expires,
               appointment,
               seller,
               buyer,
@@ -830,6 +862,85 @@ export default function OfferUpdateForm(props) {
         ></TextField>
       </ArrayField>
       <TextField
+        label="Details"
+        isRequired={false}
+        isReadOnly={false}
+        value={details}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              details: value,
+              expires,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.details ?? value;
+          }
+          if (errors.details?.hasError) {
+            runValidationTasks("details", value);
+          }
+          setDetails(value);
+        }}
+        onBlur={() => runValidationTasks("details", details)}
+        errorMessage={errors.details?.errorMessage}
+        hasError={errors.details?.hasError}
+        {...getOverrideProps(overrides, "details")}
+      ></TextField>
+      <TextField
+        label="Expires"
+        isRequired={false}
+        isReadOnly={false}
+        type="date"
+        value={expires}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              details,
+              expires: value,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.expires ?? value;
+          }
+          if (errors.expires?.hasError) {
+            runValidationTasks("expires", value);
+          }
+          setExpires(value);
+        }}
+        onBlur={() => runValidationTasks("expires", expires)}
+        errorMessage={errors.expires?.errorMessage}
+        hasError={errors.expires?.hasError}
+        {...getOverrideProps(overrides, "expires")}
+      ></TextField>
+      <TextField
         label="Appointment"
         isRequired={false}
         isReadOnly={false}
@@ -850,6 +961,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment: value,
               seller,
               buyer,
@@ -887,6 +1000,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller: value,
               buyer,
@@ -924,6 +1039,8 @@ export default function OfferUpdateForm(props) {
               loanApprovalLetter,
               offerType,
               conditions,
+              details,
+              expires,
               appointment,
               seller,
               buyer: value,

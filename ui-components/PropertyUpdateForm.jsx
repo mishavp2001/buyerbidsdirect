@@ -209,6 +209,7 @@ export default function PropertyUpdateForm(props) {
     zestimate: "",
     neighborhood: "",
     amenities: [],
+    likes: "",
   };
   const [address, setAddress] = React.useState(initialValues.address);
   const [position, setPosition] = React.useState(initialValues.position);
@@ -250,6 +251,7 @@ export default function PropertyUpdateForm(props) {
     initialValues.neighborhood
   );
   const [amenities, setAmenities] = React.useState(initialValues.amenities);
+  const [likes, setLikes] = React.useState(initialValues.likes);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = propertyRecord
@@ -283,6 +285,7 @@ export default function PropertyUpdateForm(props) {
     setNeighborhood(cleanValues.neighborhood);
     setAmenities(cleanValues.amenities ?? []);
     setCurrentAmenitiesValue("");
+    setLikes(cleanValues.likes);
     setErrors({});
   };
   const [propertyRecord, setPropertyRecord] = React.useState(propertyModelProp);
@@ -328,6 +331,7 @@ export default function PropertyUpdateForm(props) {
     zestimate: [],
     neighborhood: [],
     amenities: [],
+    likes: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -377,6 +381,7 @@ export default function PropertyUpdateForm(props) {
           zestimate: zestimate ?? null,
           neighborhood: neighborhood ?? null,
           amenities: amenities ?? null,
+          likes: likes ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -459,6 +464,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.address ?? value;
@@ -504,6 +510,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.position ?? value;
@@ -553,6 +560,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.price ?? value;
@@ -602,6 +610,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.arvprice ?? value;
@@ -651,6 +660,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.bedrooms ?? value;
@@ -700,6 +710,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.bathrooms ?? value;
@@ -749,6 +760,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.squareFootage ?? value;
@@ -798,6 +810,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.lotSize ?? value;
@@ -847,6 +860,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.yearBuilt ?? value;
@@ -892,6 +906,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.propertyType ?? value;
@@ -937,6 +952,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.listingStatus ?? value;
@@ -982,6 +998,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.listingOwner ?? value;
@@ -1027,6 +1044,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.ownerContact ?? value;
@@ -1072,6 +1090,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.description ?? value;
@@ -1113,6 +1132,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             values = result?.photos ?? values;
@@ -1183,6 +1203,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.virtualTour ?? value;
@@ -1232,6 +1253,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.propertyTax ?? value;
@@ -1281,6 +1303,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.hoaFees ?? value;
@@ -1326,6 +1349,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.mlsNumber ?? value;
@@ -1375,6 +1399,7 @@ export default function PropertyUpdateForm(props) {
               zestimate: value,
               neighborhood,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.zestimate ?? value;
@@ -1420,6 +1445,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood: value,
               amenities,
+              likes,
             };
             const result = onChange(modelFields);
             value = result?.neighborhood ?? value;
@@ -1461,6 +1487,7 @@ export default function PropertyUpdateForm(props) {
               zestimate,
               neighborhood,
               amenities: values,
+              likes,
             };
             const result = onChange(modelFields);
             values = result?.amenities ?? values;
@@ -1500,6 +1527,56 @@ export default function PropertyUpdateForm(props) {
           {...getOverrideProps(overrides, "amenities")}
         ></TextField>
       </ArrayField>
+      <TextField
+        label="Likes"
+        isRequired={false}
+        isReadOnly={false}
+        type="number"
+        step="any"
+        value={likes}
+        onChange={(e) => {
+          let value = isNaN(parseInt(e.target.value))
+            ? e.target.value
+            : parseInt(e.target.value);
+          if (onChange) {
+            const modelFields = {
+              address,
+              position,
+              price,
+              arvprice,
+              bedrooms,
+              bathrooms,
+              squareFootage,
+              lotSize,
+              yearBuilt,
+              propertyType,
+              listingStatus,
+              listingOwner,
+              ownerContact,
+              description,
+              photos,
+              virtualTour,
+              propertyTax,
+              hoaFees,
+              mlsNumber,
+              zestimate,
+              neighborhood,
+              amenities,
+              likes: value,
+            };
+            const result = onChange(modelFields);
+            value = result?.likes ?? value;
+          }
+          if (errors.likes?.hasError) {
+            runValidationTasks("likes", value);
+          }
+          setLikes(value);
+        }}
+        onBlur={() => runValidationTasks("likes", likes)}
+        errorMessage={errors.likes?.errorMessage}
+        hasError={errors.likes?.hasError}
+        {...getOverrideProps(overrides, "likes")}
+      ></TextField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

@@ -22,9 +22,10 @@ import "react-leaflet-fullscreen/styles.css";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import TuneSharpIcon from '@mui/icons-material/TuneSharp';
 import OutlinedInput from '@mui/material/OutlinedInput';
+import IconButton from "@mui/material/IconButton";
 import InputLabel from '@mui/material/InputLabel';
 import { Favorite, FavoriteBorder } from '@mui/icons-material';
-import { updateProperty } from "../ui-components/graphql/mutations";
+import { updateProperty, updateUserProfile } from "../ui-components/graphql/mutations";
 
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
@@ -89,25 +90,37 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
   const updateProfile = async (propertyId: string, favorite: boolean) => {
     try {
       // IIf its notr favorite now then its changing
+      let likes = 0;
       if (!favorite) {
-        favorites.push(propertyId);
+        favorites.indexOf(propertyId) === -1 && favorites.push(propertyId);
+        likes = property.likes + 1;
       } else {
         favorites.filter(prop => prop !== propertyId);
+        likes = property.likes - 1;
       }
       await client.graphql({
-        query: updateProperty,
+        query: updateUserProfile,
         variables: {
           input: {
-            id: propertyId,
+            id: user.userId,
             favorites
           },
         },
       });
-      return true;
-    } catch (err) {
-      alert(err);
-      return false;
-    }
+    await client.graphql({
+      query: updateProperty,
+      variables: {
+        input: {
+          id: propertyId,
+          likes: likes
+        },
+      },
+    });
+    return true;
+  } catch (err) {
+    alert(err);
+    return false;
+  }
   }
 
   const handleFavorite = async (evt: any, propertyId: string) => {
@@ -145,6 +158,27 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
             style={{ display: 'flex', flexDirection: 'column', alignContent: 'center', height: '350px' }}
           >
             <Grid item sm={12} key={0}>
+              <IconButton
+                onClick={(evt) => { handleFavorite(evt, property?.id) }}
+                aria-label="favorite"
+                style={{ position: 'absolute', top: '10px', right: '30px', color: 'white', cursor: 'pointer', fontSize: '125px' }}
+                sx={{
+                  '&:hover': {
+                    backgroundColor: !favorite ? 'red' : 'grey', // Change color on hover
+                  },
+                }}
+              >
+                {favorite ?
+                  <Favorite
+                    style={{ fontSize: '75px' }}
+                    className="favorite-icon"
+                  /> :
+                  <FavoriteBorder
+                  style={{ fontSize: '75px' }}
+                    className="favorite-icon"
+                  />
+                }
+              </IconButton>
               <Link
                 to={`/property/${property.id}`}
                 state={{ isModal: true, backgroundLocation: '/2' }}
@@ -155,16 +189,6 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
           </Grid>
         ))}
       </Carousel>
-      {favorite ?
-        <Favorite
-          style={{ position: 'absolute', top: '20px', right: '20px', color: 'white', cursor: 'pointer', fontSize: '65px' }}
-          onClick={(evt) => { handleFavorite(evt, property?.id) }}
-        /> :
-        <FavoriteBorder
-          style={{ position: 'absolute', top: '20px', right: '20px', color: 'white', cursor: 'pointer', fontSize: '65px' }}
-          onClick={(evt) => { handleFavorite(evt, property?.id) }}
-        />
-      }
       <Link className="maker-main-link" to={`/property/${property.id}`}>
         <h3>
           <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />

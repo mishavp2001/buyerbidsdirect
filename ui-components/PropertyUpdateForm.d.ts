@@ -39,6 +39,7 @@ export declare type PropertyUpdateFormInputValues = {
     zestimate?: number;
     neighborhood?: string;
     amenities?: string[];
+    likes?: number;
 };
 export declare type PropertyUpdateFormValidationValues = {
     address?: ValidationFunction<string>;
@@ -63,6 +64,7 @@ export declare type PropertyUpdateFormValidationValues = {
     zestimate?: ValidationFunction<number>;
     neighborhood?: ValidationFunction<string>;
     amenities?: ValidationFunction<string>;
+    likes?: ValidationFunction<number>;
 };
 export declare type PrimitiveOverrideProps<T> = Partial<T> & React.DOMAttributes<HTMLDivElement>;
 export declare type PropertyUpdateFormOverridesProps = {
@@ -89,6 +91,7 @@ export declare type PropertyUpdateFormOverridesProps = {
     zestimate?: PrimitiveOverrideProps<TextFieldProps>;
     neighborhood?: PrimitiveOverrideProps<TextFieldProps>;
     amenities?: PrimitiveOverrideProps<TextFieldProps>;
+    likes?: PrimitiveOverrideProps<TextFieldProps>;
 } & EscapeHatchProps;
 export declare type PropertyUpdateFormProps = React.PropsWithChildren<{
     overrides?: PropertyUpdateFormOverridesProps | undefined | null;

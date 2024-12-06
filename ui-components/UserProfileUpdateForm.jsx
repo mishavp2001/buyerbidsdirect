@@ -2,17 +2,178 @@
 "use client";
 import * as React from "react";
 import {
+  Badge,
   Button,
+  Divider,
   Flex,
   Grid,
+  Icon,
+  ScrollView,
   SelectField,
+  Text,
   TextField,
+  useTheme,
 } from "@aws-amplify/ui-react";
 import { fetchByPath, getOverrideProps, validateField } from "./utils";
 import { generateClient } from "aws-amplify/api";
 import { getUserProfile } from "./graphql/queries";
 import { updateUserProfile } from "./graphql/mutations";
 const client = generateClient();
+function ArrayField({
+  items = [],
+  onChange,
+  label,
+  inputFieldRef,
+  children,
+  hasError,
+  setFieldValue,
+  currentFieldValue,
+  defaultFieldValue,
+  lengthLimit,
+  getBadgeText,
+  runValidationTasks,
+  errorMessage,
+}) {
+  const labelElement = <Text>{label}</Text>;
+  const {
+    tokens: {
+      components: {
+        fieldmessages: { error: errorStyles },
+      },
+    },
+  } = useTheme();
+  const [selectedBadgeIndex, setSelectedBadgeIndex] = React.useState();
+  const [isEditing, setIsEditing] = React.useState();
+  React.useEffect(() => {
+    if (isEditing) {
+      inputFieldRef?.current?.focus();
+    }
+  }, [isEditing]);
+  const removeItem = async (removeIndex) => {
+    const newItems = items.filter((value, index) => index !== removeIndex);
+    await onChange(newItems);
+    setSelectedBadgeIndex(undefined);
+  };
+  const addItem = async () => {
+    const { hasError } = runValidationTasks();
+    if (
+      currentFieldValue !== undefined &&
+      currentFieldValue !== null &&
+      currentFieldValue !== "" &&
+      !hasError
+    ) {
+      const newItems = [...items];
+      if (selectedBadgeIndex !== undefined) {
+        newItems[selectedBadgeIndex] = currentFieldValue;
+        setSelectedBadgeIndex(undefined);
+      } else {
+        newItems.push(currentFieldValue);
+      }
+      await onChange(newItems);
+      setIsEditing(false);
+    }
+  };
+  const arraySection = (
+    <React.Fragment>
+      {!!items?.length && (
+        <ScrollView height="inherit" width="inherit" maxHeight={"7rem"}>
+          {items.map((value, index) => {
+            return (
+              <Badge
+                key={index}
+                style={{
+                  cursor: "pointer",
+                  alignItems: "center",
+                  marginRight: 3,
+                  marginTop: 3,
+                  backgroundColor:
+                    index === selectedBadgeIndex ? "#B8CEF9" : "",
+                }}
+                onClick={() => {
+                  setSelectedBadgeIndex(index);
+                  setFieldValue(items[index]);
+                  setIsEditing(true);
+                }}
+              >
+                {getBadgeText ? getBadgeText(value) : value.toString()}
+                <Icon
+                  style={{
+                    cursor: "pointer",
+                    paddingLeft: 3,
+                    width: 20,
+                    height: 20,
+                  }}
+                  viewBox={{ width: 20, height: 20 }}
+                  paths={[
+                    {
+                      d: "M10 10l5.09-5.09L10 10l5.09 5.09L10 10zm0 0L4.91 4.91 10 10l-5.09 5.09L10 10z",
+                      stroke: "black",
+                    },
+                  ]}
+                  ariaLabel="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    removeItem(index);
+                  }}
+                />
+              </Badge>
+            );
+          })}
+        </ScrollView>
+      )}
+      <Divider orientation="horizontal" marginTop={5} />
+    </React.Fragment>
+  );
+  if (lengthLimit !== undefined && items.length >= lengthLimit && !isEditing) {
+    return (
+      <React.Fragment>
+        {labelElement}
+        {arraySection}
+      </React.Fragment>
+    );
+  }
+  return (
+    <React.Fragment>
+      {labelElement}
+      {isEditing && children}
+      {!isEditing ? (
+        <>
+          <Button
+            onClick={() => {
+              setIsEditing(true);
+            }}
+          >
+            Add item
+          </Button>
+          {errorMessage && hasError && (
+            <Text color={errorStyles.color} fontSize={errorStyles.fontSize}>
+              {errorMessage}
+            </Text>
+          )}
+        </>
+      ) : (
+        <Flex justifyContent="flex-end">
+          {(currentFieldValue || isEditing) && (
+            <Button
+              children="Cancel"
+              type="button"
+              size="small"
+              onClick={() => {
+                setFieldValue(defaultFieldValue);
+                setIsEditing(false);
+                setSelectedBadgeIndex(undefined);
+              }}
+            ></Button>
+          )}
+          <Button size="small" variation="link" onClick={addItem}>
+            {selectedBadgeIndex !== undefined ? "Save" : "Add"}
+          </Button>
+        </Flex>
+      )}
+      {arraySection}
+    </React.Fragment>
+  );
+}
 export default function UserProfileUpdateForm(props) {
   const {
     id: idProp,
@@ -44,6 +205,7 @@ export default function UserProfileUpdateForm(props) {
     address: "",
     email: "",
     phone_number: "",
+    favorites: [],
   };
   const [id, setId] = React.useState(initialValues.id);
   const [name, setName] = React.useState(initialValues.name);
@@ -71,6 +233,7 @@ export default function UserProfileUpdateForm(props) {
   const [phone_number, setPhone_number] = React.useState(
     initialValues.phone_number
   );
+  const [favorites, setFavorites] = React.useState(initialValues.favorites);
   const [errors, setErrors] = React.useState({});
   const resetStateValues = () => {
     const cleanValues = userProfileRecord
@@ -94,6 +257,8 @@ export default function UserProfileUpdateForm(props) {
     setAddress(cleanValues.address);
     setEmail(cleanValues.email);
     setPhone_number(cleanValues.phone_number);
+    setFavorites(cleanValues.favorites ?? []);
+    setCurrentFavoritesValue("");
     setErrors({});
   };
   const [userProfileRecord, setUserProfileRecord] =
@@ -113,6 +278,8 @@ export default function UserProfileUpdateForm(props) {
     queryData();
   }, [idProp, userProfileModelProp]);
   React.useEffect(resetStateValues, [userProfileRecord]);
+  const [currentFavoritesValue, setCurrentFavoritesValue] = React.useState("");
+  const favoritesRef = React.createRef();
   const validations = {
     id: [{ type: "Required" }],
     name: [],
@@ -132,6 +299,7 @@ export default function UserProfileUpdateForm(props) {
     address: [],
     email: [{ type: "Required" }, { type: "Email" }],
     phone_number: [{ type: "Required" }],
+    favorites: [],
   };
   const runValidationTasks = async (
     fieldName,
@@ -177,6 +345,7 @@ export default function UserProfileUpdateForm(props) {
           address: address ?? null,
           email,
           phone_number,
+          favorites: favorites ?? null,
         };
         const validationResponses = await Promise.all(
           Object.keys(validations).reduce((promises, fieldName) => {
@@ -255,6 +424,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.id ?? value;
@@ -296,6 +466,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.name ?? value;
@@ -337,6 +508,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.user_role ?? value;
@@ -404,6 +576,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.family_name ?? value;
@@ -445,6 +618,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.given_name ?? value;
@@ -486,6 +660,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.middle_name ?? value;
@@ -527,6 +702,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.nickname ?? value;
@@ -568,6 +744,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.preferred_username ?? value;
@@ -611,6 +788,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.profile ?? value;
@@ -652,6 +830,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.picture ?? value;
@@ -693,6 +872,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.website ?? value;
@@ -734,6 +914,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.gender ?? value;
@@ -776,6 +957,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.birthdate ?? value;
@@ -817,6 +999,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.zoneinfo ?? value;
@@ -858,6 +1041,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.locale ?? value;
@@ -899,6 +1083,7 @@ export default function UserProfileUpdateForm(props) {
               address: value,
               email,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.address ?? value;
@@ -940,6 +1125,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email: value,
               phone_number,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.email ?? value;
@@ -981,6 +1167,7 @@ export default function UserProfileUpdateForm(props) {
               address,
               email,
               phone_number: value,
+              favorites,
             };
             const result = onChange(modelFields);
             value = result?.phone_number ?? value;
@@ -995,6 +1182,69 @@ export default function UserProfileUpdateForm(props) {
         hasError={errors.phone_number?.hasError}
         {...getOverrideProps(overrides, "phone_number")}
       ></TextField>
+      <ArrayField
+        onChange={async (items) => {
+          let values = items;
+          if (onChange) {
+            const modelFields = {
+              id,
+              name,
+              user_role,
+              family_name,
+              given_name,
+              middle_name,
+              nickname,
+              preferred_username,
+              profile,
+              picture,
+              website,
+              gender,
+              birthdate,
+              zoneinfo,
+              locale,
+              address,
+              email,
+              phone_number,
+              favorites: values,
+            };
+            const result = onChange(modelFields);
+            values = result?.favorites ?? values;
+          }
+          setFavorites(values);
+          setCurrentFavoritesValue("");
+        }}
+        currentFieldValue={currentFavoritesValue}
+        label={"Favorites"}
+        items={favorites}
+        hasError={errors?.favorites?.hasError}
+        runValidationTasks={async () =>
+          await runValidationTasks("favorites", currentFavoritesValue)
+        }
+        errorMessage={errors?.favorites?.errorMessage}
+        setFieldValue={setCurrentFavoritesValue}
+        inputFieldRef={favoritesRef}
+        defaultFieldValue={""}
+      >
+        <TextField
+          label="Favorites"
+          isRequired={false}
+          isReadOnly={false}
+          value={currentFavoritesValue}
+          onChange={(e) => {
+            let { value } = e.target;
+            if (errors.favorites?.hasError) {
+              runValidationTasks("favorites", value);
+            }
+            setCurrentFavoritesValue(value);
+          }}
+          onBlur={() => runValidationTasks("favorites", currentFavoritesValue)}
+          errorMessage={errors.favorites?.errorMessage}
+          hasError={errors.favorites?.hasError}
+          ref={favoritesRef}
+          labelHidden={true}
+          {...getOverrideProps(overrides, "favorites")}
+        ></TextField>
+      </ArrayField>
       <Flex
         justifyContent="space-between"
         {...getOverrideProps(overrides, "CTAFlex")}

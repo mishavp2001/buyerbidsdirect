@@ -255,6 +255,12 @@ main {
       > a {
         color: white;
       }
+      .favorite-icon:hover {
+        color: white; /* Optional */
+      }
+      .favorite-icon:hover {
+        color: white; /* Optional */
+      }
       .maker-main-link {
         text-decoration: none;
         > * {
