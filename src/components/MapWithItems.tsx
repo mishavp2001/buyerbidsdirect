@@ -85,7 +85,7 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
   const favorites = props.favorites;
   const user = props.user;
 
-  const [favorite, setFavorite] = useState<boolean>(favorites?.indexOf(property.propertyId) !== -1);
+  const [favorite, setFavorite] = useState<boolean>(favorites?.indexOf(property.id) !== -1);
 
   const updateProfile = async (propertyId: string, favorite: boolean) => {
     try {
@@ -161,20 +161,25 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
               <IconButton
                 onClick={(evt) => { handleFavorite(evt, property?.id) }}
                 aria-label="favorite"
-                style={{ position: 'absolute', top: '10px', right: '30px', color: 'white', cursor: 'pointer', fontSize: '125px' }}
+                style={{ 
+                  position: 'absolute', 
+                  top: '10px', right: '30px', color: 'white', cursor: 'pointer' }}
                 sx={{
                   '&:hover': {
-                    backgroundColor: !favorite ? 'red' : 'grey', // Change color on hover
+                    backgroundColor: favorite ? 'grey' : 'red', // Change color on hover
                   },
+                  '&': {
+                    backgroundColor: favorite ? 'red' : 'grey', 
+                  }
                 }}
               >
                 {favorite ?
                   <Favorite
-                    style={{ fontSize: '75px' }}
+                    style={{ fontSize: '35px' }}
                     className="favorite-icon"
                   /> :
                   <FavoriteBorder
-                  style={{ fontSize: '75px' }}
+                  style={{ fontSize: '35px' }}
                     className="favorite-icon"
                   />
                 }
