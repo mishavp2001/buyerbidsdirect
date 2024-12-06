@@ -35,6 +35,7 @@ const schema = a.schema({
       address: a.string(),
       email: a.email().required(),
       phone_number: a.string().required(),
+      favorites: a.string().array(),
       id: a.string().required(), // Cognito's unique user identifier
     }).authorization(allow => [
       allow.authenticated('identityPool').to(['read']),
@@ -60,17 +61,19 @@ const schema = a.schema({
 
   Offer: a
     .model({
-      offerAmmount: a.integer(),
+      offerAmmount: a.integer().required(),
       propertyAddress: a.string(),
-      propertyId: a.string(),
-      buyerName: a.string(),
-      buyerEmail: a.string(),
-      buyerPhone: a.string(),
+      propertyId: a.string().required(),
+      buyerName: a.string().required(),
+      buyerEmail: a.string().required(),
+      buyerPhone: a.string().required(),
       ownerEmail: a.string(),
       ownerName: a.string(),
       loanApprovalLetter: a.string(),
       offerType: a.enum(['cash', 'financing', 'sellerfinancing', 'leaseToPurchise']),
       conditions: a.string().array(),
+      details: a.string(),
+      expires: a.date(),
       appointment: a.date(),
       seller: a.string(),
       buyer: a.string()
@@ -104,6 +107,7 @@ const schema = a.schema({
       zestimate: a.float(),
       neighborhood: a.string(),
       amenities: a.string().array(),
+      likes: a.integer()
     })
     .authorization(
       (allow) =>
@@ -122,7 +126,7 @@ export const data = defineData({
     defaultAuthorizationMode: 'userPool',
     // API Key is used for a.allow.public() rules
     apiKeyAuthorizationMode: {
-      expiresInDays: 30,
+      expiresInDays: 120,
     },
   },
 });

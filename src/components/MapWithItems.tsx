@@ -23,6 +23,8 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import TuneSharpIcon from '@mui/icons-material/TuneSharp';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
+import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import { updateProperty } from "../ui-components/graphql/mutations";
 
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
@@ -77,9 +79,43 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties, zoom 
   return null;
 };
 
-const CustomPopup = (props: { property: any, index: React.Key | null | undefined; }) => {
+const CustomPopup = (props: { property: any, favorites: string[], user: any, index: React.Key | null | undefined; }) => {
   const property = props.property;
-  const { user } = useAuthenticator((context) => [context.user]);
+  const favorites = props.favorites;
+  const user = props.user;
+
+  const [favorite, setFavorite] = useState<boolean>(favorites?.indexOf(property.propertyId) !== -1);
+
+  const updateProfile = async (propertyId: string, favorite: boolean) => {
+    try {
+      // IIf its notr favorite now then its changing
+      if (!favorite) {
+        favorites.push(propertyId);
+      } else {
+        favorites.filter(prop => prop !== propertyId);
+      }
+      await client.graphql({
+        query: updateProperty,
+        variables: {
+          input: {
+            id: propertyId,
+            favorites
+          },
+        },
+      });
+      return true;
+    } catch (err) {
+      alert(err);
+      return false;
+    }
+  }
+
+  const handleFavorite = async (evt: any, propertyId: string) => {
+    evt.stopPropagation();
+    if (await updateProfile(propertyId, favorite)) {
+      setFavorite(!favorite);
+    }
+  }
 
   return (
     <Popup
@@ -88,9 +124,11 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
       maxWidth={450}
       keepInView={true}
     >
+
       <Carousel
         navButtonsAlwaysVisible={true}
         sx={{ maxWidth: '450px' }}
+        height={250}
         autoPlay={false}
         navButtonsWrapperProps={{   // Move the buttons to the bottom. Unsetting top here to override default style.
           style: {
@@ -107,9 +145,9 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
             style={{ display: 'flex', flexDirection: 'column', alignContent: 'center', height: '350px' }}
           >
             <Grid item sm={12} key={0}>
-              <Link 
+              <Link
                 to={`/property/${property.id}`}
-                state={{isModal: true, backgroundLocation: '/2' }}
+                state={{ isModal: true, backgroundLocation: '/2' }}
                 key={`link-main-${index}-0`}>
                 <StorageImage width='100%' objectFit='cover' height='250px' alt={item} path={item} />
               </Link>
@@ -117,6 +155,16 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
           </Grid>
         ))}
       </Carousel>
+      {favorite ?
+        <Favorite
+          style={{ position: 'absolute', top: '20px', right: '20px', color: 'white', cursor: 'pointer', fontSize: '65px' }}
+          onClick={(evt) => { handleFavorite(evt, property?.id) }}
+        /> :
+        <FavoriteBorder
+          style={{ position: 'absolute', top: '20px', right: '20px', color: 'white', cursor: 'pointer', fontSize: '65px' }}
+          onClick={(evt) => { handleFavorite(evt, property?.id) }}
+        />
+      }
       <Link className="maker-main-link" to={`/property/${property.id}`}>
         <h3>
           <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
@@ -124,15 +172,32 @@ const CustomPopup = (props: { property: any, index: React.Key | null | undefined
         <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
         <p>{property.address}</p>
       </Link>
+
       {user?.username === property.owner ? (
-        <Link state={{ isModal: true, backgroundLocation: '/2' }} to={`/sales/${property.id}`}>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          state={{ isModal: true, backgroundLocation: '/2' }}
+          to={`/sales/${property.id}`}>
           Edit
-        </Link>
+        </Button>
       ) : (
-        <Link state={{ isModal: true, backgroundLocation: '/2' }} to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
-          Make Offer
-        </Link>
+        <Button
+          variant="contained"
+          color="primary"
+          component={Link}
+          state={{ isModal: true, backgroundLocation: '/2' }}
+          to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
+          Offer
+        </Button>
+
       )}
+      <span
+        style={{ color: 'black', cursor: 'pointer', paddingLeft: 32, fontSize: '18px' }}
+      >
+        {`Likes: ${property?.likes || 0}`}
+      </span>
     </Popup>
   );
 };
@@ -147,6 +212,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
     }, 200), // 300ms delay
     []
   );
+  const { user } = useAuthenticator((context) => [context.user]);
 
   const [zipCode, setZipCode] = useState<string | null>(() => {
     const savedZip = localStorage.getItem('zipCode');
@@ -206,6 +272,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
   const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
 
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
+  const [favorites, setFavorites] = useState<Array<any>>([]); // Adjust the type according to your schema
 
   useEffect(() => {
     if (isProgrammaticMove) {
@@ -235,6 +302,27 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
 
     fetchProperties();
   }, [position, minPrice, maxPrice, propertyType]);
+
+  useEffect(() => {
+    const getProfileFavorites = async () => {
+      if (!user?.userId) {
+        return;
+      }
+
+      try {
+        // Query to check if a profile exists
+        const { data: profile } = await client.models.UserProfile.list({
+          filter: { id: { eq: user.userId } },
+        });
+        // Update state based on the result
+        profile?.[0]?.favorites !== null && setFavorites(profile[0].favorites);
+      } catch (error) {
+        console.error("Error checking profile existence:", error);
+      }
+    };
+
+    getProfileFavorites();
+  }, []);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -352,64 +440,64 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
           <img src={Search} style={{ width: '3em' }} />
         </Button>
       </div>
-      <div style={{width: `${width || '98vw'}`, marginTop: '35px', padding: '1em' }}>
-      <Paper 
-      elevation={3} 
-      sx={{ height: "99vh", width: 'auto', padding: '1em' }}
-      >
-        <Grid
-          container spacing={2}
-          justifyContent="center"
-          style={{ display: 'flex', flexDirection: 'row' }}
+      <div style={{ width: `${width || '98vw'}`, marginTop: '35px', padding: '1em' }}>
+        <Paper
+          elevation={3}
+          sx={{ height: "99vh", width: 'auto', padding: '1em' }}
         >
-          <Grid item xs={12} sm={12} md={!mapOnly ? 6 : 12} height='90vh' key={0}>
-            <MapContainer
-              center={position}
-              zoom={zoom}
-              style={{ width: `${width}`, height: "90vh" }}
-            >
-              <section>
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          <Grid
+            container spacing={2}
+            justifyContent="center"
+            style={{ display: 'flex', flexDirection: 'row' }}
+          >
+            <Grid item xs={12} sm={12} md={!mapOnly ? 6 : 12} height='90vh' key={0}>
+              <MapContainer
+                center={position}
+                zoom={zoom}
+                style={{ width: `${width}`, height: "90vh" }}
+              >
+                <section>
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                  />
+                </section>
+                {properties?.map((item) => (
+                  item?.position &&
+                  <Marker
+                    icon={divIcon({
+                      html: addMarker(item?.price.toFixed(0))
+                    })}
+                    key={`maker-${item.id}`}
+                    position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={favorites || []} />
+                  </Marker>
+                ))}
+                {offers?.map((item: { position: string; price: number; id: any; }) => (
+                  item?.position &&
+                  <Marker
+                    icon={divIcon({
+                      html: addMarker(item?.price.toFixed(0))
+                    })}
+                    key={`maker-${item.id}`}
+                    position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={favorites || []} />
+                  </Marker>
+                ))}
+                <FullscreenControl />
+                <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} zoom={zoom} />
+                {/* This will force the map to recenter when `position` changes */}
+                <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove} />
+              </MapContainer>
+            </Grid>
+            {!mapOnly &&
+              <Grid item xs={12} sm={12} md={6} key={1}>
+                <ListItems
+                  properties={properties}
                 />
-              </section>
-              {properties?.map((item) => (
-                item?.position &&
-                <Marker
-                  icon={divIcon({
-                    html: addMarker(item?.price.toFixed(0))
-                  })}
-                  key={`maker-${item.id}`}
-                  position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                  <CustomPopup index={`popup-${item.id}`} property={item} />
-                </Marker>
-              ))}
-              {offers?.map((item: { position: string; price: number; id: any; }) => (
-                item?.position &&
-                <Marker
-                  icon={divIcon({
-                    html: addMarker(item?.price.toFixed(0))
-                  })}
-                  key={`maker-${item.id}`}
-                  position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                  <CustomPopup index={`popup-${item.id}`} property={item} />
-                </Marker>
-              ))}
-              <FullscreenControl />
-              <MapEventHandler onCenterChange={handleCenterChange} isProgrammaticMove={isProgrammaticMove} properties={properties} zoom={zoom} />
-              {/* This will force the map to recenter when `position` changes */}
-              <ReactMaker center={position} isProgrammaticMove={isProgrammaticMove} />
-            </MapContainer>
-          </Grid>
-          {!mapOnly && 
-            <Grid item xs={12} sm={12} md={6} key={1}> 
-            <ListItems 
-              properties={properties}
-            />
-          </Grid>  
+              </Grid>
             }
-        </Grid>
+          </Grid>
         </Paper>
       </div>
     </div >

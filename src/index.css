@@ -251,10 +251,10 @@ main {
  .leaflet-popup-content-wrapper {
     text-align: center;
     font-size: medium;
-    height: 420px;
     .leaflet-popup-content {
-      height: 420px !important;
-      width: 450px !important;
+      > a {
+        color: white;
+      }
       .maker-main-link {
         text-decoration: none;
         > * {
@@ -262,16 +262,8 @@ main {
           text-align: left;
           margin: 10px;
         }
-        
         color: black;
         font-weight: normal
-      }
-      > div {
-        overflow: show;
-        height: 250px;
-      }
-      > a {
-        height: 300px;
       }
   }
 }
