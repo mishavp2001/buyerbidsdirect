@@ -17,10 +17,10 @@ import ModalDialog from '@mui/joy/ModalDialog';
 const client = generateClient<Schema>();
 
 
-const PropertyPage: React.FC = () => {
-  const { propertyId } = useParams();
+const PropertyPage: React.FC<{id?: string}> = ({id}) => {
+  const { propertyId: urlPropertyId } = useParams();
+  const propertyId = id || urlPropertyId;
   const [name, setName] = useState<string>('User');
-
   const [error, setError] = useState<string | null>(null);
   const [property, setProperties] = useState<any>(); // Adjust the type according to your schema
   const { user } = useAuthenticator((context) => [context.user]);

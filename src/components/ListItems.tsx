@@ -91,10 +91,10 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
 
   return (
     <Paper elevation={3}
-      sx={{ height: "90vh" }}
     >
       <Box sx={{ height: '100%' }}>
         <DataGrid
+          autoHeight={true}
           rowHeight={160}
           columnVisibilityModel={visibilityModel}
           sx={{
@@ -113,6 +113,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
             }
           }}
           onCellClick={handleCellClick}
+          getRowId={(row) => row.id}
           rows={properties}
           columns={columns}
         />

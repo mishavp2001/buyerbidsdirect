@@ -13,6 +13,8 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 import React, { useState, useEffect } from 'react';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
+import PropertyPage from './PropertyPage';
+import PropertyTable from '../components/ListItems';
 
 const client = generateClient<Schema>();
 
@@ -22,6 +24,7 @@ const MakeOffer: React.FC = () => {
 
   const [error, setError] = useState<string | null>(null);
   const [offers, setOffers] = useState<Array<any>>([]); // Adjust the type according to your schema
+  const [faivorites, setFaivorites] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
 
   const { offerId, address, propertyId, ownerId } = useParams();
@@ -29,58 +32,101 @@ const MakeOffer: React.FC = () => {
 
   useEffect(() => {
     async function fetchUserProfiles() {
-      //const filter = userId  ? { id: { eq: userId } } : null;
-      const { data: itemsBuyer, errors: errorsB } = await client.models.UserProfile.list({
-        filter: { id: { eq: user.userId } }, // Proper conditional for filter
-        authMode: "identityPool"
-      })
-      const { data: itemsSeller, errors: errorsS } = await client.models.UserProfile.list({
-        filter: { id: { eq: ownerId } }, // Proper conditional for filter
-        authMode: "identityPool"
-      })
-      if (!errorsS && !errorsB) {
-        //console.dir(items);
-        //const filteredItems = items.filter(item => item !== null);
-        setUserAttr({ buyer: itemsBuyer?.[0], seller: itemsSeller?.[0] });
-
-      } else {
-        const error = (errorsS ? errorsS.toString() : '' + errorsB ? errorsB?.toString() : '') || 'Unknown';
-        setError(error);
-        //console.dir(errors);
+      try {
+        const [buyerResponse, sellerResponse] = await Promise.all([
+          client.models.UserProfile.list({
+            filter: { id: { eq: user.userId } },
+            authMode: "identityPool",
+          }),
+          client.models.UserProfile.list({
+            filter: { id: { eq: ownerId } },
+            authMode: "identityPool",
+          }),
+        ]);
+    
+        const buyer = buyerResponse?.data?.[0] || null;
+        const seller = sellerResponse?.data?.[0] || null;
+    
+        if (!buyerResponse.errors && !sellerResponse.errors) {
+          setUserAttr({ buyer, seller });
+        } else {
+          const errorMessages = [
+            buyerResponse.errors?.toString(),
+            sellerResponse.errors?.toString(),
+          ]
+            .filter(Boolean)
+            .join(" | ");
+          throw new Error(errorMessages || "Unknown error occurred");
+        }
+      } catch (error) {
+        setError(error?.toString() || "An unexpected error occurred");
       }
     }
     fetchUserProfiles();
   }, []);
 
   useEffect(() => {
-    const getOffers = async () => {
-      const filter = {
-        and: [
-          { buyer: { contains: user.userId } },
-          ...(typeof offerId === 'string' ? [{ id: { eq: offerId } }] : [])
-        ]
-      };
+    const fetchData = async () => {
       try {
-        const { data: offers } = await client.models.UserProfile.list({
-          filter,
-          authMode: "userPool"
-        })
-        setOffers(offers)
+        // Define promises for parallel fetching
+        const promises = [];
+  
+        // Fetch Favorites if `userAttr?.buyer` is available
+        if (userAttr?.buyer?.favorites) {
+          const favs = userAttr?.buyer?.favorites;
+          if (!favs.length) {
+            setFaivorites([]);
+            return null;
+          }
+
+          const propertyFilter = {
+            or: favs.map((id: any) => ({ id: { eq: id } })),
+          };
+          promises.push(
+            client.models.Property
+                  .list({
+                    filter: propertyFilter,
+                    authMode: "identityPool",
+                  })
+                  .then(({ data: properties }) => setFaivorites(properties || []))
+          );
+        }
+        // Fetch Offers
+          const offerFilter = {
+            and: [
+              { buyer: { contains: user?.userId } },
+              ...(typeof offerId === "string" && offerId !== "null"  ? [{ id: { eq: offerId } }] : []),
+            ],
+          };
+    
+          promises.push(
+            client.models.Offer
+              .list({
+                filter: offerFilter,
+                authMode: "userPool",
+              })
+              .then(({ data: offers }) => setOffers(offers || []))
+          );  
+        
+       
+        // Wait for all promises to complete
+        await Promise.all(promises);
+  
+        setOpen(
+          (offerId === "null" || typeof offerId === "string")
+        );
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setFaivorites([]);
+        setOffers([]);
       }
-      catch (error) {
-        console.error("Error getting opffers:", error);
-        setOffers([]); // Fallback to false on error
-      };
-      if (offerId === 'null' || typeof (offerId) === 'string') {
-        setOpen(true);
-      } else {
-        setOpen(false);
-      }
+    };
+  
+    if (userAttr?.buyer || user?.userId) {
+      fetchData();
     }
-    getOffers();
-  }, [offerId]);
-
-
+  }, [userAttr, user?.userId, propertyId, offerId]);
+  
   const handleRowClick = (params: {
     row: any; id: any;
   }) => {
@@ -97,12 +143,15 @@ const MakeOffer: React.FC = () => {
     { field: 'offerType', headerName: 'Type', flex: 80, type: 'string' },
     { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() }
   ];
+  
   return (
     <Container component="main">
       <Paper elevation={3} sx={{ padding: 3, margin: 3 }}>
-        <h3>Offer Sent</h3>
-        <Paper elevation={3} sx={{ padding: 2, height: 500, width: '100%' }}>
+        <h3>Offers Sent</h3>
+        <Paper elevation={3} sx={{ padding: 2, width: '100%' }}>
           <DataGrid
+            autoHeight
+            getRowId={(row) => row.propertyAddress|| 1}
             sx={{
               // disable cell selection style
               '.MuiDataGrid-cell:focus': {
@@ -118,25 +167,9 @@ const MakeOffer: React.FC = () => {
             columns={columns}
           />
         </Paper>
-        <h3>Property Saved</h3>
-        <Paper elevation={3} sx={{ padding: 2, height: 500, width: '100%' }}>
-          <DataGrid
-            sx={{
-              // disable cell selection style
-              '.MuiDataGrid-cell:focus': {
-                outline: 'none'
-              },
-              // pointer cursor on ALL rows
-              '& .MuiDataGrid-row:hover': {
-                cursor: 'pointer'
-              }
-            }}
-            onRowClick={handleRowClick}
-            rows={offers}
-            columns={columns}
-          />
-        </Paper>
-      </Paper>
+        <h3>Faivorites</h3>
+        <PropertyTable properties={faivorites} />
+      </Paper> 
       <Modal open={open} onClose={() => { navigate(-1); }}>
         <ModalDialog maxWidth='950px'>
           <ModalClose />
@@ -148,16 +181,18 @@ const MakeOffer: React.FC = () => {
           <DialogContent>
             {error && <p>{error}</p>}
             <p style={{ 'display': 'none' }}>{user.userId} - {ownerId}</p>
-
-            {offerId === 'null' ?
+            {offerId === null && typeof propertyId === 'string' &&
+                <PropertyPage id={propertyId}/>
+            }
+            {typeof offerId === 'string' && offerId === 'null' ?
               <OfferCreateForm
                 overrides={
                   {
                     buyer: { value: user?.userId },
                     propertyId: { value: propertyId },
                     propertyAddress: { value: address },
-                    ownerName: { value: ownerId },
-                    ownerEmail: { value: address },
+                    ownerName: { value: userAttr?.owner?.name || 'Unknown' },
+                    ownerEmail: { value:  userAttr?.owner?.email || 'Unknown'},
                     buyerEmail: { value: userAttr?.buyer?.email },
                     buyerName: { value: userAttr?.buyer?.name },
                     buyerPhone: { value: userAttr?.buyer?.phone_number },
@@ -172,8 +207,6 @@ const MakeOffer: React.FC = () => {
           </DialogContent>
         </ModalDialog>
       </Modal>
-
-
     </Container>
   );
 };
