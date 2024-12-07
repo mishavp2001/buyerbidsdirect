@@ -8,10 +8,14 @@ interface RequireAuthProps {
 
 const RequireAuth: React.FC<RequireAuthProps> = ({ children }) => {
     const location = useLocation();
+    //const { loading } = useUserProfile();
+
     const { route } = useAuthenticator((context) => [context.route]);
+
     if (route !== 'authenticated') {
         return <Navigate to="/login" state={{ from: location }} replace />;
     }
+
     return children;
 }
 

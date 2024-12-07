@@ -22,13 +22,11 @@ import "react-leaflet-fullscreen/styles.css";
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import TuneSharpIcon from '@mui/icons-material/TuneSharp';
 import OutlinedInput from '@mui/material/OutlinedInput';
-import IconButton from "@mui/material/IconButton";
 import InputLabel from '@mui/material/InputLabel';
-import { Favorite, FavoriteBorder } from '@mui/icons-material';
-import { updateProperty, updateUserProfile } from "../ui-components/graphql/mutations";
-
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
+import { LikeButton } from './likeButton';
+import { useUserProfile } from './Auth/UserProfileContext';
 
 const client = generateClient<Schema>();
 const div = document.createElement('div');
@@ -85,51 +83,6 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
   const favorites = props.favorites;
   const user = props.user;
 
-  const [favorite, setFavorite] = useState<boolean>(favorites?.indexOf(property.id) !== -1);
-
-  const updateProfile = async (propertyId: string, favorite: boolean) => {
-    try {
-      // IIf its notr favorite now then its changing
-      let likes = 0;
-      if (!favorite) {
-        favorites.indexOf(propertyId) === -1 && favorites.push(propertyId);
-        likes = property.likes + 1;
-      } else {
-        favorites.filter(prop => prop !== propertyId);
-        likes = property.likes - 1;
-      }
-      await client.graphql({
-        query: updateUserProfile,
-        variables: {
-          input: {
-            id: user.userId,
-            favorites
-          },
-        },
-      });
-    await client.graphql({
-      query: updateProperty,
-      variables: {
-        input: {
-          id: propertyId,
-          likes: likes
-        },
-      },
-    });
-    return true;
-  } catch (err) {
-    alert(err);
-    return false;
-  }
-  }
-
-  const handleFavorite = async (evt: any, propertyId: string) => {
-    evt.stopPropagation();
-    if (await updateProfile(propertyId, favorite)) {
-      setFavorite(!favorite);
-    }
-  }
-
   return (
     <Popup
       key={props.index}
@@ -158,32 +111,6 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
             style={{ display: 'flex', flexDirection: 'column', alignContent: 'center', height: '350px' }}
           >
             <Grid item sm={12} key={0}>
-              <IconButton
-                onClick={(evt) => { handleFavorite(evt, property?.id) }}
-                aria-label="favorite"
-                style={{ 
-                  position: 'absolute', 
-                  top: '10px', right: '30px', color: 'white', cursor: 'pointer' }}
-                sx={{
-                  '&:hover': {
-                    backgroundColor: favorite ? 'grey' : 'red', // Change color on hover
-                  },
-                  '&': {
-                    backgroundColor: favorite ? 'red' : 'grey', 
-                  }
-                }}
-              >
-                {favorite ?
-                  <Favorite
-                    style={{ fontSize: '35px' }}
-                    className="favorite-icon"
-                  /> :
-                  <FavoriteBorder
-                  style={{ fontSize: '35px' }}
-                    className="favorite-icon"
-                  />
-                }
-              </IconButton>
               <Link
                 to={`/property/${property.id}`}
                 state={{ isModal: true, backgroundLocation: '/2' }}
@@ -225,8 +152,11 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
       <span
         style={{ color: 'black', cursor: 'pointer', paddingLeft: 32, fontSize: '18px' }}
       >
+        <LikeButton
+          propertyId={property.id} user={user} favorites={favorites} property={property} />
+
         {`Likes: ${property?.likes || 0}`}
-      </span>
+        </span>
     </Popup>
   );
 };
@@ -242,6 +172,8 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
     []
   );
   const { user } = useAuthenticator((context) => [context.user]);
+  const { profile } = useUserProfile();
+
 
   const [zipCode, setZipCode] = useState<string | null>(() => {
     const savedZip = localStorage.getItem('zipCode');
@@ -301,7 +233,6 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
   const [isProgrammaticMove, setIsProgrammaticMove] = useState(false);
 
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
-  const [favorites, setFavorites] = useState<Array<any>>([]); // Adjust the type according to your schema
 
   useEffect(() => {
     if (isProgrammaticMove) {
@@ -330,28 +261,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
     };
 
     fetchProperties();
-  }, [position, minPrice, maxPrice, propertyType]);
-
-  useEffect(() => {
-    const getProfileFavorites = async () => {
-      if (!user?.userId) {
-        return;
-      }
-
-      try {
-        // Query to check if a profile exists
-        const { data: profile } = await client.models.UserProfile.list({
-          filter: { id: { eq: user.userId } },
-        });
-        // Update state based on the result
-        profile?.[0]?.favorites !== null && setFavorites(profile[0].favorites);
-      } catch (error) {
-        console.error("Error checking profile existence:", error);
-      }
-    };
-
-    getProfileFavorites();
-  }, []);
+  }, [position, minPrice, maxPrice, propertyType, profile]);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -499,7 +409,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={favorites || []} />
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} />
                   </Marker>
                 ))}
                 {offers?.map((item: { position: string; price: number; id: any; }) => (
@@ -510,7 +420,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={favorites || []} />
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} />
                   </Marker>
                 ))}
                 <FullscreenControl />
