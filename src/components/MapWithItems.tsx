@@ -25,7 +25,7 @@ import OutlinedInput from '@mui/material/OutlinedInput';
 import InputLabel from '@mui/material/InputLabel';
 import ListItemText from '@mui/material/ListItemText';
 import Checkbox from '@mui/material/Checkbox';
-import { LikeButton } from './likeButton';
+import { LikeButton } from './LikeButton';
 import { useUserProfile } from './Auth/UserProfileContext';
 
 const client = generateClient<Schema>();
