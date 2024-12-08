@@ -136,12 +136,11 @@ const MakeOffer: React.FC = () => {
 
   const columns: GridColDef[] = [
     { field: 'propertyAddress', headerName: 'Address', flex: 200 },
-    { field: 'buyerPhone', headerName: 'Buyer Phone', flex: 150 },
-    { field: 'buyerEmail', headerName: 'Buyer Email', flex: 150 },
-    { field: 'offerAmmount', headerName: 'Offer Ammount', flex: 110, type: 'number' },
-    { field: 'conditions', headerName: 'Conditions', flex: 90, type: 'string' },
+    { field: 'ownerName', headerName: 'Name', flex: 150 },
+    { field: 'ownerEmail', headerName: 'Email', flex: 150 },
+    { field: 'ownerPhone', headerName: 'Phone', flex: 150 },
+    { field: 'offerAmmount', headerName: 'Offer', flex: 110, type: 'number' },
     { field: 'offerType', headerName: 'Type', flex: 80, type: 'string' },
-    { field: 'appointment', headerName: 'Apointment', flex: 80, type: 'date', valueFormatter: (value) => new Date(value).toLocaleString() }
   ];
   
   return (
@@ -176,7 +175,8 @@ const MakeOffer: React.FC = () => {
           <DialogTitle> Offer</DialogTitle>
           <div style={{ padding: 10, margin: 0, backgroundColor: 'var(--amplify-components-fieldcontrol-disabled-background-color)' }}>
             <p> {`Property address: ${address || "Unknown address"}`}</p>
-            <p> {`To: ${userAttr?.seller?.name + '(' + userAttr?.seller?.email + ')' || 'unknown'}`}</p>
+            <p> {`To: ${userAttr?.seller?.email  || 'unknown'}`}</p>
+            <p> {`${userAttr?.seller?.name + '(' + (userAttr?.seller?.phone_number || 'unknown') + ')'}`}</p>
           </div>
           <DialogContent>
             {error && <p>{error}</p>}
@@ -191,8 +191,9 @@ const MakeOffer: React.FC = () => {
                     buyer: { value: user?.userId },
                     propertyId: { value: propertyId },
                     propertyAddress: { value: address },
-                    ownerName: { value: userAttr?.owner?.name || 'Unknown' },
-                    ownerEmail: { value:  userAttr?.owner?.email || 'Unknown'},
+                    ownerName: { value: userAttr?.seller?.name || 'Unknown' },
+                    ownerEmail: { value:  userAttr?.seller?.email || 'Unknown'},
+                    ownerPhone: { value: userAttr?.seller?.phone_number || 'Unknown' },
                     buyerEmail: { value: userAttr?.buyer?.email },
                     buyerName: { value: userAttr?.buyer?.name },
                     buyerPhone: { value: userAttr?.buyer?.phone_number },
