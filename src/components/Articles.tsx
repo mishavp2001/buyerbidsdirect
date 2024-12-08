@@ -79,10 +79,12 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                             <CardHeader title={post.title} subheader={post.name} />
                             <CardContent style={{
                                 width: '90%',
+                                height: '250px',
+                                overflowY: 'auto'
                             }}>
                                 {post.picture && (
                                     <StorageImage
-                                        style={{width: 150, float: 'left', margin: "10px"}}
+                                        style={{width: '40%', float: 'left', margin: "10px"}}
                                         alt={post.picture}
                                         path={post.picture}
                                     />
