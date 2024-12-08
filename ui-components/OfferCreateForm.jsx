@@ -193,6 +193,7 @@ export default function OfferCreateForm(props) {
     buyerPhone: "",
     ownerEmail: "",
     ownerName: "",
+    ownerPhone: "",
     loanApprovalLetter: "",
     offerType: "",
     conditions: [],
@@ -214,6 +215,7 @@ export default function OfferCreateForm(props) {
   const [buyerPhone, setBuyerPhone] = React.useState(initialValues.buyerPhone);
   const [ownerEmail, setOwnerEmail] = React.useState(initialValues.ownerEmail);
   const [ownerName, setOwnerName] = React.useState(initialValues.ownerName);
+  const [ownerPhone, setOwnerPhone] = React.useState(initialValues.ownerPhone);
   const [loanApprovalLetter, setLoanApprovalLetter] = React.useState(
     initialValues.loanApprovalLetter
   );
@@ -236,6 +238,7 @@ export default function OfferCreateForm(props) {
     setBuyerPhone(initialValues.buyerPhone);
     setOwnerEmail(initialValues.ownerEmail);
     setOwnerName(initialValues.ownerName);
+    setOwnerPhone(initialValues.ownerPhone);
     setLoanApprovalLetter(initialValues.loanApprovalLetter);
     setOfferType(initialValues.offerType);
     setConditions(initialValues.conditions);
@@ -259,6 +262,7 @@ export default function OfferCreateForm(props) {
     buyerPhone: [{ type: "Required" }],
     ownerEmail: [],
     ownerName: [],
+    ownerPhone: [],
     loanApprovalLetter: [],
     offerType: [],
     conditions: [],
@@ -302,6 +306,7 @@ export default function OfferCreateForm(props) {
           buyerPhone,
           ownerEmail,
           ownerName,
+          ownerPhone,
           loanApprovalLetter,
           offerType,
           conditions,
@@ -384,6 +389,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -423,6 +429,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -462,6 +469,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -501,6 +509,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -540,6 +549,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -579,6 +589,7 @@ export default function OfferCreateForm(props) {
               buyerPhone: value,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -618,6 +629,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail: value,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -657,6 +669,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName: value,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -680,6 +693,46 @@ export default function OfferCreateForm(props) {
         {...getOverrideProps(overrides, "ownerName")}
       ></TextField>
       <TextField
+        label="Owner phone"
+        isRequired={false}
+        isReadOnly={false}
+        value={ownerPhone}
+        onChange={(e) => {
+          let { value } = e.target;
+          if (onChange) {
+            const modelFields = {
+              offerAmmount,
+              propertyAddress,
+              propertyId,
+              buyerName,
+              buyerEmail,
+              buyerPhone,
+              ownerEmail,
+              ownerName,
+              ownerPhone: value,
+              loanApprovalLetter,
+              offerType,
+              conditions,
+              details,
+              expires,
+              appointment,
+              seller,
+              buyer,
+            };
+            const result = onChange(modelFields);
+            value = result?.ownerPhone ?? value;
+          }
+          if (errors.ownerPhone?.hasError) {
+            runValidationTasks("ownerPhone", value);
+          }
+          setOwnerPhone(value);
+        }}
+        onBlur={() => runValidationTasks("ownerPhone", ownerPhone)}
+        errorMessage={errors.ownerPhone?.errorMessage}
+        hasError={errors.ownerPhone?.hasError}
+        {...getOverrideProps(overrides, "ownerPhone")}
+      ></TextField>
+      <TextField
         label="Loan approval letter"
         isRequired={false}
         isReadOnly={false}
@@ -696,6 +749,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter: value,
               offerType,
               conditions,
@@ -737,6 +791,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType: value,
               conditions,
@@ -793,6 +848,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions: values,
@@ -859,6 +915,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -899,6 +956,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -939,6 +997,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -978,6 +1037,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,
@@ -1017,6 +1077,7 @@ export default function OfferCreateForm(props) {
               buyerPhone,
               ownerEmail,
               ownerName,
+              ownerPhone,
               loanApprovalLetter,
               offerType,
               conditions,

@@ -20,6 +20,7 @@ export const getOffer = /* GraphQL */ `
       offerType
       ownerEmail
       ownerName
+      ownerPhone
       propertyAddress
       propertyId
       seller
@@ -144,6 +145,7 @@ export const listOffers = /* GraphQL */ `
         offerType
         ownerEmail
         ownerName
+        ownerPhone
         propertyAddress
         propertyId
         seller

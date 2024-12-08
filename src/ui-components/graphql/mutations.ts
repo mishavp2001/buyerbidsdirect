@@ -23,6 +23,7 @@ export const createOffer = /* GraphQL */ `
       offerType
       ownerEmail
       ownerName
+      ownerPhone
       propertyAddress
       propertyId
       seller
@@ -157,6 +158,7 @@ export const deleteOffer = /* GraphQL */ `
       offerType
       ownerEmail
       ownerName
+      ownerPhone
       propertyAddress
       propertyId
       seller
@@ -291,6 +293,7 @@ export const updateOffer = /* GraphQL */ `
       offerType
       ownerEmail
       ownerName
+      ownerPhone
       propertyAddress
       propertyId
       seller
