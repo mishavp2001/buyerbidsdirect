@@ -31,10 +31,9 @@ export const UserProfileProvider: React.FC<{ children: React.ReactNode }> = ({ c
     useEffect(() => {
 
         const fetchProfile = async () => {
-            let subscription: any;
             try {
                 // Use observeQuery to fetch and subscribe to profile changes
-                subscription = client.models.UserProfile.observeQuery({
+                client.models.UserProfile.observeQuery({
                     filter: { id: { eq: user?.userId } },
                 }).subscribe({
                     next: ({ items }) => {

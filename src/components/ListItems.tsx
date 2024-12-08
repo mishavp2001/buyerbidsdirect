@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuthenticator } from '@aws-amplify/ui-react';
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { Mail, CurrencyExchange, Chat } from '@mui/icons-material';
-import { LikeButton } from './likeButton';
+import { LikeButton } from './LikeButton';
 import { generateClient } from 'aws-amplify/api';
 import type { Schema } from "../../amplify/data/resource";
 
