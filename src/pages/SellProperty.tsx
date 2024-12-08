@@ -13,18 +13,18 @@ import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
 import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
-import { fetchUserAttributes } from 'aws-amplify/auth';
+import { useUserProfile } from '../components/Auth/UserProfileContext';
 
 const client = generateClient<Schema>();
 const SellProperty: React.FC = () => {
   const { propertyId } = useParams();
+  const { profile } = useUserProfile();
 
   const navigate = useNavigate();
   const { user } = useAuthenticator((context) => [context.user]);
   const [error, setError] = useState<string | null>(null);
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
-  const [owner, setOwner] = React.useState<{ name?: string, email?: string }>({ name: '', email: '' });
 
   useEffect(() => {
     async function fetchProperties() {
@@ -51,20 +51,7 @@ const SellProperty: React.FC = () => {
     fetchProperties();
   }, [user.userId, propertyId]); // Dependencies for fetching properties
   
-  useEffect(() => {
-    async function fetchUserData() {
-      try {
-        const userAttributes = await fetchUserAttributes();
-        setOwner({ name: userAttributes?.name, email: userAttributes?.email });
-      } catch (err: any) {
-        setError(err.message || 'An error occurred while fetching user data');
-      }
-    }
-  
-    fetchUserData();
-  }, []); // No dependencies since it only needs to fetch user data once on mount
-  
-  useEffect(() => setOpen(owner?.name !== '' && typeof propertyId === 'string'), [propertyId, owner.name]); // Dependency for controlling `setOpen`
+  useEffect(() => setOpen(profile?.name !== '' && typeof propertyId === 'string'), [propertyId, profile?.name]); // Dependency for controlling `setOpen`
 
   const columns: GridColDef[] = [
     { field: 'address', headerName: 'Address', flex: 300 },
@@ -138,8 +125,8 @@ const SellProperty: React.FC = () => {
                     id={propertyId}
                     overrides={
                       {
-                        listingOwner: { value: owner?.name, isReadOnly: true },
-                        ownerContact: { value: owner?.email, isReadOnly: true },
+                        listingOwner: { value: profile?.name, isReadOnly: true },
+                        ownerContact: { value: profile?.email, isReadOnly: true },
                       }}
                     onSuccess={() => { navigate("/sales", { replace: true }); }} />
                 </>
@@ -149,8 +136,8 @@ const SellProperty: React.FC = () => {
                     onSuccess={() => { navigate("/sales", { replace: true }); }}
                     overrides={
                       {
-                        listingOwner: { value: owner?.name, isReadOnly: true },
-                        ownerContact: { value: owner?.email, isReadOnly: true },
+                        listingOwner: { value: profile?.name, isReadOnly: true },
+                        ownerContact: { value: profile?.email, isReadOnly: true },
                       }
                     }
                   />
