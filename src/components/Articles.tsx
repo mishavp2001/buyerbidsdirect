@@ -75,19 +75,19 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                         xs={12} md={6}
                     >
                         <Card key={post.id}
-                            style={{ margin: "20px"}}>
+                            style={{minWidth: '90%', margin: "10px"}}>
                             <CardHeader title={post.title} subheader={post.name} />
                             <CardContent style={{
-                                width: 350,
+                                width: '90%',
                             }}>
                                 {post.picture && (
                                     <StorageImage
-                                        width="200px"
+                                        style={{width: 150, float: 'left', margin: "10px"}}
                                         alt={post.picture}
                                         path={post.picture}
                                     />
                                 )}
-                                <div style={{width: '200px', marginLeft: 10}}>
+                                <div style={{ marginLeft: 10}}>
                                     {post?.post}
                                 </div>
                             </CardContent>

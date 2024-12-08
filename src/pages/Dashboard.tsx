@@ -27,15 +27,18 @@ function dashboardPage() {
   };
 
   return (
-    <main>
+    <main onClick={()=>setNavShow(!navShow)}    >
       <Tabs className='dash-tabs' 
         orientation="vertical"
         size="md"
         onChange={handleTabChange}
         value={currentTab ? currentTab : '0'}
       >
-       <Menu className='dash-nav' onClick={()=>setNavShow(!navShow)}/>
-        <TabList className={classNames('dash-list', `${navShow ? 'dash-list-show' : 'dash-list-hide'}`)}>
+       <Menu className='dash-nav' 
+        onClick={()=>setNavShow(!navShow)}
+      />
+        <TabList
+          className={classNames('dash-list', `${navShow ? 'dash-list-show' : 'dash-list-hide'}`)}>
         <h5>Articles</h5>
         <Tab>Read</Tab>
         <Tab>Write</Tab>
