@@ -14,11 +14,14 @@ import { Divider, TabPanel } from '@mui/joy';
 import Chat from '../components/Chat';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from "react-router-dom";
+import { Menu } from '@mui/icons-material';
+import { useState } from 'react';
+import classNames from 'classnames';
 
 function dashboardPage() {
   const { currentTab } = useParams();
   const navigate = useNavigate();
-
+  const [navShow, setNavShow] = useState(false);
   const handleTabChange = (_event: any, newPath: any) => {
     navigate(`/${newPath}`);; // Update the URL
   };
@@ -26,13 +29,13 @@ function dashboardPage() {
   return (
     <main>
       <Tabs className='dash-tabs' 
-        style={{minWidth: '450px'}} 
         orientation="vertical"
         size="md"
         onChange={handleTabChange}
         value={currentTab ? currentTab : '0'}
       >
-        <TabList>
+       <Menu className='dash-nav' onClick={()=>setNavShow(!navShow)}/>
+        <TabList className={classNames('dash-list', `${navShow ? 'dash-list-show' : 'dash-list-hide'}`)}>
         <h5>Articles</h5>
         <Tab>Read</Tab>
         <Tab>Write</Tab>

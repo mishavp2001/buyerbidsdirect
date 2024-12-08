@@ -5,16 +5,17 @@ import {
     CardContent,
     Typography,
     Button,
-    Link,
     Modal,
     Box,
     Grid,
 } from "@mui/material";
+import { Mail, OpenInBrowser } from '@mui/icons-material';
 import { StorageImage } from "@aws-amplify/ui-react-storage";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import PostUpdateForm from "../ui-components/PostUpdateForm";
 import DialogContent from "@mui/joy/DialogContent";
+import { LikeButton } from "./LikeButton";
 
 // Define the type for a post
 interface Post {
@@ -74,38 +75,44 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                         item
                         xs={12} md={6}
                     >
-                        <Card key={post.id} style={{ margin: "20px", height: '450px' }}>
+                        <Card key={post.id}
+                            style={{ margin: "20px"}}>
                             <CardHeader title={post.title} subheader={post.name} />
-                            {post.picture && (
-                                <StorageImage
-                                    width="150px"
-                                    height="150px"
-                                    alt={post.picture}
-                                    path={post.picture}
-                                    style={{ top: 0, float: 'right', margin: "20px" }}
-                                />
-                            )}
                             <CardContent style={{
-                                height: '200px', // Set a maximum height for the scrollable area
-                                overflowY: 'auto', // Enable vertical scrolling
-                                overflowX: 'hidden', // Prevent horizontal scrolling
+                                width: 350,
                             }}>
-                                <Typography variant="body2" color="text.secondary" style={{ overflow: 'scroll' }}>
-                                    {post.post}
-                                </Typography>
+                                {post.picture && (
+                                    <StorageImage
+                                        width="200px"
+                                        alt={post.picture}
+                                        path={post.picture}
+                                    />
+                                )}
+                                <div style={{width: '200px', marginLeft: 10}}>
+                                    {post?.post}
+                                </div>
                             </CardContent>
-                            <CardContent>
-                                <Typography variant="body2">
-                                    Website:{" "}
-                                    <Link href={post.website} target="_blank" rel="noopener">
-                                        {post.website}
-                                    </Link>
-                                </Typography>
-                                <Typography variant="body2">Email: {post.email}</Typography>
+                            
+                            <CardContent style={{
+                                height: '150px', // Set a maximum height for the scrollable area
+                                margin: '20px', // Enable vertical scrolling
+                                overflowX: 'hidden', // Prevent horizontal scrolling
+                                bottom: 0,
+                            }}>
+                                 <LikeButton
+                                    propertyId={post.id} user={user} favorites={[]} property={post} />
+                             
+                                <span title='E-mail to the owner'>
+                                    <Mail sx={{ marginRight: 2, cursor: 'pointer' }} onClick={(evt) => { evt.stopPropagation(); window.location.href = `mailto:${post.email}` }} />
+                                </span>
+                                <span title='Check website'>
+                                    <OpenInBrowser sx={{ marginRight: 2, cursor: 'pointer' }} onClick={(evt: { stopPropagation: () => void; }) => { evt.stopPropagation(); window.location.href = post.website }} />
+                                </span>
+                                {user?.username === post.owner && (
+                                    <Button onClick={() => handleOpenModal(post)}>Edit</Button>
+                                )}
+
                             </CardContent>
-                            {user?.username === post.owner && (
-                                <Button onClick={() => handleOpenModal(post)}>Edit</Button>
-                            )}
                         </Card>
                     </Grid>
                 ))}

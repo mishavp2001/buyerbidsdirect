@@ -1,19 +1,33 @@
+html {
+  min-width: 380px;
+}
 body {
   margin: 0;
   background: linear-gradient(269deg, rgb(118 156 197), rgb(255, 255, 255));
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   height: 100vh;
-  width: 100vw;
+  width: 100%;
+  min-width: 380px;
   padding: 1em;
   justify-content: center;
   align-items: center;
 }
 
+#root {
+  min-width: 380px;
+ }
+
+.dash-tabs {
+.dash-nav {
+  display: none;
+}
+}
 
 main {
   margin-top: 1em;
   display: flex;
   min-width: 90%;
+  min-width: 380px;
   flex-direction: column;
   align-items: stretch;
 
@@ -157,7 +171,37 @@ main {
 
   }
 
-  @media screen and (max-width: 490px) {
+  @media screen and (max-width: 450px) {
+    main {
+      min-width: 450px;
+    }
+    .dash-tabs {
+      max-width: 420px;
+      min-width: 250px;
+      margin: 0px;
+      .dash-list {
+        position:absolute;
+        z-index: 50000;
+        background-color: white;
+        top: 30px;
+      }
+      .MuiTabPanel-vertical .MuiPaper-root{
+        max-width: 350px;
+        margin: 0px;
+      }
+      .dash-list-show {
+        display: block
+      }
+      .dash-list-hide {
+       display: none
+      }
+      .dash-nav {
+        position:absolute;
+        top: 0;
+        display: block;
+      } 
+
+    }
 
     .MuiDataGrid-columnHeaders {
       display: none;
@@ -209,11 +253,13 @@ main {
 @media screen and (max-width: 768px) {
   body {
     font-size: 0.75rem;
+    min-width: 350px;
     /* Example: Decrease font size for smaller screens */
   }
 
   header .MuiTypography-root {
     font-size: 0.6rem;
+    min-width: 350px;
     /* Example: Decrease font size for smaller screens */
   }
 
