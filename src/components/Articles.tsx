@@ -14,6 +14,7 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import PostUpdateForm from "../ui-components/PostUpdateForm";
 import DialogContent from "@mui/joy/DialogContent";
 import { LikeButton } from "./LikeButton";
+import { Divider } from "@mui/joy";
 
 // Define the type for a post
 interface Post {
@@ -25,6 +26,7 @@ interface Post {
     email: string;
     name: string;
     owner?: string;
+    view: boolean;
 }
 
 // Props for the Articles component
@@ -54,7 +56,8 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
     }, []);
 
 
-    const handleOpenModal = (post: Post) => {
+    const handleOpenModal = (post: Post, view: boolean) => {
+        post.view = view;
         setModalData(post);
     };
 
@@ -68,66 +71,55 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                 container
                 spacing={1}
                 display="flex">
-                {posts.map((post) => (
-                    <Grid
+                {posts.map((post) => {
+                    post.picture = post.picture || 'picture-submissions/bdff7313eeffa4dcd3619f4a671fc192fc8e8c18.webp';
+
+                    return <Grid
                         item
                         xs={12} md={6}
                     >
                         <Card key={post.id}
-                            style={{minWidth: '90%', height: 'auto', margin: "10px"}}>
-                            <CardHeader title={post.title} subheader={<><span title='E-mail to the owner'>
-                                    <Mail sx={{ marginRight: 2, cursor: 'pointer' }} onClick={(evt) => { evt.stopPropagation(); window.location.href = `mailto:${post.email}` }} />
-                                </span>
-                                <span title='Check website'>
-                                    <OpenInBrowser sx={{ marginRight: 2, cursor: 'pointer' }} onClick={(evt: { stopPropagation: () => void; }) => { evt.stopPropagation(); window.location.href = post.website }} />
-                                </span>
-                                <span>
-                                {user?.username === post.owner && (
-                                    <Edit onClick={() => handleOpenModal(post)} />
-                                )}
-                                </span>
-                                </>}
-                                />
+                            style={{ minWidth: '90%', height: 'auto', margin: "10px" }}>
+                            <CardHeader title={post.title} subheader={<span>{post.name}</span>}
+                            />
                             <CardContent style={{
                                 width: '90%',
-                                height: `${post.picture? '250px' : '0px' }`,
+                                height: `${post.picture ? '250px' : '0px'}`,
                                 overflowY: 'hidden'
                             }}>
-                                {post.picture && (
-                                    <StorageImage
-                                        style={{width: '90%', margin: "10px"}}
-                                        alt={post.picture}
-                                        path={post.picture}
-                                    />
-                                )}
+                                <StorageImage
+                                    onClick={() => handleOpenModal(post, true)}
+                                    style={{ width: '90%', margin: "10px" }}
+                                    alt={post.picture}
+                                    path={post.picture || '""'}
+                                />
                             </CardContent>
                             <CardContent style={{
-                                height: `${post.picture? '170px' : '400px' }`,
-                                padding: 20,
-                                overflowY: 'scroll'
-                             }}>
-                                <div
-                                    style={{
-                                        cursor: "pointer",
-                                      }}
-                                >
-                                    {post?.post}
-                                </div>
-                            </CardContent>    
-                            <CardContent style={{
                                 height: '150px', // Set a maximum height for the scrollable area
-                                margin: '20px', // Enable vertical scrolling
+                                margin: '10px', // Enable vertical scrolling
                                 overflowX: 'hidden', // Prevent horizontal scrolling
                                 bottom: 0,
                             }}>
-                                <LikeButton
-                                    propertyId={post.id} user={user} favorites={[]} property={post} />
-                     
-                                <span>{post.name}</span>    
+                                <>
+                                    <Divider sx={{ margin: '10px 0px' }} />
+                                    <span title='E-mail to the owner'>
+                                        <Mail sx={{ cursor: 'pointer',  marginRight: '20px', }} onClick={(evt) => { evt.stopPropagation(); window.location.href = `mailto:${post.email}` }} />
+                                        </span>
+                                    <span title='Check website'>
+                                        <OpenInBrowser sx={{ marginRight: '20px', cursor: 'pointer' }} onClick={(evt: { stopPropagation: () => void; }) => { evt.stopPropagation(); window.location.href = post.website }} />
+                                    </span>
+                                    <span>
+                                        {user?.username === post.owner && (<span title='Edit'>
+                                            <Edit sx={{ marginRight: '20px', cursor: 'pointer' }} onClick={() => handleOpenModal(post, false)} />
+                                        </span>
+                                        )}
+                                    </span>
+                                    <LikeButton propertyId={post.id} user={user} favorites={[]} property={post} /> 
+                                </>
                             </CardContent>
                         </Card>
                     </Grid>
-                ))}
+                })}
             </Grid>
             <Modal
                 open={!!modalData}
@@ -149,7 +141,20 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                 >
                     {modalData && (
                         <DialogContent>
-                            <PostUpdateForm
+                            {modalData?.view ?
+                                <>
+                                     <h1>{modalData.title}</h1>
+                                     {modalData?.picture && (
+                                     <StorageImage
+                                        alt={modalData?.picture}
+                                        path={modalData?.picture}
+                                    />)}
+                                    {modalData?.post}
+                                    <p>{modalData?.name}</p>
+                                </>
+                           
+                                :
+                                <PostUpdateForm
                                 id={modalData.id}
                                 overrides={{
                                     id: {
@@ -168,6 +173,8 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                     onSuccess();
                                 }}
                             />
+                            }
+                      
                         </DialogContent>
                     )}
                 </Box>
