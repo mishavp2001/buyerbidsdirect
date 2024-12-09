@@ -709,7 +709,8 @@ export default function PropertyUpdateForm(props) {
           <div key={`div-${index}-${img}`} className="merge-col-field image-container" style={{ position: 'relative' }}>
             <StorageImage
               style={{ padding: '1.3em' }}
-              width='100%' alt={img} path={img} >
+              width='100%' 
+              alt={img} path={`compressed/${img}`} >
             </StorageImage>
             <CloseRoundedIcon
               onClick={() => deleteImage(img)}
