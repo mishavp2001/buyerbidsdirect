@@ -17,6 +17,13 @@ body {
   min-width: 380px;
  }
 
+ .ellipsis-multi {
+  display: -webkit-box;        /* Makes the element a flex container */
+  -webkit-line-clamp: 3;      /* Number of lines before truncating */
+  -webkit-box-orient: vertical; /* Sets the box orientation to vertical */
+  text-overflow: ellipsis;    /* Adds the ellipsis ("...") */
+}
+
 .dash-tabs {
 .dash-nav {
   display: none;
