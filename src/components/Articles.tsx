@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
     Card,
     CardHeader,
@@ -7,7 +7,7 @@ import {
     Box,
     Grid,
 } from "@mui/material";
-import { Mail, OpenInBrowser, UploadFile, Edit } from '@mui/icons-material';
+import { Mail, OpenInBrowser, Edit } from '@mui/icons-material';
 import { StorageImage } from "@aws-amplify/ui-react-storage";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
