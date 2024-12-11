@@ -94,7 +94,7 @@ const PropertyPage: React.FC<{id?: string}> = ({id}) => {
                     <StorageImage
                       key={i}
                       alt={image}
-                      path={image} />
+                      path={`compressed/${image}`} />
                   ))}
                 </Carousel>
               </Grid>

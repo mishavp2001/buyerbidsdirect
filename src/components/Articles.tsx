@@ -14,7 +14,7 @@ import { fetchUserAttributes } from "aws-amplify/auth";
 import PostUpdateForm from "../ui-components/PostUpdateForm";
 import DialogContent from "@mui/joy/DialogContent";
 import { LikeButton } from "./LikeButton";
-import { Divider } from "@mui/joy";
+import { Divider, ModalClose } from "@mui/joy";
 
 // Define the type for a post
 interface Post {
@@ -91,7 +91,8 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                     onClick={() => handleOpenModal(post, true)}
                                     style={{ width: '90%', margin: "10px" }}
                                     alt={post.picture}
-                                    path={post.picture || '""'}
+                                   
+                                    path= {post.picture ? `compressed/${post.picture}` : ''}
                                 />
                             </CardContent>
                             <CardContent style={{
@@ -139,6 +140,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                         borderRadius: "8px",
                     }}
                 >
+                    <ModalClose style={{ margin: '10px' }} />
                     {modalData && (
                         <DialogContent>
                             {modalData?.view ?
@@ -147,7 +149,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                      {modalData?.picture && (
                                      <StorageImage
                                         alt={modalData?.picture}
-                                        path={modalData?.picture}
+                                        path= {modalData?.picture ? `compressed/${modalData?.picture}` : ''}
                                     />)}
                                     {modalData?.post}
                                     <p>{modalData?.name}</p>

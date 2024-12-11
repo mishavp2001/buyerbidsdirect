@@ -115,7 +115,7 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
                 to={`/property/${property.id}`}
                 state={{ isModal: true, backgroundLocation: '/2' }}
                 key={`link-main-${index}-0`}>
-                <StorageImage width='100%' objectFit='cover' height='250px' alt={item} path={item} />
+                <StorageImage width='100%' objectFit='cover' height='250px' alt={item} path={`compressed/${item}`} />
               </Link>
             </Grid>
           </Grid>

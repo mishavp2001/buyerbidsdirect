@@ -81,7 +81,7 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
                style={{ 
                  left: 45, bottom: 25, color: 'white', cursor: 'pointer' }}
                 propertyId={params.row.id} user={user} favorites={favorites} property={params.row}/>
-              <StorageImage style={{}} alt={params?.value[0]} path={params?.value[0]} />
+              <StorageImage style={{}} alt={params?.value[0]} path={`compressed/${params?.value[0]}`} />
         </>
         
       }, flex: 320, type: 'number', headerClassName: 'header-grid'
