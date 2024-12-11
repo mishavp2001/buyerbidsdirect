@@ -710,7 +710,7 @@ export default function PropertyUpdateForm(props) {
             <StorageImage
               style={{ padding: '1.3em' }}
               width='100%' 
-              alt={img} path={`compressed/${img}`} >
+              alt={img} path={img} >
             </StorageImage>
             <CloseRoundedIcon
               onClick={() => deleteImage(img)}
