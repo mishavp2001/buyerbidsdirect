@@ -323,6 +323,14 @@ export const updatePost = /* GraphQL */ `
     }
   }
 `;
+
+export const updatePropertyLikes = /* GraphQL */ `
+mutation UpdateLikes($input: UpdatePropertyInput!) {
+  updateProperty(input: $input) {
+    likes
+    __typename
+  }
+}`;
 export const updateProperty = /* GraphQL */ `
   mutation UpdateProperty(
     $condition: ModelPropertyConditionInput

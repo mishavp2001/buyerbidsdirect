@@ -1,5 +1,5 @@
 import { generateClient } from "aws-amplify/api";
-import { updateProperty, updateUserProfile } from "../ui-components/graphql/mutations";
+import { updatePropertyLikes, updateUserProfile } from "../ui-components/graphql/mutations";
 import type { Schema } from "../../amplify/data/resource";
 
 const client = generateClient<Schema>();
@@ -26,7 +26,7 @@ export async function addFavoriteToProfile(propertyId: string, user:any, favorit
         },
       });
     await client.graphql({
-      query: updateProperty,
+      query: updatePropertyLikes,
       variables: {
         input: {
           id: propertyId,

@@ -89,145 +89,185 @@ const schema = a.schema({
       address: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]), // Using the Address model
       position: a.json().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),  
             allow.owner()
           ]),
       price: a.float().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       arvprice: a.float().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       bedrooms: a.integer().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       bathrooms: a.float().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       squareFootage: a.integer().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       lotSize: a.float().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       yearBuilt: a.integer().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       propertyType: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       listingStatus: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       listingOwner: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       ownerContact: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       description: a.string().required().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       photos: a.string().array().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       virtualTour: a.string().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       propertyTax: a.float().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       hoaFees: a.float().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       mlsNumber: a.string().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       zestimate: a.float().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       neighborhood: a.string().authorization(
         (allow) =>
           [
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       amenities: a.string().array().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read']),
+            allow.guest().to(['read']),
             allow.owner()
           ]),
       likes: a.integer().authorization(
         (allow) =>
           [
+            allow.authenticated('userPools').to(['read', 'update']),
             allow.authenticated('identityPool').to(['read', 'update']),
-            allow.owner()
+            allow.guest().to(['read'])
           ])
     }).authorization(
       (allow) =>
         [
-          allow.authenticated('identityPool').to(['read', 'update']),
+          allow.authenticated('identityPool').to(['read']),
           allow.guest().to(['read']),
           allow.owner()
         ])
