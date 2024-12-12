@@ -83,7 +83,7 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
   const favorites = props.favorites;
   const user = props.user;
   const onUpdate = props.onUpdate;
-  
+
   return (
     <Popup
       key={props.index}
@@ -122,6 +122,7 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
           </Grid>
         ))}
       </Carousel>
+      <div style={{height: 160, overflow: 'auto'}}>
       <Link className="maker-main-link" to={`/property/${property.id}`}>
         <h3>
           <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
@@ -129,7 +130,7 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
         <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
         <p>{property.address}</p>
       </Link>
-
+      </div>
       {user?.username === property.owner ? (
         <Button
           variant="contained"
