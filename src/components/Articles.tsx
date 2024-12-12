@@ -3,8 +3,6 @@ import {
     Card,
     CardHeader,
     CardContent,
-    Modal,
-    Box,
     Grid,
 } from "@mui/material";
 import { Mail, OpenInBrowser, Edit } from '@mui/icons-material';
@@ -12,9 +10,8 @@ import { StorageImage } from "@aws-amplify/ui-react-storage";
 import { useAuthenticator } from "@aws-amplify/ui-react";
 import { fetchUserAttributes } from "aws-amplify/auth";
 import PostUpdateForm from "../ui-components/PostUpdateForm";
-import DialogContent from "@mui/joy/DialogContent";
 import { LikeButton } from "./LikeButton";
-import { Divider, ModalClose } from "@mui/joy";
+import { Modal, DialogContent, Divider, ModalClose, ModalDialog } from "@mui/joy";
 
 // Define the type for a post
 interface Post {
@@ -89,10 +86,9 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                             }}>
                                 <StorageImage
                                     onClick={() => handleOpenModal(post, true)}
-                                    style={{ width: '90%', margin: "10px" }}
+                                    style={{ width: '90%', margin: "10px", cursor: 'pointer' }}
                                     alt={post.picture}
-                                   
-                                    path= {post.picture ? `compressed/${post.picture}` : ''}
+                                    path={post.picture ? `compressed/${post.picture}` : ''}
                                 />
                             </CardContent>
                             <CardContent style={{
@@ -104,8 +100,8 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                 <>
                                     <Divider sx={{ margin: '10px 0px' }} />
                                     <span title='E-mail to the owner'>
-                                        <Mail sx={{ cursor: 'pointer',  marginRight: '20px', }} onClick={(evt) => { evt.stopPropagation(); window.location.href = `mailto:${post.email}` }} />
-                                        </span>
+                                        <Mail sx={{ cursor: 'pointer', marginRight: '20px', }} onClick={(evt) => { evt.stopPropagation(); window.location.href = `mailto:${post.email}` }} />
+                                    </span>
                                     <span title='Check website'>
                                         <OpenInBrowser sx={{ marginRight: '20px', cursor: 'pointer' }} onClick={(evt: { stopPropagation: () => void; }) => { evt.stopPropagation(); window.location.href = post.website }} />
                                     </span>
@@ -115,7 +111,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                         </span>
                                         )}
                                     </span>
-                                    <LikeButton propertyId={post.id} user={user} favorites={[]} property={post} /> 
+                                    <LikeButton propertyId={post.id} user={user} favorites={[]} property={post} />
                                 </>
                             </CardContent>
                         </Card>
@@ -125,61 +121,69 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
             <Modal
                 open={!!modalData}
                 onClose={handleCloseModal}
-                aria-labelledby="modal-title"
-                aria-describedby="modal-description"
             >
-                <Box
-                    sx={{
-                        width: "450px",
-                        height: "100vh",
-                        overflow: "scroll",
-                        minWidth: 450,
-                        bgcolor: "background.paper",
-                        boxShadow: 24,
-                        p: 4,
-                        borderRadius: "8px",
-                    }}
+                <ModalDialog
+                    layout="center"
+                    size="lg"
                 >
-                    <ModalClose style={{ margin: '10px' }} />
+                    <ModalClose onClick={handleCloseModal} />
+
                     {modalData && (
-                        <DialogContent>
+                        <DialogContent
+                            style={{ padding: '12px', marginTop: 20, minWidth: "350px" }}
+                        >
+
                             {modalData?.view ?
                                 <>
-                                     <h1>{modalData.title}</h1>
-                                     {modalData?.picture && (
-                                     <StorageImage
-                                        alt={modalData?.picture}
-                                        path= {modalData?.picture ? `compressed/${modalData?.picture}` : ''}
-                                    />)}
-                                    {modalData?.post}
-                                    <p>{modalData?.name}</p>
+                                <h1>{modalData.title}</h1>
+                                <Grid
+                                container
+                                spacing={2}
+                                display="flex">
+                                    <Grid
+                                        item
+                                        xs={12} md={6}
+                                    >
+                                        {modalData?.post}
+                                        <p>{modalData?.name}</p>
+                                    </Grid>
+                                    <Grid
+                                        item
+                                        xs={12} md={6}
+                                    >
+                                        {modalData?.picture && (
+                                            <StorageImage
+                                                alt={modalData?.picture}
+                                                path={modalData?.picture ? `compressed/${modalData?.picture}` : ''}
+                                            />)}
+                                    </Grid>
+                                </Grid>
                                 </>
-                           
                                 :
                                 <PostUpdateForm
-                                id={modalData.id}
-                                overrides={{
-                                    id: {
-                                        value: user?.userId || "",
-                                        hidden: true,
-                                        isDisabled: true,
-                                    },
-                                    email: {
-                                        value: email || user?.signInDetails?.loginId || "",
-                                        hidden: true,
-                                        isDisabled: true,
-                                    },
-                                }}
-                                onSuccess={() => {
-                                    handleCloseModal();
-                                    onSuccess();
-                                }}
-                            />
+                                    id={modalData.id}
+                                    overrides={{
+                                        id: {
+                                            value: user?.userId || "",
+                                            hidden: true,
+                                            isDisabled: true,
+                                        },
+                                        email: {
+                                            value: email || user?.signInDetails?.loginId || "",
+                                            hidden: true,
+                                            isDisabled: true,
+                                        },
+                                    }}
+                                    onSuccess={() => {
+                                        handleCloseModal();
+                                        onSuccess();
+                                    }}
+                                />
                             }
-                      
+
                         </DialogContent>
                     )}
-                </Box>
+                </ModalDialog>
             </Modal>
         </>
     );

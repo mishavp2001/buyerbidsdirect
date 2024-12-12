@@ -57,7 +57,7 @@ export default function UserProfileView(props) {
 
   const renderPicture = (label, value) => (
     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "10px" }}>
-      {value && <StorageImage alt={label} path={`compressed/${value}`} />}
+      {value && <StorageImage minWidth='350px' alt={label} path={`compressed/${value}`} />}
     </div>
   );
 

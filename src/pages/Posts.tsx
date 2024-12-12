@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Container, Paper, Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import type { Schema } from "../../amplify/data/resource";
 import { generateClient } from "aws-amplify/data";
 import Modal from '@mui/joy/Modal';
@@ -14,7 +13,6 @@ import { useAuthenticator } from '@aws-amplify/ui-react';
 const client = generateClient<Schema>();
 
 const Posts: React.FC<any> = ({ self }) => {
-  const navigate = useNavigate();
   const [error, setError] = useState<string | null>(null);
   const [posts, setPosts] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = useState<boolean>(false);
@@ -66,13 +64,13 @@ const Posts: React.FC<any> = ({ self }) => {
       <Modal
         open={open}
         onClose={() => {
-          navigate(-1);
+          setOpen(false);
         }}
       >
         <ModalDialog minWidth="90%">
-          <ModalClose style={{ margin: '10px' }} />
           <DialogContent>
             {error && <p>{error}</p>}
+            <ModalClose />
             <PostCreateForm
               onSuccess={() => {
                 setNeedsRefresh(true); // Signal to refetch posts

@@ -3,13 +3,14 @@ import { Favorite, FavoriteBorder } from "@mui/icons-material";
 import { addFavoriteToProfile } from "../utils/likeUtils";
 import { IconButton } from "@mui/material";
 
-export const LikeButton: React.FC<any> = ({ propertyId, user, favorites, property, style }) => {
+export const LikeButton: React.FC<any> = ({ propertyId, user, favorites, property, style, handleLikeUpdate }) => {
     const [favorite, setFavorite] = useState<boolean>(favorites?.indexOf(property.id) !== -1);
 
     const handleFavorite = async (evt: any, propertyId: string) => {
         evt.stopPropagation();
         if (await addFavoriteToProfile(propertyId, user, favorites, property, !favorite,)) {
             setFavorite(!favorite);
+            handleLikeUpdate(propertyId, favorite);
         }
     }
 

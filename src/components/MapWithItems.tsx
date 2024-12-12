@@ -78,11 +78,12 @@ const MapEventHandler = ({ onCenterChange, isProgrammaticMove, properties, zoom 
   return null;
 };
 
-const CustomPopup = (props: { property: any, favorites: string[], user: any, index: React.Key | null | undefined; }) => {
+const CustomPopup = (props: { property: any, favorites: string[], user: any, index: (React.Key | null | undefined), onUpdate: any }) => {
   const property = props.property;
   const favorites = props.favorites;
   const user = props.user;
-
+  const onUpdate = props.onUpdate;
+  
   return (
     <Popup
       key={props.index}
@@ -153,10 +154,9 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
         style={{ color: 'black', cursor: 'pointer', paddingLeft: 32, fontSize: '18px' }}
       >
         <LikeButton
-          propertyId={property.id} user={user} favorites={favorites} property={property} />
-
+          propertyId={property.id} user={user} favorites={favorites} property={property} handleLikeUpdate={onUpdate} />
         {`Likes: ${property?.likes || 0}`}
-        </span>
+      </span>
     </Popup>
   );
 };
@@ -234,6 +234,15 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
 
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
 
+  const handleLikeUpdate = (propertyId: string, favorite: boolean) => {
+    setProperties((prevItems) =>
+      prevItems.map((item) =>
+        item.id === propertyId ? { ...item, likes: favorite? item.likes + 1 : item.likes - 1 } : item
+      )
+    );
+  };
+
+
   useEffect(() => {
     if (isProgrammaticMove) {
       setIsProgrammaticMove(false); // Reset after programmatic move finishes
@@ -261,7 +270,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
     };
 
     fetchProperties();
-  }, [position, minPrice, maxPrice, propertyType, profile]);
+  }, [position, minPrice, maxPrice, propertyType]);
 
   const handleSearchPositionChange = async () => {
     if (zipCode) {
@@ -409,7 +418,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} />
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate}/>
                   </Marker>
                 ))}
                 {offers?.map((item: { position: string; price: number; id: any; }) => (
@@ -420,7 +429,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} />
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate}/>
                   </Marker>
                 ))}
                 <FullscreenControl />
