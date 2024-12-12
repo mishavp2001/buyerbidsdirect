@@ -10,7 +10,7 @@ export const LikeButton: React.FC<any> = ({ propertyId, user, favorites, propert
         evt.stopPropagation();
         if (await addFavoriteToProfile(propertyId, user, favorites, property, !favorite,)) {
             setFavorite(!favorite);
-            handleLikeUpdate(propertyId, favorite);
+            handleLikeUpdate(propertyId, !favorite);
         }
     }
 
