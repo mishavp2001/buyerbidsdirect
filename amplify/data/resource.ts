@@ -86,38 +86,148 @@ const schema = a.schema({
 
   Property: a
     .model({
-      address: a.string().required(), // Using the Address model
-      position: a.json().required(),
-      price: a.float().required(),
-      arvprice: a.float().required(),
-      bedrooms: a.integer().required(),
-      bathrooms: a.float().required(),
-      squareFootage: a.integer().required(),
-      lotSize: a.float().required(),
-      yearBuilt: a.integer().required(),
-      propertyType: a.string().required(),
-      listingStatus: a.string().required(),
-      listingOwner: a.string().required(),
-      ownerContact: a.string().required(),
-      description: a.string().required(),
-      photos: a.string().array(),
-      virtualTour: a.string(),
-      propertyTax: a.float(),
-      hoaFees: a.float(),
-      mlsNumber: a.string(),
-      zestimate: a.float(),
-      neighborhood: a.string(),
-      amenities: a.string().array(),
+      address: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]), // Using the Address model
+      position: a.json().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      price: a.float().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      arvprice: a.float().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      bedrooms: a.integer().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      bathrooms: a.float().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      squareFootage: a.integer().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      lotSize: a.float().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      yearBuilt: a.integer().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      propertyType: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      listingStatus: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      listingOwner: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      ownerContact: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      description: a.string().required().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      photos: a.string().array().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      virtualTour: a.string().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      propertyTax: a.float().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      hoaFees: a.float().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      mlsNumber: a.string().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      zestimate: a.float().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      neighborhood: a.string().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
+      amenities: a.string().array().authorization(
+        (allow) =>
+          [
+            allow.authenticated('identityPool').to(['read']),
+            allow.owner()
+          ]),
       likes: a.integer().authorization(
         (allow) =>
           [
-            allow.authenticated('identityPool').to(['read','update']),
+            allow.authenticated('identityPool').to(['read', 'update']),
             allow.owner()
           ])
     }).authorization(
       (allow) =>
         [
-          allow.authenticated('identityPool').to(['read']),
+          allow.authenticated('identityPool').to(['read', 'update']),
           allow.guest().to(['read']),
           allow.owner()
         ])
