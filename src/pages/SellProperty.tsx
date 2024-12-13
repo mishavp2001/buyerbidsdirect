@@ -11,9 +11,15 @@ import ModalDialog from '@mui/joy/ModalDialog';
 import ModalClose from '@mui/joy/ModalClose';
 import DialogTitle from '@mui/joy/DialogTitle';
 import DialogContent from '@mui/joy/DialogContent';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
 import { Link as RouterLink } from 'react-router-dom';
 import { useUserProfile } from '../components/Auth/UserProfileContext';
+import DisplayOffers from '../components/displayOffers'
+import Accordion from '@mui/material/Accordion';
+import AccordionDetails from '@mui/material/AccordionDetails';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import { StorageImage } from '@aws-amplify/ui-react-storage';
+import Carousel from 'react-material-ui-carousel';
 
 const client = generateClient<Schema>();
 const SellProperty: React.FC = () => {
@@ -23,56 +29,65 @@ const SellProperty: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthenticator((context) => [context.user]);
   const [error, setError] = useState<string | null>(null);
+  const [offers, setOffers] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [properties, setProperties] = useState<Array<any>>([]); // Adjust the type according to your schema
   const [open, setOpen] = React.useState<boolean>(false);
 
   useEffect(() => {
     async function fetchProperties() {
-      const filter =
-        typeof propertyId === 'string' && propertyId !== 'new'
-          ? { id: { eq: propertyId } }
-          : { owner: { contains: user.userId } };
-  
+
       try {
-        const { data: items, errors } = await client.models.Property.list({
-          filter,
-          authMode: 'userPool',
-        });
-        if (!errors) {
-          setProperties(items);
-        } else {
-          setError(errors.toString());
-        }
-      } catch (err:any) {
-        setError(err.message || 'An error occurred while fetching properties');
+        // Define promises for parallel fetching
+        const promises = [];
+
+        const filter =
+          typeof propertyId === 'string' && propertyId !== 'new'
+            ? { id: { eq: propertyId } }
+            : { owner: { contains: user.userId } };
+
+        promises.push(
+          await client.models.Property.list({
+            filter,
+            authMode: 'userPool',
+          }).then(({ data: items }) => setProperties(items)
+          ))
+
+
+        const offersFilter = { seller: { contains: user.userId } };
+        promises.push(
+          await client.models.Offer.list({
+            filter: offersFilter,
+            authMode: 'userPool',
+          }).then(({ data: offers }) => {
+
+            // Grouping offers by propertyID
+            const groupedOffers = offers.reduce((acc: any, offer: any) => {
+              const key = String(offer.propertyId);
+              if (!acc[key]) {
+                acc[key] = [];
+              }
+              acc[key].push(offer);
+              return acc;
+            }, {});
+            setOffers(groupedOffers);
+          }
+          ))
+
+        // Wait for all promises to complete
+        await Promise.all(promises);
+
+
+      } catch (error: any) {
+        console.error("Error fetching data:", error);
+        setError(error.toString());
+        setProperties([]);
       }
     }
-  
+
     fetchProperties();
   }, [user.userId, propertyId]); // Dependencies for fetching properties
-  
+
   useEffect(() => setOpen(profile?.name !== '' && typeof propertyId === 'string'), [propertyId, profile?.name]); // Dependency for controlling `setOpen`
-
-  const columns: GridColDef[] = [
-    { field: 'address', headerName: 'Address', flex: 300 },
-    { field: 'description', headerName: 'Description', flex: 200 },
-    { field: 'price', headerName: 'Price', flex: 150, type: 'number' },
-    { field: 'arvprice', headerName: 'ARV', flex: 150, type: 'number' },
-    { field: 'bedrooms', headerName: 'Bedrooms', flex: 120, type: 'number' },
-    { field: 'bathrooms', headerName: 'Bathrooms', flex: 120, type: 'number' },
-    { field: 'squareFootage', headerName: 'Square Footage', flex: 150, type: 'number' },
-    {
-      field: 'yield', headerName: 'Yield', valueGetter: (_value, row) => {
-        return `${((row?.arvprice - row?.price) * 100 / row?.arvprice).toFixed(2)}%`;
-      }, flex: 120
-    }
-  ];
-
-  const handleRowClick = (params: {
-    row: any; id: any;
-  }) => {
-    navigate(`/sales/${params.row.id}`);
-  }
 
   return (
     <Container component="main">
@@ -82,44 +97,54 @@ const SellProperty: React.FC = () => {
             Add new
           </Button>
         </Typography>
+        <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', width: '100%' }}>
+          {
+            properties.map((property: any, index: number) => {
+              return <Accordion defaultExpanded={index === 0}  >
+                <AccordionSummary
+                  expandIcon={<ExpandMoreIcon />}
+                  aria-controls="panel1bh-content"
+                  id={`'${index}'`}
+                >
+                  <p style={{ backgroundColor: 'lightgrey', padding: '20px', }}>
+                    {property?.address + ` (${offers?.[property?.id]?.length || 0})`}
+                    {`Price:  $${property?.price} | bd: ${property?.bedrooms}| bth: ${property?.bathrooms} `}
+                  </p>
+                </AccordionSummary>
+                <AccordionDetails>
+                  {property?.photos.length !== 0 && <Carousel
+                    height={300}
+                    sx={{width: 350}}
+                    navButtonsAlwaysVisible={true}
+                    autoPlay={false}
+                  >
+                    {property?.photos?.map((image: string, i: number) => (
+                      <StorageImage
+                        width={250}
+                        key={i}
+                        alt={image}
+                        path={`compressed/${image}`} />
+                    ))}
+                  </Carousel>}
+                  <DisplayOffers gOffers={Object.values(offers[property?.id] || [])} />
+                  <Button variant="contained" component={RouterLink} to={`/sales/${property?.id}`} >
+                    Edit
+                  </Button>
+                </AccordionDetails>
+              </Accordion>
+            })}
 
-        <Paper elevation={3} sx={{ marginTop: '15px', padding: '15px 10px', height: 400, width: '100%' }}>
-          <DataGrid
-            sx={{
-              // disable cell selection style
-              '.MuiDataGrid-cell:focus': {
-                outline: 'none'
-              },
-              // pointer cursor on ALL rows
-              '& .MuiDataGrid-row:hover': {
-                cursor: 'pointer'
-              }
-            }}
-            initialState={{
-              columns: {
-                columnVisibilityModel: {
-                  arvprice: false,
-                },
-              },
-            }}
-            onRowClick={handleRowClick}
-            rows={properties}
-            columns={columns}
-          />
         </Paper>
       </Paper>}
 
-      <Modal
-        open={open}
-        onClose={() => { navigate(-1); }}
-      >
-        <ModalDialog minWidth='90%' >
-          <ModalClose style={{ margin: '10px' }} />
+      <Modal open={open} onClose={() => { navigate(-1); }}>
+        <ModalDialog minWidth='350px' >
           <DialogTitle>Edit property details</DialogTitle>
           <DialogContent>
+            <ModalClose />
             {error && <p>{error}</p>}
             {
-              propertyId?.indexOf('new') ===  -1 ? 
+              propertyId?.indexOf('new') === -1 ?
                 <>
                   <PropertyUpdateForm
                     id={propertyId}
@@ -147,7 +172,6 @@ const SellProperty: React.FC = () => {
         </ModalDialog>
       </Modal>
     </Container>
-
   );
 };
 
