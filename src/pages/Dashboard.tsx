@@ -27,7 +27,7 @@ function dashboardPage() {
   };
 
   return (
-    <main onClick={()=>setNavShow(!navShow)}    >
+    <main onClick={()=>setNavShow(false)}    >
       <Tabs className='dash-tabs' 
         orientation="vertical"
         size="md"

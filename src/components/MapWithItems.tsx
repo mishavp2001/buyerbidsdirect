@@ -9,7 +9,7 @@ import { LatLngBoundsExpression, divIcon } from "leaflet";
 import { StorageImage } from '@aws-amplify/ui-react-storage';
 import { NumericFormat } from 'react-number-format';
 import Carousel from 'react-material-ui-carousel';
-import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl, Paper } from '@mui/material';
+import { TextField, Button, Grid, MenuItem, Select, SelectChangeEvent, FormControl, Paper, Divider } from '@mui/material';
 import { geocodeZipCode } from '../utils/getGeoLocation';
 import { createRoot } from 'react-dom/client';
 import { flushSync } from 'react-dom';
@@ -122,42 +122,51 @@ const CustomPopup = (props: { property: any, favorites: string[], user: any, ind
           </Grid>
         ))}
       </Carousel>
-      <div style={{height: 160, overflow: 'auto'}}>
-      <Link className="maker-main-link" to={`/property/${property.id}`}>
-        <h3>
-          <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
-        </h3>
-        <p>{property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} /> - {property?.description}</p>
-        <p>{property.address}</p>
-      </Link>
+      <div style={{ height: 190 }}>
+        <Link className="maker-main-link" to={`/property/${property.id}`}>
+          <h3>
+            <NumericFormat value={property?.price?.toFixed(0)} displayType={'text'} thousandSeparator={true} prefix={'$'} />
+          </h3>
+          <p>
+            {property.bedrooms} bds | {property.bathrooms} ba | <NumericFormat value={property?.squareFootage?.toFixed(0)} displayType={'text'} thousandSeparator={true} suffix={' sqft '} />
+          </p>
+          <p>{property.address}</p>
+          <Divider />
+          <div className='description'>
+            <p>{property?.description}</p>
+          </div>  
+        </Link>
       </div>
-      {user?.username === property.owner ? (
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          state={{ isModal: true, backgroundLocation: '/2' }}
-          to={`/sales/${property.id}`}>
-          Edit
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          color="primary"
-          component={Link}
-          state={{ isModal: true, backgroundLocation: '/2' }}
-          to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
-          Offer
-        </Button>
+      <div className='action-footer'>
+        {user?.username === property.owner ? (
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            state={{ isModal: true, backgroundLocation: '/2' }}
+            to={`/sales/${property.id}`}>
+            Edit
+          </Button>
+        ) : (
+          <Button
+            variant="contained"
+            color="primary"
+            component={Link}
+            state={{ isModal: true, backgroundLocation: '/2' }}
+            to={`/offers/null/${property?.address}/${property.id}/${property.owner}`}>
+            Offer
+          </Button>
 
-      )}
-      <span
-        style={{ color: 'black', cursor: 'pointer', paddingLeft: 32, fontSize: '18px' }}
-      >
-        <LikeButton
-          propertyId={property.id} user={user} favorites={favorites} property={property} handleLikeUpdate={onUpdate} />
-        {`Likes: ${property?.likes || 0}`}
-      </span>
+        )}
+        <span
+          style={{ color: 'black', cursor: 'pointer', paddingLeft: 32 }}
+        >
+          <LikeButton
+            propertyId={property.id} user={user} favorites={favorites} property={property} handleLikeUpdate={onUpdate} />
+          {`Likes: ${property?.likes || 0}`}
+        </span>
+
+      </div>
     </Popup>
   );
 };
@@ -238,7 +247,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
   const handleLikeUpdate = (propertyId: string, favorite: boolean) => {
     setProperties((prevItems) =>
       prevItems.map((item) =>
-        item.id === propertyId ? { ...item, likes: favorite? item.likes + 1 : item.likes - 1 } : item
+        item.id === propertyId ? { ...item, likes: favorite ? item.likes + 1 : item.likes - 1 } : item
       )
     );
   };
@@ -315,7 +324,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
   return (
     <div className='list-items'>
       <h3>{header}</h3>
-      <div style={{ margin: '1em', position: 'relative' }}>
+      <div style={{ margin: '1em', position: 'relative', width: 'fit-content' }}>
         <TextField
           onBlur={handleSearchPositionChange}
           onKeyDown={(event) => {
@@ -389,21 +398,21 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
           <img src={Search} style={{ width: '3em' }} />
         </Button>
       </div>
-      <div style={{ width: `${width || '98vw'}`, marginTop: '35px', padding: '1em' }}>
+      <div style={{ marginTop: '35px', padding: '1em' }}>
         <Paper
           elevation={3}
-          sx={{ height: "99vh", width: 'auto', padding: '1em' }}
+          sx={{ height: "99vh", width: '100%', padding: '1em' }}
         >
           <Grid
             container spacing={2}
             justifyContent="center"
             style={{ display: 'flex', flexDirection: 'row' }}
           >
-            <Grid item xs={12} sm={12} md={!mapOnly ? 6 : 12} height='90vh' key={0}>
+            <Grid item xs={12} sm={12} md={!mapOnly ? 12 : 12} height='90vh' key={0}>
               <MapContainer
                 center={position}
                 zoom={zoom}
-                style={{ width: `${width}`, height: "90vh" }}
+                style={{ width: `${width || '90%'}`, height: "90vh" }}
               >
                 <section>
                   <TileLayer
@@ -419,7 +428,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate}/>
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate} />
                   </Marker>
                 ))}
                 {offers?.map((item: { position: string; price: number; id: any; }) => (
@@ -430,7 +439,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
                     })}
                     key={`maker-${item.id}`}
                     position={[JSON.parse(item?.position).latitude, JSON.parse(item?.position).longitude]}>
-                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate}/>
+                    <CustomPopup index={`popup-${item.id}`} property={item} user={user} favorites={profile?.favorites || []} onUpdate={handleLikeUpdate} />
                   </Marker>
                 ))}
                 <FullscreenControl />

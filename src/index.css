@@ -113,12 +113,18 @@ main {
     white-space: normal;
   }
 
-  @media screen and (max-width: 868px) {
 
+  @media screen and (max-width: 868px) { 
+    .dash-tabs {
+      max-width: 800px;
+      min-width: 600px;
+    }  
     .MuiGrid-container {
       flex-direction: column
     }
-
+    .leaflet-container {
+      width: fit-content
+    }
     .MuiGrid-item {
       height: fit-content
     }
@@ -154,7 +160,10 @@ main {
       display: inline-block;
       min-width: 70%;
     }
-
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='summary'] {
+      min-width: 60%;
+      display: inline-block;
+    }
     .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='address'] {
       min-width: 60%;
       display: inline-block;
@@ -182,8 +191,11 @@ main {
     main {
       min-width: 450px;
     }
+    .leaflet-container {
+      width: fit-content
+    }
     .dash-tabs {
-      max-width: 420px;
+      max-width: 380px;
       min-width: 250px;
       margin: 0px;
       .dash-list {
@@ -236,6 +248,16 @@ main {
       display: inline-block;
     }
 
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='summary'] {
+      min-width: 50%;
+      display: inline-block;
+    }
+
+    .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='price'] {
+      min-width: 50%;
+      display: inline-block;
+    }
+
     .MuiDataGrid-row.MuiDataGrid-row .MuiDataGrid-cell--textLeft[data-field*='name'] {
       min-width: 100%;
       display: inline-block;
@@ -252,6 +274,13 @@ main {
     .MuiDataGrid-root .MuiDataGrid-scrollbarContent {
       display: none;
     }
+
+    .leaflet-popup.custom-popup {
+      max-width: 270px;
+      .leaflet-popup-content {
+        font-size: 10px;
+      }  
+    }  
   }
 
 
@@ -271,7 +300,6 @@ main {
   }
 
   .list-items {
-    width: 98vw;
     height: 400px;
     /* Set a fixed height for the parent container, adjust as needed */
     position: relative;
@@ -300,19 +328,29 @@ main {
   }
 }
 
-.leaflet-popup {
+.leaflet-popup.custom-popup {
+  max-width: 370px;
  .leaflet-popup-content-wrapper {
     text-align: center;
     font-size: medium;
     .leaflet-popup-content {
-      > a {
-        color: white;
+      overflow: hidden;
+      .action-footer {
+        background-color: lightgrey;
+        padding: 12px;
+        > a {
+          color: white;
+        }
+        .favorite-icon:hover {
+          color: white; /* Optional */
+        }
+        .favorite-icon:hover {
+          color: white; /* Optional */
+        }
       }
-      .favorite-icon:hover {
-        color: white; /* Optional */
-      }
-      .favorite-icon:hover {
-        color: white; /* Optional */
+      .description {
+        overflow: auto;
+        height: 100px;
       }
       .maker-main-link {
         text-decoration: none;
@@ -323,7 +361,7 @@ main {
         }
         color: black;
         font-weight: normal
-      }
+      }  
   }
 }
 }
