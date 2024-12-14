@@ -63,7 +63,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
     };
 
     return (
-        <>
+        <div width='100%'>
             <Grid
                 container
                 spacing={1}
@@ -124,7 +124,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
             >
                 <ModalDialog
                     layout="center"
-                    size="lg"
+                    size="md"
                 >
                     <ModalClose onClick={handleCloseModal} />
 
@@ -149,7 +149,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                                     </Grid>
                                     <Grid
                                         item
-                                        xs={12} md={6}
+                                        xs={12} md={5}
                                     >
                                         {modalData?.picture && (
                                             <StorageImage
@@ -185,7 +185,7 @@ const Articles: React.FC<ArticlesProps> = ({ posts, onSuccess }) => {
                     )}
                 </ModalDialog>
             </Modal>
-        </>
+        </div>
     );
 };
 

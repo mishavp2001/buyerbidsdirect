@@ -103,11 +103,11 @@ const PropertyTable: React.FC<PropertyTableProps> = ({ properties }) => {
             <p>{address}</p>
             <p>{description}</p>
           </div>)
-      }, flex: 350, headerClassName: 'header-grid'
+      }, flex: 300, headerClassName: 'header-grid'
     },
-    { field: 'address', headerName: 'Address', flex: 250, headerClassName: 'header-grid' },
+    { field: 'address', headerName: 'Address', flex: 220, headerClassName: 'header-grid' },
     { field: 'description', headerName: 'Description', flex: 250, headerClassName: 'header-grid' },
-    { field: 'price', headerName: 'Price', flex: 120, type: 'number', headerClassName: 'header-grid' },
+    { field: 'price', align: 'left', headerName: 'Price', flex: 100, type: 'number', headerClassName: 'header-grid' },
     { field: 'bedrooms', headerName: 'Beds', flex: 50, type: 'number', headerClassName: 'header-grid' },
     { field: 'bathrooms', headerName: 'Bath', flex: 50, type: 'number', headerClassName: 'header-grid' },
     { field: 'squareFootage', headerName: 'SqFt', flex: 50, type: 'number', headerClassName: 'header-grid' },
