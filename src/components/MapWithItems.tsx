@@ -408,7 +408,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
             justifyContent="center"
             style={{ display: 'flex', flexDirection: 'row' }}
           >
-            <Grid item xs={12} sm={12} md={!mapOnly ? 12 : 12} height='90vh' key={0}>
+            <Grid item xs={12} sm={12} md={!mapOnly ? 5 : 12} height='90vh' key={0}>
               <MapContainer
                 center={position}
                 zoom={zoom}
@@ -449,7 +449,7 @@ const MapWithItems: React.FC<any> = ({ offers, mapOnly, width, header }) => {
               </MapContainer>
             </Grid>
             {!mapOnly &&
-              <Grid item xs={12} sm={12} md={6} key={1}>
+              <Grid item xs={12} sm={12} md={7} key={1}>
                 <ListItems
                   properties={properties}
                 />

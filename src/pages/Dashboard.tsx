@@ -27,7 +27,7 @@ function dashboardPage() {
   };
 
   return (
-    <main onClick={()=>setNavShow(false)}    >
+    <main>
       <Tabs className='dash-tabs' 
         orientation="vertical"
         size="md"
@@ -38,6 +38,7 @@ function dashboardPage() {
         onClick={()=>setNavShow(!navShow)}
       />
         <TabList
+          onMouseLeave={()=>setNavShow(false)}
           className={classNames('dash-list', `${navShow ? 'dash-list-show' : 'dash-list-hide'}`)}>
         <h5>Articles</h5>
         <Tab>Read</Tab>
@@ -67,53 +68,52 @@ function dashboardPage() {
           <Tab>Investment</Tab>
           <Tab>Loan</Tab>
         </TabList>
-        <TabPanel value='0'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='0'>
           <PostView />
         </TabPanel>
-        <TabPanel value='1'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)} value='1'>
           <PostView self={true}/>
         </TabPanel>
-        <TabPanel value='2'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='2'>
           <MapWithItems width='100%'/>
         </TabPanel>
-        <TabPanel value='3'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='3'>
           <SellProperty />
         </TabPanel>
-        <TabPanel value='4'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='4'>
           <Offers />
         </TabPanel>
-        <TabPanel value='5'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='5'>
           <Profiles />
         </TabPanel>
-        <TabPanel value='6'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='6'>
           <Profiles />
         </TabPanel>
-        <TabPanel value='7'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)} value='7'>
           <Profiles />
         </TabPanel>
-        <TabPanel value='8'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)} value='8'>
           <Profiles />
         </TabPanel>
-        <TabPanel value='9'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)} value='9'>
           <Profiles />
         </TabPanel>
         <TabPanel value='10'>
           <Profiles />
         </TabPanel>
-        <TabPanel value='11'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='11'>
           <Chat info='Investment tools' topic='Answer real estate related questions. IIntroduce yourself as expert in real estate.'/>
         </TabPanel>
-        <TabPanel value='12'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='12'>
           <TaxCalculator />
         </TabPanel>
-        <TabPanel value='13'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)}  value='13'>
           <CapRateCalculator />
         </TabPanel>
-        <TabPanel value='14'>
+        <TabPanel onMouseEnter={()=>setNavShow(false)} value='14'>
           <LoanCalculator />
         </TabPanel>
       </Tabs>
-
     </main>
   );
 }
